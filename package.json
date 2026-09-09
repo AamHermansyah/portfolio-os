@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "sync:portfolio": "node scripts/sync-portfolio-assets.mjs",
+    "predev": "npm run sync:portfolio",
     "dev": "next dev",
+    "prebuild": "npm run sync:portfolio",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
