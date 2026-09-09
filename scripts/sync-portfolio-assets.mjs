@@ -19,7 +19,10 @@ if (minifiedRuntime.error || !minifiedRuntime.code) {
   throw minifiedRuntime.error ?? new Error("Unable to minify portfolio runtime");
 }
 
-fs.writeFileSync("styles/portfolio-os.css", stylesheet.replace(/\r?\n/g, " "));
-fs.writeFileSync("public/portfolio-runtime.js", minifiedRuntime.code);
+fs.writeFileSync(
+  "styles/portfolio-os.css",
+  `${stylesheet.trim().replace(/\r?\n/g, " ")}\n`,
+);
+fs.writeFileSync("public/portfolio-runtime.js", `${minifiedRuntime.code}\n`);
 
 console.log("PortfolioOS CSS and runtime synchronized from portfolio.html");

@@ -323,8 +323,19 @@ a.ql-btn{text-decoration:none;color:#000}
 .ex-table tr.sel td{background:var(--sel);color:#fff}
 
 /* ============ app: project viewer ============ */
-.app-proj{overflow:auto}
-.proj{padding:10px 12px}
+.app-proj{overflow:hidden}
+.case-shell{height:100%;display:flex;flex-direction:column;min-height:0}
+.case-tabs{display:flex;align-items:flex-end;gap:1px;min-height:29px;padding:4px 6px 0;overflow-x:auto;overflow-y:hidden;flex:0 0 auto}
+.case-tab{position:relative;flex:0 0 auto;height:24px;padding:1px 10px 0;background:var(--face);border:0;white-space:nowrap;
+  box-shadow:inset -1px 0 #0a0a0a,inset 1px 1px #fff,inset -2px 0 #808080,inset 2px 2px #dfdfdf}
+.case-tab.on{z-index:2;height:26px;padding-top:0;font-weight:bold;box-shadow:inset -1px 0 #0a0a0a,inset 1px 1px #fff,inset -2px 0 #808080,inset 2px 2px #dfdfdf}
+.case-tab.on::after{content:'';position:absolute;left:2px;right:2px;bottom:-2px;height:4px;background:var(--face)}
+.case-tab:focus-visible{outline:1px dotted #000;outline-offset:-5px}
+.case-content{flex:1 1 auto;min-height:0;margin:0 6px 0;padding:10px 12px;overflow:auto;background:var(--face);
+  box-shadow:inset -1px -1px #0a0a0a,inset 1px 1px #fff,inset -2px -2px #808080,inset 2px 2px #dfdfdf}
+.case-panel[hidden]{display:none}
+.case-panel{min-height:100%;user-select:text}
+.proj{min-height:100%}
 .proj-top{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
 .shot{flex:0 1 220px;min-width:130px;padding:3px;background:#fff;
   box-shadow:inset -1px -1px #fff,inset 1px 1px #0a0a0a,inset -2px -2px #dfdfdf,inset 2px 2px #808080}
@@ -342,7 +353,41 @@ a.ql-btn{text-decoration:none;color:#000}
 .pj-desc{font:12px/1.6 var(--mono);margin:10px 0 8px;user-select:text}
 .pj-notes{margin:4px 0 12px 20px;font:12px/1.5 var(--mono);user-select:text}
 .pj-notes li{margin:3px 0;list-style:square}
-.pj-actions{display:flex;gap:8px;padding-top:10px;border-top:2px groove #fff}
+.case-heading{font:bold 14px var(--sys);margin:0 0 8px;padding-bottom:5px;border-bottom:2px groove #fff}
+.case-copy{font:12px/1.65 var(--mono);margin:0 0 12px;max-width:74ch}
+.case-label{font-weight:bold;margin:12px 0 5px}
+.case-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:9px 0 13px}
+.case-fact{min-height:54px;padding:7px 8px;background:#fff;box-shadow:inset -1px -1px #fff,inset 1px 1px #808080}
+.case-fact span{display:block;color:#666;margin-bottom:4px}.case-fact b{font:11px/1.35 var(--mono)}
+.solution-list{display:grid;gap:7px;counter-reset:solution}
+.solution-card{position:relative;padding:8px 9px 8px 38px;background:#fff;min-height:51px;
+  box-shadow:inset -1px -1px #fff,inset 1px 1px #808080;counter-increment:solution}
+.solution-card::before{content:counter(solution);position:absolute;left:9px;top:9px;width:20px;height:20px;display:grid;place-items:center;
+  color:#fff;background:var(--navy);font:bold 11px var(--mono)}
+.solution-card b,.arch-node b{display:block;margin-bottom:3px}.solution-card p,.arch-node p{font:11px/1.5 var(--mono)}
+.arch-flow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin:14px 0}
+.arch-node{position:relative;min-height:112px;padding:10px;background:#fff;border:1px solid #808080;
+  box-shadow:2px 2px 0 #808080,-1px -1px 0 #fff}
+.arch-node:not(:last-child)::after{content:'\2192';position:absolute;right:-17px;top:43%;font:bold 16px var(--mono)}
+.arch-note{padding:7px 9px;border:1px dotted #000;background:#ffffe1;font:11px/1.5 var(--mono)}
+.metric-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:10px 0 14px}
+.metric{padding:10px 7px;text-align:center;background:#000080;color:#fff;box-shadow:inset -2px -2px #00003d,inset 2px 2px #4775ff}
+.metric b{display:block;font:bold 18px var(--mono);line-height:1.1}.metric span{display:block;margin-top:5px;font:10px/1.3 var(--mono)}
+.gallery-main{padding:4px;background:#fff;box-shadow:inset -1px -1px #fff,inset 1px 1px #0a0a0a,inset -2px -2px #dfdfdf,inset 2px 2px #808080}
+.gallery-main img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border:1px solid #7a7a7a}
+.gallery-caption{min-height:30px;padding:7px 2px 2px;font:11px/1.4 var(--mono)}
+.gallery-thumbs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:6px}
+.gallery-thumb{padding:3px;background:var(--face);border:0;box-shadow:inset -1px -1px #0a0a0a,inset 1px 1px #fff,inset -2px -2px #808080,inset 2px 2px #dfdfdf}
+.gallery-thumb.on{background:#000080;box-shadow:inset -1px -1px #fff,inset 1px 1px #0a0a0a,inset -2px -2px #dfdfdf,inset 2px 2px #808080}
+.gallery-thumb img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;filter:saturate(.72)}
+.gallery-thumb.on img{filter:none}.gallery-thumb:focus-visible{outline:1px dotted #000;outline-offset:-5px}
+.pj-actions{display:flex;align-items:center;gap:8px;padding:7px 8px 6px;flex:0 0 auto}
+.pj-actions .case-location{margin-left:auto;color:#555;font:10px var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:560px){
+  .case-content{padding:8px}.case-tab{padding-left:8px;padding-right:8px}.case-facts,.metric-grid{grid-template-columns:1fr}
+  .arch-flow{grid-template-columns:1fr;gap:17px}.arch-node{min-height:0}.arch-node:not(:last-child)::after{content:'\2193';right:auto;left:50%;top:auto;bottom:-17px}
+  .pj-actions .case-location{display:none}
+}
 
 /* ============ app: skills installer ============ */
 .win-body.app-skill{margin:0;overflow:hidden;display:flex;flex-direction:column}
@@ -1561,6 +1606,108 @@ const PROJECTS=[
  demo:'https://statusowl.alexnovak.dev',repo:'https://github.com/alexnovak/statusowl',
  req:'Requires: 486SX \u00b7 8 MB RAM \u00b7 one alert person'}
 ];
+const CASE_STUDIES={
+  devgrid:{
+    role:'Lead Frontend Engineer',duration:'6 months',team:'4 engineers + 1 designer',
+    problem:'Architecture reviews depended on static diagrams spread across documents and video calls. Remote teams could not safely edit together, and exports lost detail as diagrams grew.',
+    responsibilities:['Defined the collaborative canvas architecture and interaction model','Built the drawing, presence, and export foundations','Set performance budgets and mentored two frontend engineers'],
+    solution:[
+      {title:'Merge-safe drawing',text:'Modelled every stroke as a CRDT operation so concurrent edits resolve without overwriting another person\u2019s work.'},
+      {title:'Live team presence',text:'Added named cursors and latency indicators so reviewers always know who is editing and whether their connection is healthy.'},
+      {title:'Reliable exports',text:'Rendered SVG and PNG directly from document state, preserving labels and vectors at every zoom level.'}
+    ],
+    architecture:[
+      {title:'React canvas client',text:'Pointer input, viewport transforms, local history, and optimistic rendering.'},
+      {title:'CRDT sync layer',text:'WebRTC operations converge across peers while Redis relays presence and reconnect state.'},
+      {title:'Export services',text:'Node workers turn shared document state into deterministic SVG and PNG files.'}
+    ],
+    architectureNote:'Design rule: drawing remains responsive locally even when the network is slow or temporarily unavailable.',
+    metrics:[{value:'<80 ms',label:'median stroke sync'},{value:'40+',label:'internal teams'},{value:'0',label:'manual merge steps'}],
+    result:'Architecture reviews moved into one shared workspace, with print-ready exports and fewer version-conflict follow-ups.',
+    gallery:['devgrid-app','devgrid-presence','devgrid-export'],
+    captions:['Collaborative architecture canvas with live team cursors.','Presence mode showing active reviewers and connection latency.','Print-ready export preview with vector-safe labels.']
+  },
+  shipfast:{
+    role:'Fullstack Architect',duration:'9 months',team:'3 engineers + client team',
+    problem:'The storefront and warehouse tracked orders differently, causing inventory drift, slow checkout, and risky manual recovery whenever a payment request was retried.',
+    responsibilities:['Designed the order lifecycle shared by storefront and fulfilment','Implemented checkout performance and idempotency controls','Planned zero-downtime migrations and production observability'],
+    solution:[
+      {title:'One order contract',text:'Introduced a single typed order model from basket creation through payment, packing, and shipment.'},
+      {title:'Idempotent fulfilment',text:'Assigned every payment and inventory mutation a durable key so retries can never double-charge or double-reserve stock.'},
+      {title:'Measured checkout',text:'Profiled the complete request path and cached only stable catalogue data instead of hiding slow database work.'}
+    ],
+    architecture:[
+      {title:'Next.js storefront',text:'Server-rendered catalogue and a small client checkout state machine.'},
+      {title:'Node fulfilment',text:'Idempotent jobs coordinate Stripe events, stock reservation, and warehouse updates.'},
+      {title:'PostgreSQL core',text:'A deliberately compact schema acts as the source of truth for orders and inventory.'}
+    ],
+    architectureNote:'Operational rule: every job may run twice; customer-visible effects must happen exactly once.',
+    metrics:[{value:'200k',label:'orders per month'},{value:'88 ms',label:'checkout p95'},{value:'14 mo',label:'migration-incident free'}],
+    result:'Checkout became visibly faster while support stopped manually repairing duplicated payments and stale inventory records.',
+    gallery:['shipfast-store','shipfast-checkout','shipfast-ops'],
+    captions:['Fast server-rendered storefront and product catalogue.','Low-friction checkout backed by an idempotent order pipeline.','Operations dashboard for fulfilment and inventory health.']
+  },
+  querypilot:{
+    role:'Creator & Maintainer',duration:'10 weeks',team:'Independent project',
+    problem:'Query plans are precise but difficult to interpret under pressure. Existing tools suggested indexes without proving that they helped on realistic data.',
+    responsibilities:['Designed the CLI experience and plain-English explanation engine','Built safe shadow-database verification','Maintained releases, documentation, and community issues'],
+    solution:[
+      {title:'Readable plans',text:'Converted nested EXPLAIN nodes into an ordered explanation of scans, joins, estimates, and likely bottlenecks.'},
+      {title:'Evidence before advice',text:'Tested proposed indexes against a shadow copy and compared plans before showing a recommendation.'},
+      {title:'Portable CLI',text:'Kept the runtime dependency-free so the tool can run inside restricted database and CI environments.'}
+    ],
+    architecture:[
+      {title:'Log reader',text:'Streams slow-query entries from files or stdin without retaining sensitive query history.'},
+      {title:'Plan interpreter',text:'Parses PostgreSQL JSON plans and ranks expensive or suspicious nodes.'},
+      {title:'Shadow verifier',text:'Creates hypothetical indexes, reruns plans, and reports measurable differences.'}
+    ],
+    architectureNote:'Safety rule: QueryPilot recommends changes but never mutates the production database.',
+    metrics:[{value:'1.2k',label:'GitHub stars'},{value:'0',label:'runtime dependencies'},{value:'100%',label:'recommendations verified'}],
+    result:'Developers can move from a slow-query alert to an explainable, tested recommendation without becoming query-plan specialists.',
+    gallery:['querypilot-cli','querypilot-plan','querypilot-report'],
+    captions:['Guided terminal analysis of a captured slow query.','Plain-English explanation mapped to the original query plan.','Before-and-after verification report for a proposed index.']
+  },
+  pixelforge:{
+    role:'Frontend Engineer',duration:'8 weeks',team:'1 engineer + 1 designer',
+    problem:'Pixel artists needed fast palette-constrained editing without installing desktop software. Browser editors became sluggish on larger canvases and offered weak export controls.',
+    responsibilities:['Translated the product mockups pixel-for-pixel','Designed the worker-based rendering pipeline','Implemented constrained palettes, animation, and export tooling'],
+    solution:[
+      {title:'Worker rendering',text:'Moved expensive frame composition off the UI thread so brushes and onion-skin previews stay responsive.'},
+      {title:'Authentic constraints',text:'Shipped real C64, Game Boy, and sixteen-colour palettes with predictable colour replacement.'},
+      {title:'Useful exports',text:'Produced GIF animations, packed sprite sheets, and CSS-ready images directly inside the browser.'}
+    ],
+    architecture:[
+      {title:'Editor UI',text:'Vanilla DOM controls manage tools, palettes, timelines, and keyboard shortcuts.'},
+      {title:'Canvas workers',text:'OffscreenCanvas workers composite layers and generate previews away from the main thread.'},
+      {title:'Local exporter',text:'Encoders produce downloadable assets without uploading artwork to a server.'}
+    ],
+    architectureNote:'Privacy rule: artwork stays in the browser; no account or upload is required.',
+    metrics:[{value:'60 fps',label:'512 x 512 canvas'},{value:'3',label:'export formats'},{value:'0',label:'server uploads'}],
+    result:'Artists get a focused retro workflow that stays smooth on practical sprite sizes and exports production-ready assets.',
+    gallery:['pixelforge-editor','pixelforge-animation','pixelforge-export'],
+    captions:['Main sprite editor with tools, layers, and constrained palette.','Animation timeline with onion-skin preview enabled.','Export dialog for GIF, sprite sheet, and CSS output.']
+  },
+  statusowl:{
+    role:'Backend & Product Engineer',duration:'6 weeks',team:'Independent project',
+    problem:'Small teams were paying for monitoring platforms that produced noisy alerts with too little context, while self-hosted alternatives required more infrastructure than the monitored apps.',
+    responsibilities:['Designed the Redis-stream scheduler and worker lifecycle','Built contextual webhook and Telegram notifications','Optimized static status-page publishing for tiny servers'],
+    solution:[
+      {title:'Cronless scheduling',text:'Used Redis streams and consumer groups to distribute checks without one timer process becoming a bottleneck.'},
+      {title:'Actionable alerts',text:'Attached recent logs, response history, and last-known-good configuration to every incident notification.'},
+      {title:'Event-driven pages',text:'Regenerated public status pages only when an incident changed instead of rebuilding on every check.'}
+    ],
+    architecture:[
+      {title:'Check scheduler',text:'Redis streams queue due endpoints and reclaim interrupted work safely.'},
+      {title:'Probe workers',text:'Stateless Node workers execute checks and record compact response history.'},
+      {title:'Alert + status layer',text:'Telegram, webhooks, and static pages update from the same incident event.'}
+    ],
+    architectureNote:'Hosting rule: the monitor must remain cheaper and simpler than the services it watches.',
+    metrics:[{value:'300',label:'monitored endpoints'},{value:'\u20ac4',label:'monthly server cost'},{value:'1',label:'incident event source'}],
+    result:'A single small VPS now monitors the complete estate and sends alerts with enough context to begin remediation immediately.',
+    gallery:['statusowl-monitor','statusowl-alert','statusowl-page'],
+    captions:['Endpoint dashboard with current health and response history.','Context-rich incident notification prepared for Telegram.','Static public status page generated only when state changes.']
+  }
+};
 const SKILLS=[
   {name:'React.js',file:'react.dll',level:92},
   {name:'TypeScript',file:'tsconfig.sys',level:88},
@@ -1812,31 +1959,144 @@ function openProjects(){
   openExplorerWin({id:'projects',title:'Projects',icon:s=>svg('folder',s),path:'C:\\Projects',
     items,stat2:'My Portfolio (C:)',empty:'No projects found. That would be worse.'});
 }
+function caseStudyShot(p,c,index){
+  const metricCards=c.metrics.map((metric,i)=>{
+    const x=166+i*143;
+    return `<g><rect x="${x}" y="83" width="129" height="68" fill="#fff" stroke="#808080"/><rect x="${x+1}" y="84" width="127" height="16" fill="${p.color}"/><text x="${x+7}" y="96" fill="#fff" font-size="9">METRIC 0${i+1}</text><text x="${x+8}" y="124" fill="#111" font-size="18" font-weight="700">${esc(metric.value)}</text><text x="${x+8}" y="141" fill="#555" font-size="9">${esc(metric.label)}</text></g>`;
+  }).join('');
+  const architecture=c.architecture.map((node,i)=>{
+    const x=40+i*205;
+    return `<g><rect x="${x}" y="112" width="155" height="92" fill="#fff" stroke="#202020"/><rect x="${x+1}" y="113" width="153" height="20" fill="${p.color}"/><text x="${x+8}" y="127" fill="#fff" font-size="10" font-weight="700">${esc(node.title.slice(0,23))}</text><rect x="${x+12}" y="148" width="92" height="5" fill="#c0c0c0"/><rect x="${x+12}" y="160" width="122" height="5" fill="#dfdfdf"/><rect x="${x+12}" y="172" width="108" height="5" fill="#dfdfdf"/><circle cx="${x+134}" cy="188" r="5" fill="#00a000"/></g>${i<2?`<path d="M${x+157} 158h44" stroke="#000" stroke-width="2"/><path d="m${x+194} 153 7 5-7 5" fill="#000"/>`:''}`;
+  }).join('');
+  const stackRows=p.stack.slice(0,4).map((technology,i)=>{
+    const y=119+i*38;
+    const width=160+i*48;
+    return `<g><rect x="172" y="${y}" width="410" height="27" fill="${i%2?'#f4f4f4':'#fff'}"/><rect x="184" y="${y+8}" width="10" height="10" fill="${p.color}"/><text x="205" y="${y+17}" fill="#111" font-size="10">${esc(technology)}</text><rect x="324" y="${y+9}" width="${width}" height="8" fill="#dfdfdf"/><rect x="324" y="${y+9}" width="${Math.round(width*.72)}" height="8" fill="${p.color}"/></g>`;
+  }).join('');
+  let scene='';
+  if(index===0){
+    scene=`<rect x="20" y="48" width="126" height="264" fill="#dedede" stroke="#808080"/><rect x="29" y="63" width="108" height="24" fill="${p.color}"/><text x="40" y="79" fill="#fff" font-size="10">Dashboard</text><text x="39" y="111" fill="#222" font-size="10">Workspace</text><text x="39" y="140" fill="#222" font-size="10">Activity</text><text x="39" y="169" fill="#222" font-size="10">Exports</text><text x="39" y="198" fill="#222" font-size="10">Settings</text><text x="166" y="66" fill="#111" font-size="16" font-weight="700">${esc(p.tagline)}</text>${metricCards}<rect x="166" y="168" width="415" height="144" fill="#fff" stroke="#808080"/><rect x="167" y="169" width="413" height="22" fill="#c0c0c0"/><text x="177" y="184" fill="#111" font-size="10" font-weight="700">Recent activity</text>${[0,1,2,3].map(i=>`<g><circle cx="182" cy="${211+i*23}" r="4" fill="${i===3?'#e0a000':'#00a000'}"/><rect x="195" y="${207+i*23}" width="${205-i*19}" height="7" fill="${i%2?'#dfdfdf':'#c8c8c8'}"/><text x="535" y="${214+i*23}" fill="#666" font-size="8">OK</text></g>`).join('')}`;
+  }else if(index===1){
+    scene=`<text x="40" y="78" fill="#111" font-size="16" font-weight="700">Architecture workspace</text><rect x="24" y="92" width="592" height="144" fill="#e9eef2" stroke="#808080"/>${architecture}<rect x="24" y="250" width="592" height="62" fill="#050505" stroke="#808080"/><text x="36" y="270" fill="#54ef78" font-size="10">$ ${esc(p.file)} --inspect pipeline</text><text x="36" y="288" fill="#b3ffc5" font-size="9">All services healthy. Data flow verified.</text><text x="36" y="303" fill="#6fa67d" font-size="9">Listening for the next event _</text>`;
+  }else{
+    scene=`<rect x="20" y="48" width="126" height="264" fill="#dedede" stroke="#808080"/><text x="35" y="75" fill="#111" font-size="13" font-weight="700">Release report</text><text x="35" y="105" fill="#444" font-size="9">Build</text><text x="35" y="121" fill="#111" font-size="11">${esc(p.ver)}</text><text x="35" y="151" fill="#444" font-size="9">Released</text><text x="35" y="167" fill="#111" font-size="11">${esc(p.date)}</text><rect x="31" y="207" width="104" height="36" fill="#000080"/><text x="51" y="229" fill="#fff" font-size="11" font-weight="700">PASSED</text><text x="172" y="76" fill="#111" font-size="16" font-weight="700">Technology health</text><rect x="166" y="96" width="422" height="180" fill="#fff" stroke="#808080"/>${stackRows}<rect x="166" y="288" width="422" height="24" fill="#ffffe1" stroke="#808080"/><text x="177" y="304" fill="#111" font-size="9">Production checks completed successfully.</text>`;
+  }
+  const markup=`<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360"><rect width="640" height="360" fill="#008080"/><rect x="6" y="6" width="628" height="348" fill="#c0c0c0" stroke="#fff" stroke-width="2"/><rect x="9" y="9" width="622" height="25" fill="${p.color}"/><text x="18" y="26" fill="#fff" font-family="Tahoma,Arial,sans-serif" font-size="12" font-weight="700">${esc(p.name)} — ${index===0?'Overview':index===1?'System View':'Release Report'}</text><g font-family="Tahoma,Arial,sans-serif">${scene}</g><rect x="10" y="324" width="620" height="26" fill="#c0c0c0" stroke="#808080"/><text x="19" y="341" fill="#333" font-family="Tahoma,Arial,sans-serif" font-size="9">${esc(c.captions[index].slice(0,88))}</text></svg>`;
+  return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(markup);
+}
 function openProject(p){
-  WM.create({id:'proj-'+p.id,title:p.file,icon:appIcon(p.color,14),w:480,h:480,
+  const c=CASE_STUDIES[p.id];
+  const sections=[
+    {id:'overview',label:'Overview'},
+    {id:'challenge',label:'Challenge'},
+    {id:'solution',label:'Solution'},
+    {id:'architecture',label:'Architecture'},
+    {id:'results',label:'Results'},
+    {id:'screenshots',label:'Screenshots'}
+  ];
+  WM.create({id:'proj-'+p.id,title:p.file+' \u2014 Case Study',icon:appIcon(p.color,14),w:680,h:570,
   status:[p.req,'C:\\Projects'],
-  build(body){
+  build(body,api){
     body.className='win-body app-proj';
-    body.innerHTML=`<div class="proj">
-      <div class="proj-top">
-        <div class="shot"><img src="https://picsum.photos/seed/${p.seed}/480/320.jpg" alt="${esc(p.name)} screenshot" width="480" height="320" loading="lazy"></div>
-        <div class="pj-side">
-          <div class="pj-name">${esc(p.name)} <span class="pj-ver">${esc(p.ver)}</span></div>
-          <div class="pj-file">${esc(p.file)} — ${esc(p.type)}</div>
-          <table class="pj-meta">
-            <tr><td>File size</td><td>${p.size}</td></tr>
-            <tr><td>Released</td><td>${p.date}</td></tr>
-          </table>
-          <div class="pj-stack">${p.stack.map(t=>`<span class="chip">${esc(t)}</span>`).join('')}</div>
-        </div>
+    const panel=(id,content)=>`<section class="case-panel" id="case-${p.id}-panel-${id}" data-panel="${id}" role="tabpanel" aria-labelledby="case-${p.id}-tab-${id}"${id==='overview'?'':' hidden'}>${content}</section>`;
+    body.innerHTML=`<div class="case-shell">
+      <div class="case-tabs" role="tablist" aria-label="${esc(p.name)} case study sections">
+        ${sections.map((s,i)=>`<button class="case-tab${i===0?' on':''}" id="case-${p.id}-tab-${s.id}" type="button" role="tab" data-tab="${s.id}" aria-controls="case-${p.id}-panel-${s.id}" aria-selected="${i===0?'true':'false'}" tabindex="${i===0?'0':'-1'}">${s.label}</button>`).join('')}
       </div>
-      <p class="pj-desc">${esc(p.desc)}</p>
-      <ul class="pj-notes">${p.notes.map(n=>`<li>${esc(n)}</li>`).join('')}</ul>
+      <div class="case-content">
+        ${panel('overview',`<div class="proj">
+          <div class="proj-top">
+            <div class="shot"><img src="${caseStudyShot(p,c,0)}" alt="${esc(p.name)} product overview" width="480" height="320"></div>
+            <div class="pj-side">
+              <div class="pj-name">${esc(p.name)} <span class="pj-ver">${esc(p.ver)}</span></div>
+              <div class="pj-file">${esc(p.file)} \u2014 ${esc(p.type)}</div>
+              <table class="pj-meta">
+                <tr><td>File size</td><td>${esc(p.size)}</td></tr>
+                <tr><td>Released</td><td>${esc(p.date)}</td></tr>
+                <tr><td>My role</td><td>${esc(c.role)}</td></tr>
+              </table>
+              <div class="pj-stack">${p.stack.map(t=>`<span class="chip">${esc(t)}</span>`).join('')}</div>
+            </div>
+          </div>
+          <p class="pj-desc">${esc(p.desc)}</p>
+          <div class="case-label">Project highlights</div>
+          <ul class="pj-notes">${p.notes.map(n=>`<li>${esc(n)}</li>`).join('')}</ul>
+        </div>`)}
+        ${panel('challenge',`<h2 class="case-heading">The challenge</h2>
+          <p class="case-copy">${esc(c.problem)}</p>
+          <div class="case-facts">
+            <div class="case-fact"><span>My role</span><b>${esc(c.role)}</b></div>
+            <div class="case-fact"><span>Duration</span><b>${esc(c.duration)}</b></div>
+            <div class="case-fact"><span>Team</span><b>${esc(c.team)}</b></div>
+          </div>
+          <div class="case-label">My responsibilities</div>
+          <ul class="pj-notes">${c.responsibilities.map(n=>`<li>${esc(n)}</li>`).join('')}</ul>`)}
+        ${panel('solution',`<h2 class="case-heading">How the solution was built</h2>
+          <p class="case-copy">The implementation focused on the smallest dependable system that could solve the core workflow.</p>
+          <div class="solution-list">${c.solution.map(s=>`<article class="solution-card"><b>${esc(s.title)}</b><p>${esc(s.text)}</p></article>`).join('')}</div>`)}
+        ${panel('architecture',`<h2 class="case-heading">System architecture</h2>
+          <p class="case-copy">A concise view of the primary runtime path and the responsibility of each layer.</p>
+          <div class="arch-flow">${c.architecture.map(a=>`<article class="arch-node"><b>${esc(a.title)}</b><p>${esc(a.text)}</p></article>`).join('')}</div>
+          <div class="arch-note"><b>Engineering note:</b> ${esc(c.architectureNote)}</div>`)}
+        ${panel('results',`<h2 class="case-heading">Measured results</h2>
+          <p class="case-copy">${esc(c.result)}</p>
+          <div class="metric-grid">${c.metrics.map(m=>`<div class="metric"><b>${esc(m.value)}</b><span>${esc(m.label)}</span></div>`).join('')}</div>
+          <div class="case-label">What shipped</div>
+          <ul class="pj-notes">${p.notes.map(n=>`<li>${esc(n)}</li>`).join('')}</ul>`)}
+        ${panel('screenshots',`<h2 class="case-heading">Product screenshots</h2>
+          <div class="gallery-main"><img src="${caseStudyShot(p,c,0)}" data-shot="0" alt="${esc(c.captions[0])}" width="640" height="360"></div>
+          <div class="gallery-caption" aria-live="polite">${esc(c.captions[0])}</div>
+          <div class="gallery-thumbs">${c.gallery.map((seed,i)=>`<button class="gallery-thumb${i===0?' on':''}" type="button" data-shot="${i}" aria-label="View screenshot ${i+1}: ${esc(c.captions[i])}" aria-pressed="${i===0?'true':'false'}"><img src="${caseStudyShot(p,c,i)}" alt="" width="240" height="135"></button>`).join('')}</div>`)}
+      </div>
       <div class="pj-actions">
         <a class="btn" href="${p.demo}" target="_blank" rel="noopener">Live demo</a>
         <a class="btn" href="${p.repo}" target="_blank" rel="noopener">View source</a>
+        <span class="case-location">C:\\Projects\\${esc(p.file)}</span>
       </div>
     </div>`;
+    const content=body.querySelector('.case-content');
+    const tabs=[...body.querySelectorAll('.case-tab')];
+    const panels=[...body.querySelectorAll('.case-panel')];
+    function selectSection(id,focus=false){
+      tabs.forEach(tab=>{
+        const active=tab.dataset.tab===id;
+        tab.classList.toggle('on',active);
+        tab.setAttribute('aria-selected',String(active));
+        tab.tabIndex=active?0:-1;
+        if(active&&focus)tab.focus();
+      });
+      panels.forEach(section=>{section.hidden=section.dataset.panel!==id;});
+      const current=sections.find(section=>section.id===id);
+      api.status[0].textContent=(current?current.label:'Case Study')+' \u2014 '+p.tagline;
+      content.scrollTop=0;
+    }
+    tabs.forEach((tab,index)=>{
+      tab.addEventListener('click',()=>selectSection(tab.dataset.tab));
+      tab.addEventListener('keydown',event=>{
+        if(event.key!=='ArrowRight'&&event.key!=='ArrowLeft'&&event.key!=='Home'&&event.key!=='End')return;
+        event.preventDefault();
+        let next=index;
+        if(event.key==='ArrowRight')next=(index+1)%tabs.length;
+        if(event.key==='ArrowLeft')next=(index-1+tabs.length)%tabs.length;
+        if(event.key==='Home')next=0;
+        if(event.key==='End')next=tabs.length-1;
+        selectSection(tabs[next].dataset.tab,true);
+      });
+    });
+    const mainShot=body.querySelector('.gallery-main img');
+    const caption=body.querySelector('.gallery-caption');
+    body.querySelectorAll('.gallery-thumb').forEach(button=>button.addEventListener('click',()=>{
+      const index=Number(button.dataset.shot);
+      mainShot.src=caseStudyShot(p,c,index);
+      mainShot.dataset.shot=String(index);
+      mainShot.alt=c.captions[index];
+      caption.textContent=c.captions[index];
+      body.querySelectorAll('.gallery-thumb').forEach(thumb=>{
+        const active=thumb===button;
+        thumb.classList.toggle('on',active);
+        thumb.setAttribute('aria-pressed',String(active));
+      });
+    }));
   }});
 }
 
