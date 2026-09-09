@@ -113,12 +113,13 @@ const expression = `
     const caseWindow = await waitFor(".app-proj");
     const tabs = [...caseWindow.querySelectorAll(".case-tab")];
 
-    tabs.find((tab) => tab.dataset.tab === "architecture").click();
-    const architectureVisible = !caseWindow.querySelector(
-      "[data-panel=architecture]",
-    ).hidden;
+    tabs.find((tab) => tab.dataset.tab === "architecture")?.click();
+    const architectureVisible = Boolean(
+      caseWindow.querySelector("[data-panel=architecture]") &&
+        !caseWindow.querySelector("[data-panel=architecture]").hidden,
+    );
 
-    tabs.find((tab) => tab.dataset.tab === "screenshots").click();
+    tabs.find((tab) => tab.dataset.tab === "screenshots")?.click();
     const secondThumb = caseWindow.querySelectorAll(".gallery-thumb")[1];
     secondThumb.click();
 
@@ -134,7 +135,7 @@ const expression = `
       mainShotChanged: caseWindow
         .querySelector(".gallery-main img")
         .dataset.shot === "1",
-      hasLiveDemo: Boolean(caseWindow.querySelector('.pj-actions a[href*="devgrid"]')),
+      hasLiveDemo: Boolean(caseWindow.querySelector('.pj-actions a[href*="vercel.app"]')),
       status: caseWindow
         .closest(".win")
         .querySelector(".statusbar .sb").textContent,
@@ -156,17 +157,27 @@ if (evaluation.exceptionDetails) {
 }
 
 const report = evaluation.result.value;
-const expectedTabs = [
+// A case study renders a section only when it has material for it, so the tab
+// strip is a subset of the known set rather than a fixed list. Assert the shape:
+// known labels, canonical order, always opening on Overview and ending on Preview.
+const knownTabs = [
   "Overview",
   "Challenge",
   "Solution",
   "Architecture",
   "Results",
-  "Screenshots",
+  "Preview",
 ];
+const positions = report.tabLabels.map((label) => knownTabs.indexOf(label));
+const orderedSubset =
+  positions.every((position) => position !== -1) &&
+  positions.every((position, index) => index === 0 || position > positions[index - 1]);
+
 const passed =
-  report.tabCount === expectedTabs.length &&
-  expectedTabs.every((label, index) => report.tabLabels[index] === label) &&
+  report.tabCount === report.tabLabels.length &&
+  orderedSubset &&
+  report.tabLabels[0] === "Overview" &&
+  report.tabLabels[report.tabLabels.length - 1] === "Preview" &&
   report.architectureVisible &&
   report.screenshotsVisible &&
   report.activeThumb &&

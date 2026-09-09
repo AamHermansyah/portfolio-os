@@ -4,9 +4,9 @@ import "./globals.css";
 /* eslint-disable @next/next/no-page-custom-font */
 
 export const metadata: Metadata = {
-  title: "PortfolioOS 98 — Alex Novak",
+  title: "PortfolioOS 98 — Aam Hermansyah",
   description:
-    "An interactive Windows 98-inspired portfolio for fullstack developer Alex Novak.",
+    "An interactive Windows 98-inspired portfolio for fullstack developer Aam Hermansyah.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

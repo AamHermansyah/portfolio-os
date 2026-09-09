@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "sync:portfolio": "node scripts/sync-portfolio-assets.mjs",
-    "predev": "npm run sync:portfolio",
+    "sync:github": "node scripts/sync-github.mjs",
+    "predev": "npm run sync:portfolio && npm run sync:github",
     "dev": "next dev",
-    "prebuild": "npm run sync:portfolio",
+    "prebuild": "npm run sync:portfolio && npm run sync:github",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"

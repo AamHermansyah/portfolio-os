@@ -1,0 +1,496 @@
+{
+  "syncedAt": "2026-09-09T10:29:30.234Z",
+  "profile": {
+    "login": "AamHermansyah",
+    "name": "Aam Hermansyah",
+    "bio": "Typescript/Javascript Developer",
+    "location": "Garut, Jawa Barat, Indonesia.",
+    "publicRepos": 44,
+    "followers": 6,
+    "createdAt": "2020-11-17T23:13:22Z",
+    "url": "https://github.com/AamHermansyah",
+    "blog": "https://aamhermansyah.vercel.app"
+  },
+  "repos": [
+    {
+      "name": "kaggo",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "pushedAt": "2026-08-31T20:53:56Z",
+      "homepage": "https://kaggo.vercel.app",
+      "url": "https://github.com/AamHermansyah/kaggo",
+      "topics": []
+    },
+    {
+      "name": "AturTripWeb",
+      "description": "Platform untuk membantu tour guide dan event kegiatan yang mempunyai timeline dengan mudah",
+      "language": "TypeScript",
+      "stars": 0,
+      "pushedAt": "2026-08-23T12:06:51Z",
+      "homepage": "https://aturtrip.vercel.app",
+      "url": "https://github.com/AamHermansyah/AturTripWeb",
+      "topics": []
+    },
+    {
+      "name": "multimodal-itin",
+      "description": null,
+      "language": "TeX",
+      "stars": 0,
+      "pushedAt": "2026-07-14T15:12:25Z",
+      "homepage": null,
+      "url": "https://github.com/AamHermansyah/multimodal-itin",
+      "topics": []
+    },
+    {
+      "name": "AturTrip",
+      "description": "Platform untuk membantu tour guide dan event kegiatan yang mempunyai timeline dengan mudah",
+      "language": "TypeScript",
+      "stars": 0,
+      "pushedAt": "2026-04-18T06:56:24Z",
+      "homepage": null,
+      "url": "https://github.com/AamHermansyah/AturTrip",
+      "topics": [
+        "platform",
+        "react-native-app",
+        "travel-app"
+      ]
+    },
+    {
+      "name": "donasi-lazismu",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "pushedAt": "2026-01-17T09:48:05Z",
+      "homepage": "https://donasi-lazismu.vercel.app",
+      "url": "https://github.com/AamHermansyah/donasi-lazismu",
+      "topics": []
+    },
+    {
+      "name": "portfolio-v1",
+      "description": null,
+      "language": "JavaScript",
+      "stars": 0,
+      "pushedAt": "2025-12-17T13:19:40Z",
+      "homepage": "https://aamhermansyah.my.id",
+      "url": "https://github.com/AamHermansyah/portfolio-v1",
+      "topics": []
+    },
+    {
+      "name": "physitale",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "pushedAt": "2025-12-15T16:24:24Z",
+      "homepage": "https://physitale.vercel.app",
+      "url": "https://github.com/AamHermansyah/physitale",
+      "topics": []
+    },
+    {
+      "name": "coffierizer",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "pushedAt": "2025-12-10T13:51:05Z",
+      "homepage": "https://coffierizer.vercel.app",
+      "url": "https://github.com/AamHermansyah/coffierizer",
+      "topics": []
+    },
+    {
+      "name": "deteksi-emosi-gambar",
+      "description": null,
+      "language": "Jupyter Notebook",
+      "stars": 0,
+      "pushedAt": "2025-12-01T14:36:25Z",
+      "homepage": null,
+      "url": "https://github.com/AamHermansyah/deteksi-emosi-gambar",
+      "topics": []
+    },
+    {
+      "name": "simore",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "pushedAt": "2025-10-09T02:15:58Z",
+      "homepage": "https://simore.vercel.app",
+      "url": "https://github.com/AamHermansyah/simore",
+      "topics": []
+    },
+    {
+      "name": "difteri-ai-fe",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "pushedAt": "2025-09-23T14:38:44Z",
+      "homepage": "https://difteri-ai-fe.vercel.app",
+      "url": "https://github.com/AamHermansyah/difteri-ai-fe",
+      "topics": []
+    },
+    {
+      "name": "difteri-ai-be",
+      "description": null,
+      "language": "Python",
+      "stars": 0,
+      "pushedAt": "2025-09-02T07:03:18Z",
+      "homepage": null,
+      "url": "https://github.com/AamHermansyah/difteri-ai-be",
+      "topics": []
+    },
+    {
+      "name": "ami.if.unsil",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "pushedAt": "2025-09-01T03:10:32Z",
+      "homepage": "https://amiifunsil.vercel.app",
+      "url": "https://github.com/AamHermansyah/ami.if.unsil",
+      "topics": []
+    },
+    {
+      "name": "exam-app",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "pushedAt": "2025-06-03T14:25:26Z",
+      "homepage": "https://ujikita.vercel.app",
+      "url": "https://github.com/AamHermansyah/exam-app",
+      "topics": []
+    },
+    {
+      "name": "bioweb",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "pushedAt": "2025-05-28T13:03:35Z",
+      "homepage": "https://bioweb-ten.vercel.app",
+      "url": "https://github.com/AamHermansyah/bioweb",
+      "topics": []
+    },
+    {
+      "name": "stunting.id",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "pushedAt": "2025-01-16T12:36:32Z",
+      "homepage": "https://stunting-id.vercel.app",
+      "url": "https://github.com/AamHermansyah/stunting.id",
+      "topics": []
+    },
+    {
+      "name": "paperize.ai",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "pushedAt": "2025-01-08T09:51:14Z",
+      "homepage": "https://paperize-ai.vercel.app",
+      "url": "https://github.com/AamHermansyah/paperize.ai",
+      "topics": []
+    },
+    {
+      "name": "kichat",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "pushedAt": "2024-12-15T12:31:37Z",
+      "homepage": "https://kichat.vercel.app",
+      "url": "https://github.com/AamHermansyah/kichat",
+      "topics": []
+    },
+    {
+      "name": "stunting",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "pushedAt": "2024-08-06T08:39:11Z",
+      "homepage": "https://stunting-navy.vercel.app",
+      "url": "https://github.com/AamHermansyah/stunting",
+      "topics": []
+    },
+    {
+      "name": "somart",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "pushedAt": "2024-05-28T06:47:45Z",
+      "homepage": null,
+      "url": "https://github.com/AamHermansyah/somart",
+      "topics": []
+    },
+    {
+      "name": "ki-steganography-plaintext",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "pushedAt": "2024-05-27T02:28:08Z",
+      "homepage": "https://ki-secrettextinmessage.vercel.app",
+      "url": "https://github.com/AamHermansyah/ki-steganography-plaintext",
+      "topics": []
+    },
+    {
+      "name": "ki-dct-watermarking",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "pushedAt": "2024-05-18T08:49:00Z",
+      "homepage": "https://ki-dct-watermarking.vercel.app",
+      "url": "https://github.com/AamHermansyah/ki-dct-watermarking",
+      "topics": []
+    },
+    {
+      "name": "ki-kriptografi-modern",
+      "description": null,
+      "language": "HTML",
+      "stars": 0,
+      "pushedAt": "2024-05-06T12:58:29Z",
+      "homepage": null,
+      "url": "https://github.com/AamHermansyah/ki-kriptografi-modern",
+      "topics": []
+    },
+    {
+      "name": "triple-integrate-calculator",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "pushedAt": "2024-05-01T09:53:59Z",
+      "homepage": "https://triple-integrate-calculator.vercel.app",
+      "url": "https://github.com/AamHermansyah/triple-integrate-calculator",
+      "topics": []
+    },
+    {
+      "name": "arkom-project",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "pushedAt": "2023-12-06T02:05:18Z",
+      "homepage": "https://curugbadak.vercel.app",
+      "url": "https://github.com/AamHermansyah/arkom-project",
+      "topics": []
+    },
+    {
+      "name": "pbo-project",
+      "description": null,
+      "language": "PHP",
+      "stars": 0,
+      "pushedAt": "2023-11-14T08:13:45Z",
+      "homepage": null,
+      "url": "https://github.com/AamHermansyah/pbo-project",
+      "topics": []
+    },
+    {
+      "name": "vimoni",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "pushedAt": "2023-09-26T12:24:44Z",
+      "homepage": null,
+      "url": "https://github.com/AamHermansyah/vimoni",
+      "topics": []
+    },
+    {
+      "name": "botsauce",
+      "description": null,
+      "language": "HTML",
+      "stars": 0,
+      "pushedAt": "2023-09-21T10:38:38Z",
+      "homepage": null,
+      "url": "https://github.com/AamHermansyah/botsauce",
+      "topics": []
+    },
+    {
+      "name": "islam-website",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "pushedAt": "2023-09-03T02:05:09Z",
+      "homepage": "https://islam-website.vercel.app",
+      "url": "https://github.com/AamHermansyah/islam-website",
+      "topics": []
+    },
+    {
+      "name": "vee-most",
+      "description": null,
+      "language": "JavaScript",
+      "stars": 0,
+      "pushedAt": "2023-08-25T07:44:52Z",
+      "homepage": "https://vee-most.vercel.app",
+      "url": "https://github.com/AamHermansyah/vee-most",
+      "topics": []
+    },
+    {
+      "name": "futuristic-designer",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "pushedAt": "2023-07-30T13:17:52Z",
+      "homepage": "https://futuristic-designer.vercel.app",
+      "url": "https://github.com/AamHermansyah/futuristic-designer",
+      "topics": []
+    },
+    {
+      "name": "resume-builder",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "pushedAt": "2023-07-28T08:46:11Z",
+      "homepage": "https://resume-builder-two-gray.vercel.app",
+      "url": "https://github.com/AamHermansyah/resume-builder",
+      "topics": []
+    },
+    {
+      "name": "comicyears",
+      "description": null,
+      "language": "HTML",
+      "stars": 0,
+      "pushedAt": "2023-07-20T21:34:50Z",
+      "homepage": null,
+      "url": "https://github.com/AamHermansyah/comicyears",
+      "topics": []
+    },
+    {
+      "name": "mzpro",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "pushedAt": "2023-06-06T01:35:58Z",
+      "homepage": "https://mzpro.vercel.app",
+      "url": "https://github.com/AamHermansyah/mzpro",
+      "topics": []
+    },
+    {
+      "name": "amstore.id",
+      "description": "This is my first e-commerce web",
+      "language": "JavaScript",
+      "stars": 0,
+      "pushedAt": "2023-06-01T02:46:43Z",
+      "homepage": "https://amstore-id.vercel.app",
+      "url": "https://github.com/AamHermansyah/amstore.id",
+      "topics": []
+    },
+    {
+      "name": "HooBank",
+      "description": null,
+      "language": "JavaScript",
+      "stars": 0,
+      "pushedAt": "2023-05-20T00:25:46Z",
+      "homepage": "hoobankapp.vercel.app",
+      "url": "https://github.com/AamHermansyah/HooBank",
+      "topics": []
+    },
+    {
+      "name": "spacetd",
+      "description": "Link pages:",
+      "language": "HTML",
+      "stars": 0,
+      "pushedAt": "2023-05-19T23:46:29Z",
+      "homepage": "https://aamhermansyah.github.io/spacetd/",
+      "url": "https://github.com/AamHermansyah/spacetd",
+      "topics": []
+    },
+    {
+      "name": "github-search",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "pushedAt": "2023-05-10T10:40:44Z",
+      "homepage": "https://github-search-eight-beryl.vercel.app",
+      "url": "https://github.com/AamHermansyah/github-search",
+      "topics": []
+    },
+    {
+      "name": "cbt-website",
+      "description": "Website link",
+      "language": "HTML",
+      "stars": 0,
+      "pushedAt": "2023-05-08T01:13:32Z",
+      "homepage": "https://aamhermansyah.github.io/cbt-website/",
+      "url": "https://github.com/AamHermansyah/cbt-website",
+      "topics": []
+    },
+    {
+      "name": "calculator-date",
+      "description": "Link website",
+      "language": "JavaScript",
+      "stars": 1,
+      "pushedAt": "2023-04-30T01:45:03Z",
+      "homepage": "https://aamhermansyah.github.io/calculator-date/",
+      "url": "https://github.com/AamHermansyah/calculator-date",
+      "topics": [
+        "algorithms",
+        "calculator",
+        "count",
+        "date",
+        "time"
+      ]
+    },
+    {
+      "name": "test-sanberhub",
+      "description": null,
+      "language": "JavaScript",
+      "stars": 0,
+      "pushedAt": "2023-04-27T08:04:44Z",
+      "homepage": "https://crud-admin-livid.vercel.app",
+      "url": "https://github.com/AamHermansyah/test-sanberhub",
+      "topics": []
+    },
+    {
+      "name": "ifgallery-frontend",
+      "description": null,
+      "language": "JavaScript",
+      "stars": 1,
+      "pushedAt": "2023-01-19T03:09:15Z",
+      "homepage": "https://forgematics-a.vercel.app",
+      "url": "https://github.com/AamHermansyah/ifgallery-frontend",
+      "topics": []
+    },
+    {
+      "name": "zetro",
+      "description": null,
+      "language": "JavaScript",
+      "stars": 0,
+      "pushedAt": "2022-11-20T12:00:39Z",
+      "homepage": "https://learn-gold.vercel.app",
+      "url": "https://github.com/AamHermansyah/zetro",
+      "topics": []
+    },
+    {
+      "name": "myPortfolioWebsite",
+      "description": "This is my first portfolio website (HTML, TailwindCSS, and JS)",
+      "language": "HTML",
+      "stars": 0,
+      "pushedAt": "2022-11-20T04:35:12Z",
+      "homepage": null,
+      "url": "https://github.com/AamHermansyah/myPortfolioWebsite",
+      "topics": []
+    }
+  ],
+  "languages": [
+    {
+      "name": "TypeScript",
+      "count": 26
+    },
+    {
+      "name": "JavaScript",
+      "count": 8
+    },
+    {
+      "name": "HTML",
+      "count": 6
+    },
+    {
+      "name": "Jupyter Notebook",
+      "count": 1
+    },
+    {
+      "name": "PHP",
+      "count": 1
+    },
+    {
+      "name": "Python",
+      "count": 1
+    },
+    {
+      "name": "TeX",
+      "count": 1
+    }
+  ]
+}
