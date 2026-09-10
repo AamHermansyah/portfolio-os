@@ -1,0 +1,422 @@
+/* ============ desktop & wallpaper ============ */
+    #desktop {
+      position: fixed;
+      inset: 0 0 30px 0;
+      overflow: hidden;
+      background-color: #008076;
+      background-image: conic-gradient(#01837a 25%, #00746d 0 50%, #01837a 0 75%, #00746d 0);
+      background-size: 4px 4px
+    }
+
+    body.wall-classic #desktop {
+      background-color: #008076;
+      background-image: conic-gradient(#01837a 25%, #00746d 0 50%, #01837a 0 75%, #00746d 0);
+      background-size: 4px 4px
+    }
+
+    body.wall-cloud #desktop {
+      background-color: #72b9e8;
+      background-image:
+        radial-gradient(ellipse at 18% 18%, rgba(255, 255, 255, .96) 0 5%, rgba(255, 255, 255, .68) 6% 10%, transparent 16%),
+        radial-gradient(ellipse at 75% 27%, rgba(255, 255, 255, .88) 0 6%, rgba(255, 255, 255, .48) 7% 12%, transparent 18%),
+        radial-gradient(ellipse at 46% 75%, rgba(232, 247, 255, .70) 0 7%, transparent 17%),
+        linear-gradient(180deg, #55a6dc 0%, #9dd8f1 62%, #d7f1f7 100%);
+      background-size: 100% 100%
+    }
+
+    body.wall-blueprint #desktop {
+      background-color: #073968;
+      background-image:
+        linear-gradient(rgba(121, 196, 255, .16) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(121, 196, 255, .16) 1px, transparent 1px),
+        linear-gradient(rgba(180, 222, 255, .08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(180, 222, 255, .08) 1px, transparent 1px),
+        radial-gradient(circle at 68% 28%, #12588a 0%, #073968 52%, #042442 100%);
+      background-size: 32px 32px, 32px 32px, 8px 8px, 8px 8px, 100% 100%
+    }
+
+    body.wall-aurora #desktop {
+      background-color: #071225;
+      background-image:
+        radial-gradient(ellipse at 18% 100%, rgba(0, 255, 170, .52) 0%, rgba(0, 255, 170, .12) 32%, transparent 58%),
+        radial-gradient(ellipse at 68% 0%, rgba(123, 70, 255, .62) 0%, rgba(72, 55, 220, .17) 35%, transparent 62%),
+        radial-gradient(ellipse at 92% 72%, rgba(0, 210, 255, .42) 0%, transparent 42%),
+        linear-gradient(135deg, #020813, #0b1733 48%, #11103a 100%);
+      background-size: 100% 100%
+    }
+
+    body.wall-synth #desktop {
+      background-color: #09011b;
+      background-image: linear-gradient(180deg, #050012 0%, #16042d 38%, #61205d 64%, #130523 65%, #06000e 100%);
+      background-size: 100% 100%
+    }
+
+    body.wall-hacker #desktop {
+      background-color: #010603;
+      background-image:
+        radial-gradient(ellipse at center, rgba(0, 70, 31, .30) 0%, transparent 67%),
+        linear-gradient(rgba(0, 255, 102, .035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 102, .025) 1px, transparent 1px);
+      background-size: 100% 100%, 24px 24px, 24px 24px
+    }
+
+    body.wall-star #desktop {
+      background-color: #01040e;
+      background-image: linear-gradient(180deg,
+          #01040e 0%, #01040e 30%,
+          #030c26 30%, #030c26 55%,
+          #061840 55%, #061840 74%,
+          #0a2657 74%, #0a2657 88%,
+          #10346b 88%, #10346b 100%)
+    }
+
+    body.wall-cloud .di-lb {
+      color: #062a52;
+      text-shadow: 1px 1px 0 rgba(255, 255, 255, .8)
+    }
+
+    .wallfx {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      display: none;
+      z-index: 0
+    }
+
+    body.wall-synth .synthfx,
+    body.wall-hacker .hackfx {
+      display: block
+    }
+
+    .synth-sun {
+      position: absolute;
+      left: 62%;
+      top: 13%;
+      width: 148px;
+      height: 148px;
+      transform: translateX(-50%);
+      border-radius: 50%;
+      background: repeating-linear-gradient(180deg, #ffe46d 0 9px, #ff9a59 9px 15px, #ff4f9a 15px 21px, transparent 21px 25px);
+      filter: drop-shadow(0 0 16px rgba(255, 69, 183, .8))
+    }
+
+    .synth-mountain {
+      position: absolute;
+      left: -5%;
+      right: -5%;
+      bottom: 27%;
+      height: 42%;
+      clip-path: polygon(0 100%, 0 82%, 10% 59%, 18% 78%, 29% 35%, 39% 70%, 51% 20%, 62% 73%, 73% 43%, 83% 67%, 92% 31%, 100% 78%, 100% 100%);
+      background: linear-gradient(135deg, #120527 0 48%, #4d145d 49% 51%, #17052d 52% 100%);
+      filter: drop-shadow(0 -2px 0 #e638b3)
+    }
+
+    .synth-grid {
+      position: absolute;
+      left: -8%;
+      right: -8%;
+      bottom: 0;
+      height: 36%;
+      overflow: hidden;
+      background: repeating-linear-gradient(0deg, rgba(255, 44, 190, .82) 0 2px, transparent 2px 25px);
+      border-top: 2px solid #ff2cbe;
+      box-shadow: 0 -5px 24px rgba(255, 44, 190, .72);
+      animation: synthGrid .85s linear infinite
+    }
+
+    .synth-grid i {
+      position: absolute;
+      left: 50%;
+      top: -3%;
+      width: 2px;
+      height: 155%;
+      display: block;
+      background: #29daff;
+      box-shadow: 0 0 4px rgba(41, 218, 255, .9);
+      transform-origin: 50% 0
+    }
+
+    @keyframes synthGrid {
+      to {
+        background-position: 0 25px
+      }
+    }
+
+    .hackfx::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, rgba(0, 0, 0, .18) 0 1px, transparent 1px 4px);
+      box-shadow: inset 0 0 120px #000;
+      z-index: 2
+    }
+
+    .hack-terminal {
+      position: absolute;
+      left: 18%;
+      right: 5%;
+      top: 7%;
+      bottom: 8%;
+      overflow: hidden;
+      background: rgba(0, 8, 3, .91);
+      border: 1px solid #19cc5b;
+      box-shadow: 0 0 0 2px #03170a, 0 0 24px rgba(0, 255, 102, .28);
+      font-family: var(--mono);
+      z-index: 1
+    }
+
+    .hack-bar {
+      height: 25px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 8px;
+      color: #9dffbd;
+      background: #062512;
+      border-bottom: 1px solid #16833b;
+      font: 10px var(--mono);
+      letter-spacing: .4px
+    }
+
+    .hack-lamp {
+      width: 7px;
+      height: 7px;
+      display: block;
+      border: 1px solid #001b09;
+      background: #17e768;
+      box-shadow: 0 0 5px #17e768
+    }
+
+    .hack-lamp:nth-child(2) {
+      background: #d6e717;
+      box-shadow: 0 0 5px #d6e717
+    }
+
+    .hack-lamp:nth-child(3) {
+      background: #25a7ff;
+      box-shadow: 0 0 5px #25a7ff
+    }
+
+    .hack-title {
+      margin-left: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .hack-screen {
+      position: absolute;
+      inset: 26px 0 0;
+      padding: 13px 16px;
+      overflow: hidden;
+      color: #5dff94;
+      font: clamp(10px, 1.35vw, 14px)/1.55 var(--mono);
+      text-shadow: 0 0 4px rgba(0, 255, 102, .72)
+    }
+
+    .hack-history {
+      white-space: pre-wrap
+    }
+
+    .hack-row.command {
+      color: #d4ffe1
+    }
+
+    .hack-row.ok {
+      color: #67ffa0
+    }
+
+    .hack-row.dim {
+      color: #3b9c5c
+    }
+
+    .hack-row.warn {
+      color: #d8e95b
+    }
+
+    .hack-input {
+      display: flex;
+      min-height: 1.55em;
+      white-space: pre
+    }
+
+    .hack-input.busy {
+      visibility: hidden
+    }
+
+    .hack-prompt {
+      color: #c2ffd5;
+      font-weight: bold
+    }
+
+    .hack-cursor {
+      display: inline-block;
+      width: 7px;
+      height: 1.05em;
+      margin-left: 2px;
+      vertical-align: -2px;
+      background: #5dff94;
+      box-shadow: 0 0 5px #16ff68;
+      animation: blink .7s steps(1) infinite
+    }
+
+    .hack-enter {
+      position: absolute;
+      right: 12px;
+      bottom: 10px;
+      color: #08120b;
+      background: #62ff99;
+      border: 1px solid #caffdc;
+      padding: 2px 6px;
+      font: bold 9px var(--mono);
+      opacity: 0
+    }
+
+    .hack-terminal.enter .hack-enter {
+      opacity: 1
+    }
+
+    @media (max-width:620px) {
+      .hack-terminal {
+        left: 4%;
+        right: 4%;
+        top: 12%;
+        bottom: 9%
+      }
+
+      .hack-screen {
+        padding: 11px 12px
+      }
+    }
+
+    .sky {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      display: none;
+      z-index: 0
+    }
+
+    body.wall-star .sky {
+      display: block
+    }
+
+    .slyr {
+      position: absolute;
+      inset: 0;
+      background-repeat: repeat
+    }
+
+    #sky-l1 {
+      animation: driftA 180s linear infinite
+    }
+
+    #sky-l2 {
+      animation: driftB 100s linear infinite
+    }
+
+    #sky-l3 {
+      animation: driftC 60s linear infinite
+    }
+
+    @keyframes driftA {
+      to {
+        background-position: 420px 0
+      }
+    }
+
+    @keyframes driftB {
+      to {
+        background-position: 320px 0
+      }
+    }
+
+    @keyframes driftC {
+      to {
+        background-position: 520px 0
+      }
+    }
+
+    .tw {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: #fff;
+      animation: twinkle 2s steps(2) infinite
+    }
+
+    .tw.big {
+      box-shadow: 0 -3px 0 #fff, 0 3px 0 #fff, -3px 0 0 #fff, 3px 0 0 #fff
+    }
+
+    @keyframes twinkle {
+      0% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .12
+      }
+
+      100% {
+        opacity: 1
+      }
+    }
+
+    .moonwrap {
+      position: absolute;
+      right: 7%;
+      top: 6%;
+      width: 56px;
+      height: 56px;
+      z-index: 2;
+      pointer-events: auto;
+      cursor: var(--cur-hand);
+      touch-action: none
+    }
+
+    .moonwrap:hover .halo {
+      filter: brightness(1.8)
+    }
+
+    .moonwrap:hover .moonpix i {
+      filter: brightness(1.12)
+    }
+
+    .moonwrap:hover .jtip,
+    .moonwrap:focus-visible .jtip {
+      display: block
+    }
+
+    .moonwrap:focus-visible {
+      outline: 1px dotted #fff;
+      outline-offset: 5px
+    }
+
+    .moonpix {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center
+    }
+
+    .moonpix i {
+      display: block;
+      width: 48px;
+      height: 48px;
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      animation: mphase 40s infinite
+    }
+
+    .halo {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: conic-gradient(rgba(255, 244, 210, .09) 25%, transparent 0 50%, rgba(255, 244, 210, .09) 0 75%, transparent 0);
+      background-size: 4px 4px
+    }

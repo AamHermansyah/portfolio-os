@@ -1,0 +1,334 @@
+/* ============ app: Orbit Observatory (Jupiter) ============ */
+    .app-jup {
+      overflow: auto
+    }
+
+    .app-moon {
+      overflow: auto
+    }
+
+    .mn-wrap {
+      display: flex;
+      gap: 14px;
+      padding: 12px;
+      align-items: flex-start;
+      flex-wrap: wrap
+    }
+
+    .mn-stage {
+      flex: 0 0 auto;
+      padding: 7px;
+      background: #01040e;
+      box-shadow: inset -1px -1px #fff, inset 1px 1px #808080, inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a
+    }
+
+    .mn-stage i {
+      display: block;
+      width: 96px;
+      height: 96px;
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges
+    }
+
+    .mn-stage .earth-moon-detail {
+      animation: mphase 40s infinite
+    }
+
+    .mn-side {
+      flex: 1 1 210px;
+      min-width: 0
+    }
+
+    .mn-fact {
+      margin-top: 9px;
+      font: 12px/1.55 var(--sys)
+    }
+
+    .jup-wrap {
+      display: flex;
+      gap: 14px;
+      padding: 12px;
+      flex-wrap: wrap;
+      align-items: flex-start
+    }
+
+    .jstage {
+      position: relative;
+      flex: 0 0 320px;
+      height: 250px;
+      z-index: 0
+    }
+
+    .jstage .jup {
+      left: 40px;
+      top: 5px;
+      width: 240px;
+      height: 240px
+    }
+
+    .jupe-side {
+      flex: 1 1 230px;
+      min-width: 220px
+    }
+
+    .jup-ml {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin: 4px 0 10px
+    }
+
+    .jup-mrow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 3px 6px;
+      background: none;
+      border: 0;
+      text-align: left
+    }
+
+    .jup-mrow:hover {
+      background: var(--sel);
+      color: #fff
+    }
+
+    .jup-mrow i {
+      display: block;
+      flex: 0 0 auto
+    }
+
+    .jup-mrow span {
+      color: #555;
+      font: 10px var(--mono)
+    }
+
+    .jup-mrow:hover span {
+      color: #c9d4ff
+    }
+
+    .jup-btns {
+      display: flex;
+      gap: 6px
+    }
+
+    /* ============ app: Display Properties / wallpaper picker ============ */
+    .app-wallpaper {
+      overflow: auto;
+      background: var(--face)
+    }
+
+    .wp-wrap {
+      padding: 10px;
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 9px
+    }
+
+    .wp-intro {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 7px 9px;
+      background: #fff;
+      box-shadow: inset -1px -1px #fff, inset 1px 1px #808080, inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a
+    }
+
+    .wp-intro svg {
+      flex: 0 0 auto
+    }
+
+    .wp-intro b {
+      display: block;
+      margin-bottom: 2px
+    }
+
+    .wp-intro span {
+      color: #555
+    }
+
+    .wp-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(120px, 1fr));
+      gap: 8px;
+      align-items: stretch
+    }
+
+    .wp-card {
+      min-width: 0;
+      padding: 4px;
+      background: var(--face);
+      border: 0;
+      text-align: left;
+      cursor: var(--cur-hand);
+      box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #fff, inset -2px -2px #808080, inset 2px 2px #dfdfdf
+    }
+
+    .wp-card:active,
+    .wp-card.active {
+      background: #d8d5d0;
+      box-shadow: inset -1px -1px #fff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px #808080
+    }
+
+    .wp-card:focus-visible {
+      outline: 1px dotted #000;
+      outline-offset: -5px
+    }
+
+    .wp-thumb {
+      display: block;
+      position: relative;
+      height: 64px;
+      overflow: hidden;
+      margin-bottom: 5px;
+      border: 1px solid #555;
+      box-shadow: inset 1px 1px rgba(255, 255, 255, .35);
+      image-rendering: pixelated
+    }
+
+    .wp-name {
+      display: block;
+      font-weight: bold;
+      padding: 0 3px 1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .wp-desc {
+      display: block;
+      color: #555;
+      font: 9px/1.3 var(--mono);
+      padding: 0 3px 2px;
+      min-height: 24px
+    }
+
+    .wp-card.active .wp-name::after {
+      content: '  [active]';
+      color: #000080;
+      font-size: 9px
+    }
+
+    .wp-classic {
+      background: #008076 conic-gradient(#01837a 25%, #00746d 0 50%, #01837a 0 75%, #00746d 0);
+      background-size: 4px 4px
+    }
+
+    .wp-cloud {
+      background:
+        radial-gradient(ellipse at 22% 28%, #fff 0 9%, rgba(255, 255, 255, .55) 10% 19%, transparent 25%),
+        radial-gradient(ellipse at 77% 43%, #fff 0 8%, rgba(255, 255, 255, .45) 9% 18%, transparent 24%),
+        linear-gradient(#55a6dc, #d7f1f7)
+    }
+
+    .wp-blueprint {
+      background-color: #073968;
+      background-image:
+        linear-gradient(rgba(121, 196, 255, .25) 1px, transparent 1px), linear-gradient(90deg, rgba(121, 196, 255, .25) 1px, transparent 1px);
+      background-size: 12px 12px
+    }
+
+    .wp-aurora {
+      background:
+        radial-gradient(ellipse at 12% 100%, rgba(0, 255, 170, .72), transparent 55%),
+        radial-gradient(ellipse at 72% 0%, rgba(131, 74, 255, .75), transparent 62%), linear-gradient(135deg, #020813, #11103a)
+    }
+
+    .wp-synth {
+      background: linear-gradient(180deg, #080018 0 42%, #76245e 43% 62%, #130523 63% 100%)
+    }
+
+    .wp-synth::before {
+      content: '';
+      position: absolute;
+      width: 37px;
+      height: 37px;
+      left: 58%;
+      top: 8px;
+      border-radius: 50%;
+      background: repeating-linear-gradient(180deg, #ffe46d 0 5px, #ff4f9a 5px 8px, transparent 8px 10px);
+      box-shadow: 0 0 8px #ff4f9a
+    }
+
+    .wp-synth::after {
+      content: '';
+      position: absolute;
+      left: -10%;
+      right: -10%;
+      bottom: -25%;
+      height: 58%;
+      transform: perspective(80px) rotateX(48deg);
+      background-image: linear-gradient(rgba(255, 44, 190, .7) 1px, transparent 1px), linear-gradient(90deg, rgba(41, 218, 255, .7) 1px, transparent 1px);
+      background-size: 100% 9px, 14px 100%
+    }
+
+    .wp-star {
+      background-color: #01040e;
+      background-image:
+        radial-gradient(circle at 15% 24%, #fff 0 1px, transparent 2px), radial-gradient(circle at 68% 18%, #fff 0 1px, transparent 2px),
+        radial-gradient(circle at 84% 74%, #9ed0ff 0 1px, transparent 2px), linear-gradient(#01040e, #10346b);
+      background-size: 31px 27px, 43px 35px, 47px 39px, 100% 100%
+    }
+
+    .wp-star::after {
+      content: '';
+      position: absolute;
+      width: 34px;
+      height: 34px;
+      right: 17%;
+      top: 15px;
+      border-radius: 50%;
+      background: repeating-linear-gradient(180deg, #caa274 0 4px, #8d5f42 4px 7px, #e2c292 7px 10px);
+      box-shadow: 0 0 9px rgba(255, 211, 155, .6)
+    }
+
+    .wp-hacker {
+      background: #010603 repeating-linear-gradient(0deg, rgba(0, 255, 90, .08) 0 1px, transparent 1px 4px)
+    }
+
+    .wp-hacker::after {
+      content: 'C:\\> ACCESS GRANTED\A 01001101 10110110\A root@portfolio:~# _';
+      white-space: pre;
+      position: absolute;
+      left: 7px;
+      top: 8px;
+      color: #39ff78;
+      font: 8px/1.55 var(--mono);
+      text-shadow: 0 0 3px #00ff66
+    }
+
+    .wp-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 7px;
+      margin-top: auto;
+      padding-top: 2px
+    }
+
+    .wp-current {
+      margin-right: auto;
+      color: #555;
+      font: 10px var(--mono);
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap
+    }
+
+    @media (max-width:520px) {
+      .wp-grid {
+        grid-template-columns: repeat(2, minmax(105px, 1fr))
+      }
+
+      .wp-desc {
+        min-height: 36px
+      }
+
+      .wp-current {
+        display: none
+      }
+    }

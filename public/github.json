@@ -1,17 +1,27 @@
 {
-  "syncedAt": "2026-09-09T10:29:30.234Z",
+  "syncedAt": "2026-09-10T01:00:44.016Z",
   "profile": {
     "login": "AamHermansyah",
     "name": "Aam Hermansyah",
     "bio": "Typescript/Javascript Developer",
     "location": "Garut, Jawa Barat, Indonesia.",
-    "publicRepos": 44,
+    "publicRepos": 45,
     "followers": 6,
     "createdAt": "2020-11-17T23:13:22Z",
     "url": "https://github.com/AamHermansyah",
     "blog": "https://aamhermansyah.vercel.app"
   },
   "repos": [
+    {
+      "name": "portfolio-os",
+      "description": null,
+      "language": "HTML",
+      "stars": 0,
+      "pushedAt": "2026-09-09T10:44:51Z",
+      "homepage": "https://portfolio-os-five-gray.vercel.app",
+      "url": "https://github.com/AamHermansyah/portfolio-os",
+      "topics": []
+    },
     {
       "name": "kaggo",
       "description": null,
@@ -474,7 +484,7 @@
     },
     {
       "name": "HTML",
-      "count": 6
+      "count": 7
     },
     {
       "name": "Jupyter Notebook",

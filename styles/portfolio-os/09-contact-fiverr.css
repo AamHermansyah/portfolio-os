@@ -1,0 +1,240 @@
+/* ============ app: compose mail (Contact.exe) ============ */
+    .app-mail {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden
+    }
+
+    .mail-tools {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex: 0 0 auto;
+      margin-bottom: 3px
+    }
+
+    .mail-form {
+      flex: 1;
+      overflow: auto;
+      padding: 10px 12px 8px
+    }
+
+    .cm-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 7px;
+      align-items: flex-start
+    }
+
+    .cm-row label {
+      flex: 0 0 80px;
+      text-align: right;
+      padding-top: 4px;
+      color: #333
+    }
+
+    .cm-row .field {
+      flex: 1;
+      min-width: 0
+    }
+
+    .cm-to {
+      flex: 1;
+      padding: 3px 6px;
+      background: #ececec;
+      color: #333;
+      font: 12px var(--mono);
+      box-shadow: inset -1px -1px #fff, inset 1px 1px #808080
+    }
+
+    .cm-text {
+      height: 150px;
+      resize: none
+    }
+
+    .cm-alt {
+      font: 10px var(--mono);
+      color: #666;
+      margin: 2px 0 0 88px
+    }
+
+    .cm-alt a {
+      color: #0000cc
+    }
+
+    .cm-alt a:visited {
+      color: #551a8b
+    }
+
+    /* ============ app: browser palsu utk Fiverr ============ */
+    .app-web {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden
+    }
+
+    .web-tools {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex: 0 0 auto;
+      margin-bottom: 3px;
+      flex-wrap: wrap
+    }
+
+    .web-addr-lb {
+      flex: 0 0 auto
+    }
+
+    .web-addr {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: #fff;
+      padding: 2px 5px;
+      min-height: 21px;
+      min-width: 120px;
+      box-shadow: inset -1px -1px #fff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px #808080;
+      font: 11px var(--mono);
+      white-space: nowrap;
+      overflow: hidden
+    }
+
+    .web-addr svg {
+      flex: 0 0 auto;
+      display: block
+    }
+
+    .web-page {
+      flex: 1;
+      overflow: auto;
+      background: #fff;
+      box-shadow: inset -1px -1px #fff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px #808080
+    }
+
+    .fw {
+      max-width: 470px;
+      margin: 0 auto;
+      padding: 14px 16px;
+      font: 13px/1.5 'Times New Roman', Times, serif;
+      color: #111;
+      user-select: text;
+      cursor: var(--cur-text)
+    }
+
+    .fw-marquee {
+      background: #000;
+      color: #1dbf73;
+      font: bold 12px var(--sys);
+      overflow: hidden;
+      white-space: nowrap;
+      border-bottom: 2px solid #1dbf73;
+      margin: -14px -16px 12px
+    }
+
+    .fw-marquee span {
+      display: inline-block;
+      padding: 4px 0 4px 100%;
+      animation: mq 14s linear infinite
+    }
+
+    @keyframes mq {
+      to {
+        transform: translateX(-100%)
+      }
+    }
+
+    .fw-hdr {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      border-bottom: 3px double #1dbf73;
+      padding-bottom: 6px;
+      margin-bottom: 10px;
+      flex-wrap: wrap
+    }
+
+    .fw-logo {
+      font-family: var(--sys);
+      font-weight: bold;
+      font-size: 22px;
+      color: #1dbf73
+    }
+
+    .fw-sub {
+      font: 10px var(--mono);
+      color: #555
+    }
+
+    .fw-seller {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin: 10px 0;
+      flex-wrap: wrap
+    }
+
+    .fw-name {
+      font-size: 14px
+    }
+
+    .fw-meta {
+      font: 11px var(--mono);
+      color: #555;
+      margin-top: 3px
+    }
+
+    .fw-list {
+      margin: 8px 0 10px 20px;
+      list-style: square
+    }
+
+    .fw-list li {
+      margin: 3px 0
+    }
+
+    .fw-visit {
+      display: inline-block;
+      margin: 6px 0;
+      padding: 8px 18px;
+      background: #1dbf73;
+      color: #fff;
+      font: bold 12px var(--sys);
+      text-decoration: none;
+      border: 2px solid #0f8a54;
+      box-shadow: inset -1px -1px #0f8a54, inset 1px 1px #4fe39a
+    }
+
+    .fw-visit:active {
+      transform: translate(1px, 1px)
+    }
+
+    .fw-foot {
+      margin-top: 16px;
+      border-top: 1px solid #bbb;
+      padding-top: 8px;
+      font: 11px var(--mono);
+      color: #555;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px
+    }
+
+    .fw-counter {
+      display: inline-flex;
+      gap: 2px
+    }
+
+    .fw-counter b {
+      display: inline-block;
+      min-width: 13px;
+      text-align: center;
+      padding: 1px 2px;
+      background: #111;
+      color: #7dff9a;
+      font: 12px var(--mono);
+      box-shadow: inset -1px -1px #fff, inset 1px 1px #000
+    }

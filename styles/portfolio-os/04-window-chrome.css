@@ -1,0 +1,269 @@
+/* ============ window chrome ============ */
+    .win {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      background: var(--face);
+      padding: 3px;
+      min-width: 200px;
+      min-height: 100px;
+      box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #fff, inset -2px -2px #808080, inset 2px 2px #dfdfdf
+    }
+
+    .win.auto {
+      height: auto
+    }
+
+    .titlebar {
+      height: 18px;
+      flex: 0 0 18px;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      padding: 1px 2px 1px 3px;
+      background: linear-gradient(90deg, #000080 0%, #1084d0 100%);
+      color: #fff;
+      font-weight: bold;
+      touch-action: none;
+      cursor: var(--cur-arrow)
+    }
+
+    .win.inactive .titlebar {
+      background: linear-gradient(90deg, #7b7b7b 0%, #b5b5b5 100%);
+      color: #cfcfcf
+    }
+
+    .tb-ic {
+      display: grid;
+      place-items: center;
+      width: 16px;
+      flex: 0 0 16px
+    }
+
+    .tb-ic svg {
+      display: block
+    }
+
+    .tb-text {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      user-select: none
+    }
+
+    .tb-btns {
+      display: flex;
+      gap: 1px
+    }
+
+    .tb-btn {
+      width: 16px;
+      height: 14px;
+      display: grid;
+      place-items: center;
+      background: var(--face);
+      padding: 0;
+      box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #fff, inset -2px -2px #808080, inset 2px 2px #dfdfdf
+    }
+
+    .tb-btn:active {
+      box-shadow: inset -1px -1px #fff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px #808080
+    }
+
+    .tb-btn:focus-visible {
+      outline: 1px dotted #000;
+      outline-offset: -3px
+    }
+
+    .win-body {
+      flex: 1 1 auto;
+      min-height: 0;
+      margin: 2px;
+      overflow: auto;
+      position: relative
+    }
+
+    .win.auto .win-body {
+      flex: 0 0 auto;
+      overflow: visible
+    }
+
+    .statusbar {
+      display: flex;
+      gap: 3px;
+      margin: 2px 2px 0;
+      flex: 0 0 auto
+    }
+
+    .sb {
+      box-shadow: inset -1px -1px #fff, inset 1px 1px #808080, inset -2px -2px #dfdfdf, inset 2px 2px #fff;
+      padding: 2px 6px;
+      min-height: 19px;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+      overflow: hidden;
+      flex: 1 1 auto
+    }
+
+    .sb:last-child {
+      flex: 0 1 auto
+    }
+
+    .rs {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 16px;
+      height: 16px;
+      cursor: var(--cur-nwse);
+      touch-action: none;
+      z-index: 6;
+      background: repeating-linear-gradient(135deg, transparent 0 2px, #fff 2px 3px, #808080 3px 4px, transparent 4px 6px)
+    }
+
+    .win.max .rs {
+      display: none
+    }
+
+    /* buttons */
+    button {
+      font-family: inherit;
+      font-size: 11px;
+      color: inherit
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      min-width: 73px;
+      height: 23px;
+      padding: 0 12px;
+      background: var(--face);
+      border: 0;
+      user-select: none;
+      cursor: var(--cur-arrow);
+      box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #fff, inset -2px -2px #808080, inset 2px 2px #dfdfdf
+    }
+
+    .btn:active,
+    .btn.pressed {
+      box-shadow: inset -1px -1px #fff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px #808080;
+      transform: translate(1px, 1px)
+    }
+
+    .btn:focus-visible {
+      outline: 1px dotted #000;
+      outline-offset: -4px
+    }
+
+    .btn.sm {
+      min-width: 0;
+      height: 21px;
+      padding: 0 9px
+    }
+
+    .btn.on {
+      box-shadow: inset -1px -1px #fff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px #808080;
+      background: #d8d5d0
+    }
+
+    a.btn {
+      text-decoration: none;
+      color: #000
+    }
+
+    .field {
+      background: #fff;
+      border: 0;
+      padding: 3px 6px;
+      font: 12px var(--mono);
+      box-shadow: inset -1px -1px #fff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px #808080
+    }
+
+    /* menu bar & dropdowns */
+    .menubar {
+      display: flex;
+      flex: 0 0 auto;
+      padding: 1px 0;
+      margin-bottom: 1px;
+      position: relative;
+      z-index: 8
+    }
+
+    .mb-item {
+      padding: 2px 7px;
+      background: none;
+      border: 0
+    }
+
+    .mb-item.open {
+      background: var(--sel);
+      color: #fff
+    }
+
+    .dropdown {
+      position: absolute;
+      z-index: 900;
+      background: var(--face);
+      padding: 2px;
+      min-width: 150px;
+      box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #fff, inset -2px -2px #808080, inset 2px 2px #dfdfdf
+    }
+
+    .dropdown.ctx {
+      position: fixed;
+      z-index: 2100
+    }
+
+    .mi {
+      appearance: none;
+      display: block;
+      width: 100%;
+      text-align: left;
+      white-space: nowrap;
+      padding: 4px 20px 4px 24px;
+      position: relative;
+      background: none;
+      border: 0;
+      box-shadow: none
+    }
+
+    .mi:hover {
+      background: var(--sel);
+      color: #fff
+    }
+
+    .mi.checked::before,
+    .mi.checked::after {
+      content: '';
+      position: absolute;
+      height: 2px;
+      background: currentColor;
+      transform-origin: left center
+    }
+
+    .mi.checked::before {
+      left: 7px;
+      top: 9px;
+      width: 5px;
+      transform: rotate(45deg)
+    }
+
+    .mi.checked::after {
+      left: 10px;
+      top: 12px;
+      width: 9px;
+      transform: rotate(-45deg)
+    }
+
+    .mi-sep {
+      height: 0;
+      border-top: 1px solid #808080;
+      border-bottom: 1px solid #fff;
+      margin: 2px 1px
+    }

@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // These ordered sources share one browser scope and are linted after
+    // sync:portfolio generates public/portfolio-runtime.js.
+    "runtime/portfolio-os/**",
   ]),
 ]);
 

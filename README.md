@@ -44,6 +44,7 @@ The interface began as a standalone HTML experience and now runs on the Next.js 
 | `Network Neighborhood` | Browses the GitHub profile and repositories from a resilient build-time snapshot. |
 | `Find` | Searches projects, skills, credentials, and GitHub repositories from one place. |
 | `Changelog.log` | Combines PortfolioOS milestones with repository activity. |
+| `Career.log` | Shows the professional timeline separately from product and repository changes. |
 | `Certificates` | Appears automatically after real credentials are added to the data source. |
 | `Recycle Bin` | Stores abandoned technology decisions and developer jokes. |
 | Display Properties | Switches between seven wallpapers, including an animated terminal and interactive orbit scene. |
@@ -64,17 +65,18 @@ Every listed project links to its live deployment and public source repository w
 ## Architecture
 
 ```text
-portfolio.html (visual and runtime source of truth)
-        │
-        ├── scripts/sync-portfolio-assets.mjs
-        │       ├── styles/portfolio-os.css
-        │       └── public/portfolio-runtime.js
-        │
-        └── Next.js atomic shell
-                ├── atoms
-                ├── molecules
-                ├── organisms
-                └── templates
+styles/portfolio-os.css
+        └── styles/portfolio-os/*.css (14 ordered style modules)
+
+runtime/portfolio-os/*.js (22 ordered runtime modules)
+        └── scripts/sync-portfolio-assets.mjs
+                └── public/portfolio-runtime.js
+
+Next.js atomic shell
+        ├── atoms
+        ├── molecules
+        ├── organisms
+        └── templates
 
 GitHub API ── scripts/sync-github.mjs ── public/github.json
 
@@ -85,7 +87,8 @@ Key implementation details:
 
 - **Next.js 16 App Router** provides the application shell, metadata, static generation, and inquiry endpoint.
 - **Atomic design** separates the React shell into atoms, molecules, organisms, and templates.
-- **Portfolio runtime synchronization** extracts the canonical CSS and interaction code from `portfolio.html` before development and production builds.
+- **Modular portfolio sources** keep every handwritten code file below 500 lines while preserving feature-based boundaries.
+- **Portfolio runtime synchronization** combines the ordered browser-runtime modules before development and production builds.
 - **Build-time GitHub snapshots** keep Network Neighborhood fast and usable even when GitHub is unavailable or rate-limited.
 - **Progressive inquiry delivery** supports a generic webhook or Resend, then falls back to `mailto:` when no transport is configured.
 - **Basic abuse protection** includes input limits, validation, a honeypot, minimum form-fill time, and an in-memory rate limit.
@@ -148,20 +151,22 @@ If synchronization fails, the previous `public/github.json` snapshot is retained
 | `npm run dev` | Synchronizes portfolio assets and GitHub data, then starts Next.js development mode. |
 | `npm run build` | Synchronizes data and creates an optimized production build. |
 | `npm start` | Serves the production build. |
-| `npm run lint` | Runs ESLint. |
-| `npm run sync:portfolio` | Regenerates CSS and browser runtime from `portfolio.html`. |
+| `npm run lint` | Checks the 500-line limit, then runs ESLint. |
+| `npm run check:file-size` | Verifies every code file contains at most 500 lines. |
+| `npm run sync:portfolio` | Regenerates the browser runtime from its ordered modules. |
 | `npm run sync:github` | Refreshes the local GitHub profile and repository snapshot. |
 
 ## Customizing the portfolio
 
-The main profile, project, case-study, skill, social-link, credential, and career-history data live in [`portfolio.html`](./portfolio.html).
+The main profile, project, case-study, skill, social-link, testimonial, credential, and career-history data live in [`runtime/portfolio-os/08-portfolio-data.js`](./runtime/portfolio-os/08-portfolio-data.js).
 
 Important editing rules:
 
-1. Edit `portfolio.html` for visual styles, portfolio data, or desktop runtime behavior.
-2. Run `npm run sync:portfolio` after making changes.
-3. Do not edit `styles/portfolio-os.css` or `public/portfolio-runtime.js` directly; both are generated files.
-4. Add only genuine certificates, testimonials, metrics, and career history. Empty sections intentionally stay hidden instead of presenting invented information.
+1. Edit styles inside `styles/portfolio-os/` according to their feature names.
+2. Edit browser behavior inside `runtime/portfolio-os/` according to its feature module.
+3. Run `npm run sync:portfolio` after changing runtime code.
+4. Do not edit `public/portfolio-runtime.js` directly because it is generated.
+5. Replace clearly labelled demo content with genuine certificates, testimonials, metrics, and career history before publishing it as factual information.
 
 The React application shell lives under `components/`:
 

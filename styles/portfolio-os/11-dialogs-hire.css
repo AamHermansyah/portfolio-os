@@ -1,0 +1,288 @@
+/* ============ dialogs ============ */
+    .dlg-row {
+      display: flex;
+      gap: 12px;
+      padding: 12px 14px 4px;
+      align-items: flex-start
+    }
+
+    .dlg-row svg {
+      flex: 0 0 auto;
+      display: block
+    }
+
+    .dlg-msg {
+      font: 12px/1.6 var(--sys);
+      padding-top: 2px
+    }
+
+    .dlg-msg b {
+      display: block;
+      margin-bottom: 4px
+    }
+
+    .dlg-msg b.inline {
+      display: inline
+    }
+
+    .dlg-msg .dim {
+      color: #555
+    }
+
+    .dlg-msg a {
+      color: #0000cc
+    }
+
+    .dlg-input {
+      padding: 8px 14px 4px
+    }
+
+    .dlg-input .field {
+      width: 100%
+    }
+
+    .dlg-btns {
+      display: flex;
+      justify-content: center;
+      gap: 7px;
+      padding: 10px 12px 12px
+    }
+
+    /* ============ Hire_Me.exe — setup wizard ============ */
+    .app-wiz {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--face)
+    }
+
+    .wiz-main {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      overflow: hidden
+    }
+
+    .wiz-side {
+      flex: 0 0 94px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 9px;
+      padding: 14px 8px;
+      background: linear-gradient(165deg, #000080 0%, #1084d0 72%, #5ab6e8 100%)
+    }
+
+    .wiz-side b {
+      color: #fff;
+      font-size: 10px;
+      line-height: 1.5;
+      text-align: center;
+      letter-spacing: .4px
+    }
+
+    .wiz-dots {
+      margin-top: auto;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 3px
+    }
+
+    .wiz-dot {
+      height: 4px;
+      background: #00003d
+    }
+
+    .wiz-dot.on {
+      background: #ffe07a
+    }
+
+    .wiz-body {
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow: auto;
+      padding: 13px 15px
+    }
+
+    .wiz-h {
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 3px
+    }
+
+    .wiz-sub {
+      color: #333;
+      line-height: 1.5;
+      margin-bottom: 11px
+    }
+
+    .wiz-opts {
+      display: flex;
+      flex-direction: column
+    }
+
+    .wiz-opt {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 4px 6px
+    }
+
+    .wiz-opt:hover {
+      background: #e6e6e6
+    }
+
+    .wiz-opt.on {
+      background: var(--sel);
+      color: #fff
+    }
+
+    .wiz-opt.on .wiz-opt-d {
+      color: #cfe0ff
+    }
+
+    .wiz-opt-t {
+      display: block;
+      font-weight: bold
+    }
+
+    .wiz-opt-d {
+      display: block;
+      color: #555;
+      margin-top: 1px;
+      line-height: 1.45
+    }
+
+    .rad {
+      appearance: none;
+      -webkit-appearance: none;
+      flex: 0 0 12px;
+      width: 12px;
+      height: 12px;
+      margin-top: 1px;
+      border-radius: 50%;
+      background: #fff;
+      position: relative;
+      box-shadow: inset 2px 2px #0a0a0a, inset 1px 1px #808080, inset -2px -2px #dfdfdf, inset -1px -1px #fff
+    }
+
+    .rad:checked::after {
+      content: '';
+      position: absolute;
+      left: 4px;
+      top: 4px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #000
+    }
+
+    .rad:focus-visible {
+      outline: 1px dotted #000;
+      outline-offset: 2px
+    }
+
+    .wiz-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 7px
+    }
+
+    .wiz-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px
+    }
+
+    .wiz-row label {
+      flex: 0 0 88px;
+      text-align: right;
+      padding-top: 4px
+    }
+
+    .wiz-row .field {
+      flex: 1 1 auto;
+      min-width: 0
+    }
+
+    .wiz-text {
+      height: 74px;
+      resize: none
+    }
+
+    .wiz-sum {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 3px 12px;
+      padding: 8px 10px;
+      background: #fff;
+      box-shadow: inset 1px 1px #808080, inset 2px 2px #0a0a0a, inset -1px -1px #fff, inset -2px -2px #dfdfdf
+    }
+
+    .wiz-sum dt {
+      color: #444
+    }
+
+    .wiz-sum dd {
+      font-weight: bold;
+      word-break: break-word
+    }
+
+    .wiz-note {
+      margin-top: 11px;
+      line-height: 1.5;
+      color: #333
+    }
+
+    .wiz-note b {
+      color: #000
+    }
+
+    .wiz-msg {
+      display: flex;
+      gap: 11px;
+      align-items: flex-start;
+      line-height: 1.55
+    }
+
+    .wiz-msg svg {
+      flex: 0 0 auto
+    }
+
+    .wiz-hp {
+      position: absolute;
+      left: -9999px;
+      top: 0;
+      width: 1px;
+      height: 1px;
+      overflow: hidden
+    }
+
+    .wiz-sep {
+      flex: 0 0 2px;
+      margin: 0 8px;
+      background: linear-gradient(#808080 0 1px, #fff 1px 2px)
+    }
+
+    .wiz-nav {
+      flex: 0 0 auto;
+      display: flex;
+      gap: 5px;
+      justify-content: flex-end;
+      padding: 8px
+    }
+
+    .wiz-nav .gap {
+      width: 10px
+    }
+
+    .btn[disabled] {
+      color: #808080;
+      text-shadow: 1px 1px #fff
+    }
+
+    .btn[disabled]:active {
+      box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #fff, inset -2px -2px #808080, inset 2px 2px #dfdfdf;
+      transform: none
+    }

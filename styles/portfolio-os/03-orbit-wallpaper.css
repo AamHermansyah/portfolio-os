@@ -1,0 +1,234 @@
+/* ukuran di bawah ini milik bulan wallpaper; pendar Jupiter diatur di
+   buildSky() dan skalanya mengikuti diameter planet, jadi jauh lebih lebar */
+    .halo.h1 {
+      width: 64px;
+      height: 64px
+    }
+
+    .halo.h2 {
+      width: 88px;
+      height: 88px;
+      background-size: 6px 6px
+    }
+
+    .halo.h3 {
+      width: 114px;
+      height: 114px;
+      background-size: 8px 8px
+    }
+
+    .shoot {
+      position: absolute;
+      width: 46px;
+      height: 2px;
+      opacity: 0;
+      background: repeating-linear-gradient(90deg, #fff 0 7px, rgba(255, 255, 255, .5) 7px 14px, rgba(255, 255, 255, .18) 14px 21px, transparent 21px 23px);
+      animation: shoot 9s linear infinite
+    }
+
+    .shoot.s1 {
+      left: 24%;
+      top: 10%
+    }
+
+    .shoot.s2 {
+      left: 60%;
+      top: 6%;
+      animation-duration: 14s;
+      animation-delay: 6.5s
+    }
+
+    @keyframes shoot {
+      0% {
+        opacity: 0;
+        transform: translate(0, 0)
+      }
+
+      2% {
+        opacity: 1;
+        transform: translate(-70px, 34px)
+      }
+
+      7% {
+        opacity: 1;
+        transform: translate(-300px, 140px)
+      }
+
+      8% {
+        opacity: 0;
+        transform: translate(-340px, 158px)
+      }
+
+      100% {
+        opacity: 0;
+        transform: translate(-340px, 158px)
+      }
+    }
+
+    /* Jupiter interaktif — planet besar + cincin + bulan yang bisa di-drag */
+    .planetwrap {
+      position: absolute;
+      width: 196px;
+      height: 196px;
+      z-index: 2;
+      pointer-events: auto;
+      cursor: var(--cur-hand);
+      touch-action: none
+    }
+
+    .planetwrap:hover .halo {
+      filter: brightness(1.8)
+    }
+
+    .planetwrap:hover .jup {
+      filter: brightness(1.12)
+    }
+
+    .jup {
+      position: absolute
+    }
+
+    .jup canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges
+    }
+
+    .planetwrap .jup {
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%
+    }
+
+    .jtip {
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #ffffe1;
+      border: 1px solid #000;
+      color: #000;
+      font: 11px var(--sys);
+      padding: 2px 6px;
+      white-space: nowrap;
+      display: none;
+      z-index: 6;
+      pointer-events: none
+    }
+
+    .planetwrap:hover .jtip {
+      display: block
+    }
+
+    .jmoon {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      pointer-events: auto;
+      cursor: var(--cur-hand);
+      touch-action: none;
+      z-index: 1
+    }
+
+    .jmoon:hover b {
+      filter: brightness(1.3)
+    }
+
+    .jmoon b {
+      position: absolute;
+      display: block;
+      background-size: 100% 100%;
+      background-repeat: no-repeat
+    }
+
+    .jmoon .mtip {
+      position: absolute;
+      bottom: calc(100% + 4px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #ffffe1;
+      border: 1px solid #000;
+      color: #000;
+      font: 11px var(--sys);
+      padding: 1px 5px;
+      white-space: nowrap;
+      display: none;
+      pointer-events: none;
+      z-index: 7
+    }
+
+    .jmoon:hover .mtip {
+      display: block
+    }
+
+    .jmoon.held {
+      outline: 1px dotted #fff;
+      z-index: 5;
+      animation: mp .2s steps(1) infinite
+    }
+
+    .jmoon.back b {
+      filter: brightness(.66)
+    }
+
+    .jmoon.mpulse {
+      animation: mp .22s steps(1) 10
+    }
+
+    @keyframes mp {
+      50% {
+        opacity: 0
+      }
+    }
+
+    .dicon {
+      position: absolute;
+      width: 80px;
+      text-align: center;
+      touch-action: none;
+      z-index: 4
+    }
+
+    .dicon .di-img svg {
+      display: block;
+      margin: 0 auto
+    }
+
+    .di-lb {
+      display: inline-block;
+      color: #fff;
+      padding: 1px 3px;
+      margin-top: 3px;
+      font-size: 11px;
+      line-height: 1.25;
+      max-width: 100%;
+      word-wrap: break-word;
+      text-shadow: 1px 1px 0 rgba(0, 0, 0, .8)
+    }
+
+    .dicon.sel .di-lb {
+      background: var(--sel);
+      color: #fff;
+      text-shadow: none
+    }
+
+    .dicon:focus {
+      outline: none
+    }
+
+    .dicon:focus-visible .di-lb {
+      outline: 1px dotted #fff
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+      .synth-grid {
+        animation: none
+      }
+
+      .hack-cursor {
+        animation: none
+      }
+    }

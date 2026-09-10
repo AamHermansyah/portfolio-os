@@ -1,0 +1,160 @@
+/* ============ app: notepad ============ */
+    .win-body.app-notepad {
+      background: #fff;
+      overflow: auto;
+      box-shadow: inset -1px -1px #fff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px #808080
+    }
+
+    .npad {
+      padding: 8px 10px;
+      font: 12px/1.55 var(--mono);
+      white-space: pre-wrap;
+      color: #111;
+      user-select: text;
+      cursor: var(--cur-text)
+    }
+
+    .npad.nowrap {
+      white-space: pre
+    }
+
+    .npad a {
+      color: #0000cc
+    }
+
+    .npad a:visited {
+      color: #551a8b
+    }
+
+    /* ============ app: explorer ============ */
+    .app-expl {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden
+    }
+
+    .ex-tools {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex: 0 0 auto;
+      margin-bottom: 3px
+    }
+
+    .vsep {
+      width: 0;
+      height: 18px;
+      border-left: 1px solid #808080;
+      border-right: 1px solid #fff;
+      margin: 0 3px
+    }
+
+    .grow {
+      flex: 1
+    }
+
+    .ex-addr {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 0 0 auto;
+      margin-bottom: 4px
+    }
+
+    .ex-addr>span {
+      flex: 0 0 auto
+    }
+
+    .ex-path {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: #fff;
+      padding: 2px 5px;
+      min-height: 21px;
+      box-shadow: inset -1px -1px #fff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px #808080;
+      font: 11px var(--mono);
+      white-space: nowrap;
+      overflow: hidden
+    }
+
+    .ex-view {
+      flex: 1;
+      overflow: auto;
+      background: #fff;
+      box-shadow: inset -1px -1px #fff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px #808080
+    }
+
+    .ex-grid {
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      gap: 4px;
+      padding: 8px
+    }
+
+    .ex-item {
+      width: 86px;
+      padding: 4px 2px;
+      text-align: center
+    }
+
+    .ex-item .ex-ic svg {
+      display: block;
+      margin: 0 auto
+    }
+
+    .ex-item .ex-lb {
+      display: inline-block;
+      margin-top: 3px;
+      padding: 1px 3px;
+      color: #000;
+      line-height: 1.25;
+      word-wrap: break-word;
+      max-width: 100%
+    }
+
+    .ex-item.sel .ex-lb {
+      background: var(--sel);
+      color: #fff
+    }
+
+    .ex-empty {
+      padding: 28px;
+      text-align: center;
+      color: #555;
+      font: 12px var(--mono)
+    }
+
+    .ex-table {
+      width: 100%;
+      border-collapse: collapse;
+      font: 11px var(--mono)
+    }
+
+    .ex-table th {
+      position: sticky;
+      top: 0;
+      background: var(--face);
+      font-family: var(--sys);
+      text-align: left;
+      padding: 3px 8px;
+      box-shadow: inset -1px -1px #808080, inset 1px 1px #fff
+    }
+
+    .ex-table td {
+      padding: 3px 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .ex-table td:last-child {
+      white-space: normal
+    }
+
+    .ex-table tr.sel td {
+      background: var(--sel);
+      color: #fff
+    }

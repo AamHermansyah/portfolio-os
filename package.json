@@ -3,14 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "check:file-size": "node scripts/check-file-size.mjs",
     "sync:portfolio": "node scripts/sync-portfolio-assets.mjs",
     "sync:github": "node scripts/sync-github.mjs",
-    "predev": "npm run sync:portfolio && npm run sync:github",
+    "predev": "npm run check:file-size && npm run sync:portfolio && npm run sync:github",
     "dev": "next dev",
-    "prebuild": "npm run sync:portfolio && npm run sync:github",
+    "prebuild": "npm run check:file-size && npm run sync:portfolio && npm run sync:github",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "prelint": "npm run sync:portfolio",
+    "lint": "npm run check:file-size && eslint"
   },
   "dependencies": {
     "next": "16.3.4",

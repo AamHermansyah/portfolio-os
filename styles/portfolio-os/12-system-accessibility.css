@@ -1,0 +1,260 @@
+/* ============ System Properties ============ */
+    .app-sys {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--face)
+    }
+
+    .sys-page {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      gap: 16px;
+      padding: 15px 16px 11px
+    }
+
+    .sys-fields {
+      flex: 1 1 auto;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 13px
+    }
+
+    .sys-group>b {
+      display: block;
+      margin-bottom: 3px
+    }
+
+    .sys-lines {
+      padding-left: 15px;
+      line-height: 1.65
+    }
+
+    .sys-spec {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 3px 9px;
+      padding-left: 15px;
+      margin-top: 3px
+    }
+
+    .sys-spec dt {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      min-width: 84px;
+      color: #333
+    }
+
+    .sys-spec dt::after {
+      content: ':'
+    }
+
+    .sys-spec dd {
+      font-weight: bold;
+      word-break: break-word
+    }
+
+    .sys-live {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .sys-live i {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      flex: 0 0 8px;
+      background: #12a112;
+      box-shadow: inset -1px -1px #0a6b0a, inset 1px 1px #6dea6d
+    }
+
+    .sys-live.off i {
+      background: #a1a1a1;
+      box-shadow: inset -1px -1px #6b6b6b, inset 1px 1px #dcdcdc
+    }
+
+    .sys-logo {
+      flex: 0 0 auto;
+      width: 108px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+      text-align: center
+    }
+
+    .sys-logo svg {
+      display: block
+    }
+
+    .sys-logo span {
+      font-size: 13px;
+      letter-spacing: .3px
+    }
+
+    .sys-logo span b {
+      font-style: italic
+    }
+
+    .sys-sep {
+      flex: 0 0 2px;
+      margin: 0 10px;
+      background: linear-gradient(#808080 0 1px, #fff 1px 2px)
+    }
+
+    .sys-actions {
+      flex: 0 0 auto;
+      display: flex;
+      gap: 5px;
+      justify-content: flex-end;
+      padding: 9px 11px
+    }
+
+    @media(max-width:520px) {
+      .sys-page {
+        flex-direction: column-reverse;
+        gap: 10px
+      }
+
+      .sys-logo {
+        width: auto;
+        flex-direction: row;
+        justify-content: center;
+        gap: 10px
+      }
+
+      .sys-spec dt {
+        min-width: 74px
+      }
+    }
+
+    /* ============ Network Neighborhood ============ */
+    .app-net{display:flex;flex-direction:column;overflow:hidden;background:var(--face)}
+    .net-scroll{flex:1 1 auto;min-height:0;overflow:auto}
+    .net-hero{display:flex;gap:11px;align-items:flex-start;padding:11px 12px;
+      background:linear-gradient(90deg,#000080 0%,#1084d0 100%);color:#fff}
+    .net-hero svg{flex:0 0 auto}
+    .net-hero b{font-size:13px}
+    .net-hero p{color:#cfe0ff;margin-top:2px;line-height:1.5}
+    .net-hero a{color:#ffe07a}
+    .net-sec{margin:11px 9px 0}
+    .net-sec:last-child{margin-bottom:11px}
+    .net-sec h3{font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:#333;margin-bottom:5px}
+    .net-list{background:#fff;padding:2px;
+      box-shadow:inset 1px 1px #808080,inset 2px 2px #0a0a0a,inset -1px -1px #fff,inset -2px -2px #dfdfdf}
+    .net-row{display:flex;align-items:flex-start;gap:9px;padding:6px 7px;border-bottom:1px solid #ededed}
+    .net-row:last-child{border-bottom:0}
+    .net-row:hover{background:#eef3ff}
+    .net-ic{flex:0 0 auto;margin-top:1px}
+    .net-main{flex:1 1 auto;min-width:0}
+    .net-name{font-weight:bold;word-break:break-word}
+    .net-desc{color:#444;line-height:1.45;margin-top:1px}
+    .net-meta{color:#6a6a6a;margin-top:3px}
+    .net-links{flex:0 0 auto;display:flex;flex-direction:column;gap:3px}
+    .net-links .btn{min-width:62px;height:19px;padding:0 8px;font-size:11px}
+    .net-chips{display:flex;flex-wrap:wrap;gap:4px}
+    .net-chip{display:inline-flex;align-items:baseline;gap:6px;padding:3px 8px;background:var(--face);
+      box-shadow:inset -1px -1px #0a0a0a,inset 1px 1px #fff,inset -2px -2px #808080,inset 2px 2px #dfdfdf}
+    .net-chip i{font-style:normal;color:#555}
+    .net-note{margin-top:6px;color:#555;line-height:1.5}
+    .net-empty{padding:26px 16px;text-align:center;color:#555;line-height:1.7}
+    @media(max-width:520px){
+      .net-row{flex-wrap:wrap}
+      .net-links{flex-direction:row;width:100%}
+    }
+
+    /* ============ Find: Projects & Skills ============ */
+    .app-find{display:flex;flex-direction:column;overflow:hidden;background:var(--face)}
+    .find-form{flex:0 0 auto;padding:10px 11px 9px;display:flex;flex-direction:column;gap:7px}
+    .find-row{display:flex;align-items:center;gap:8px}
+    .find-row>label{flex:0 0 60px;text-align:right}
+    .find-row .field{flex:1 1 auto;min-width:0}
+    .find-select{font:11px var(--sys);color:#000;background:#fff;padding:2px 3px;border:0;
+      box-shadow:inset 1px 1px #808080,inset 2px 2px #0a0a0a,inset -1px -1px #fff,inset -2px -2px #dfdfdf}
+    .find-btns{display:flex;gap:5px;margin-left:auto}
+    .find-sep{flex:0 0 2px;margin:0 9px;background:linear-gradient(#808080 0 1px,#fff 1px 2px)}
+    .find-results{flex:1 1 auto;min-height:0;overflow:auto;margin:9px;background:#fff;
+      box-shadow:inset 1px 1px #808080,inset 2px 2px #0a0a0a,inset -1px -1px #fff,inset -2px -2px #dfdfdf}
+    .find-head{display:grid;grid-template-columns:1.7fr 1.1fr .8fr;position:sticky;top:0;z-index:1}
+    .find-head span{padding:3px 7px;background:var(--face);font-weight:bold;white-space:nowrap;
+      box-shadow:inset -1px -1px #808080,inset 1px 1px #fff}
+    .find-item{display:grid;grid-template-columns:1.7fr 1.1fr .8fr;align-items:center;width:100%;
+      background:none;border:0;text-align:left;font:inherit;color:inherit}
+    .find-item>span{padding:4px 7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .find-item>span:first-child{display:flex;align-items:center;gap:6px}
+    .find-item>span:first-child svg{flex:0 0 auto}
+    .find-item:hover{background:#eef3ff}
+    .find-item.on{background:var(--sel);color:#fff}
+    .find-item:focus-visible{outline:1px dotted #000;outline-offset:-2px}
+    .find-hit{background:#ffe07a;color:#000}
+    .find-empty{padding:22px 16px;text-align:center;color:#555;line-height:1.7}
+
+    /* credential Properties reuses the System Properties sheet */
+    .cred-notes{margin:9px 0 0;padding-left:15px;line-height:1.6}
+    .cred-notes li{list-style:square}
+
+    /* ============ Accessibility ============
+       Preferences land as classes on <html>, set by an inline script in the layout
+       before first paint, so nothing flashes on its way to the chosen setting. */
+    html.a11y-noboot #boot { display: none !important }
+
+    html.a11y-motion *,
+    html.a11y-motion *::before,
+    html.a11y-motion *::after { animation: none !important; transition: none !important }
+    html.a11y-motion .tw,
+    html.a11y-motion .synth-grid,
+    html.a11y-motion .hack-cursor,
+    html.a11y-motion .fw-marquee span { animation: none !important }
+
+    /* Content scales, window chrome does not — the title bar keeps its real size so
+       dragging and resizing stay pixel-accurate under the pointer. */
+    .win-body { zoom: var(--a11y-scale, 1) }
+    .app-jup, .app-moon { zoom: 1 }
+
+    html.a11y-contrast body { background: #000 }
+    html.a11y-contrast #crt,
+    html.a11y-contrast .sky,
+    html.a11y-contrast .wallfx { display: none !important }
+    html.a11y-contrast .win-body,
+    html.a11y-contrast .win-body *,
+    html.a11y-contrast #taskbar,
+    html.a11y-contrast #taskbar *,
+    html.a11y-contrast .dropdown,
+    html.a11y-contrast .dropdown *,
+    html.a11y-contrast #startmenu,
+    html.a11y-contrast #startmenu * { background-color: #000 !important; color: #fff !important }
+    html.a11y-contrast .win { box-shadow: inset 0 0 0 1px #fff }
+    html.a11y-contrast .titlebar { background: #000 !important; color: #ffe07a !important; box-shadow: inset 0 0 0 1px #fff }
+    html.a11y-contrast .win-body a, html.a11y-contrast #startmenu a { color: #ffe07a !important }
+    html.a11y-contrast .btn, html.a11y-contrast .tb-btn { box-shadow: inset 0 0 0 1px #fff !important }
+    html.a11y-contrast .btn:focus-visible, html.a11y-contrast .find-item:focus-visible { outline: 2px solid #ffe07a }
+    html.a11y-contrast .dicon { color: #fff; text-shadow: none }
+    html.a11y-contrast .sm-item:hover, html.a11y-contrast .mi:hover,
+    html.a11y-contrast .find-item.on, html.a11y-contrast .wiz-opt.on { background-color: #ffe07a !important; color: #000 !important }
+
+    /* ---- the control panel itself ---- */
+    .app-a11y { display: flex; flex-direction: column; overflow: hidden; background: var(--face) }
+    .a11y-page { flex: 1 1 auto; min-height: 0; overflow: auto; padding: 12px 13px }
+    .a11y-group { margin-bottom: 13px }
+    .a11y-group > b { display: block; margin-bottom: 6px }
+    .a11y-opts { display: flex; flex-direction: column; gap: 2px; padding-left: 3px }
+    .a11y-opt { display: flex; align-items: flex-start; gap: 8px; padding: 4px 5px }
+    .a11y-opt:hover { background: #e6e6e6 }
+    .a11y-opt span b { display: block }
+    .a11y-opt span i { display: block; font-style: normal; color: #555; margin-top: 1px; line-height: 1.45 }
+    .a11y-opt .chk { appearance: none; -webkit-appearance: none; flex: 0 0 13px; width: 13px; height: 13px; margin-top: 1px;
+      background: #fff; position: relative;
+      box-shadow: inset 1px 1px #808080, inset 2px 2px #0a0a0a, inset -1px -1px #fff, inset -2px -2px #dfdfdf }
+    .a11y-opt .chk:checked::after { content: '\2713'; position: absolute; left: 2px; top: -2px; font-size: 12px; color: #000 }
+    .a11y-opt .chk:focus-visible { outline: 1px dotted #000; outline-offset: 2px }
+    .a11y-scale { display: flex; align-items: center; gap: 8px; padding: 4px 5px }
+    .a11y-scale select { font: 11px var(--sys); color: #000; background: #fff; padding: 2px 3px; border: 0;
+      box-shadow: inset 1px 1px #808080, inset 2px 2px #0a0a0a, inset -1px -1px #fff, inset -2px -2px #dfdfdf }
+    .a11y-note { color: #555; line-height: 1.5; margin-top: 4px; padding-left: 3px }
+    .a11y-sep { flex: 0 0 2px; margin: 0 10px; background: linear-gradient(#808080 0 1px, #fff 1px 2px) }
+    .a11y-actions { flex: 0 0 auto; display: flex; gap: 5px; justify-content: flex-end; padding: 9px 11px }
+    .a11y-actions .grow { flex: 1 1 auto }

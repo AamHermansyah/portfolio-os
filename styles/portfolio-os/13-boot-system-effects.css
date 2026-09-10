@@ -1,0 +1,232 @@
+/* ============ boot ============ */
+    #boot {
+      position: fixed;
+      inset: 0;
+      z-index: 3500;
+      background: #000;
+      padding: 20px 24px;
+      color: #c9c9c9;
+      font: clamp(12px, 2.1vw, 19px)/1.3 var(--bios);
+      cursor: var(--cur-arrow)
+    }
+
+    #bootlog {
+      white-space: pre-wrap;
+      font: inherit
+    }
+
+    #bootlog .h {
+      color: #fff
+    }
+
+    #bootlog .ok {
+      color: #39e75f
+    }
+
+    #bootlog .bad {
+      color: #ff5b5b
+    }
+
+    #bootlog .amb {
+      color: #e8c33d
+    }
+
+    #bootlog .boot-prompt {
+      color: #e8c33d
+    }
+
+    .boot-skip {
+      position: absolute;
+      bottom: 12px;
+      right: 18px;
+      color: #4a4a4a;
+      font: inherit
+    }
+
+    #splash {
+      position: absolute;
+      inset: 0;
+      background: #000;
+      display: grid;
+      place-items: center
+    }
+
+    .sp-box {
+      width: 350px;
+      max-width: 90vw;
+      background: #000080;
+      padding: 26px 20px 20px;
+      text-align: center;
+      color: #fff;
+      box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #fff, inset -2px -2px #808080, inset 2px 2px #dfdfdf
+    }
+
+    .sp-title {
+      font: 38px/1 var(--bios);
+      letter-spacing: 2px
+    }
+
+    .sp-title span {
+      font-size: 20px;
+      vertical-align: super
+    }
+
+    .sp-sub {
+      font: 15px var(--bios);
+      color: #a8c4e8;
+      margin: 6px 0 18px
+    }
+
+    .sp-bar {
+      height: 16px;
+      width: 230px;
+      margin: 0 auto;
+      background: #050530;
+      box-shadow: inset -1px -1px #fff, inset 1px 1px #808080
+    }
+
+    .sp-fill {
+      height: 100%;
+      width: 0;
+      background: repeating-linear-gradient(90deg, #31c8f0 0 9px, transparent 9px 12px);
+      animation: spfill 1.15s steps(12) forwards
+    }
+
+    @keyframes spfill {
+      to {
+        width: 100%
+      }
+    }
+
+    .sp-note {
+      font: 13px var(--bios);
+      color: #8090c0;
+      margin-top: 12px
+    }
+
+    /* ============ BSOD / power off ============ */
+    #bsod {
+      position: fixed;
+      inset: 0;
+      z-index: 3000;
+      background: #0000aa;
+      color: #fff;
+      display: none;
+      padding: 9vh 8vw;
+      cursor: var(--cur-arrow)
+    }
+
+    .bs-in {
+      max-width: 640px;
+      font: 14px/1.7 var(--sys)
+    }
+
+    .bs-band {
+      display: inline-block;
+      background: #a8a8a8;
+      color: #0000aa;
+      padding: 0 10px;
+      margin-bottom: 22px;
+      font-weight: bold
+    }
+
+    .bs-in p {
+      margin: 14px 0
+    }
+
+    .bs-press {
+      margin-top: 30px
+    }
+
+    .bs-cur {
+      animation: blink 1s steps(1) infinite
+    }
+
+    @keyframes blink {
+      50% {
+        opacity: 0
+      }
+    }
+
+    #off {
+      position: fixed;
+      inset: 0;
+      z-index: 3000;
+      background: #000;
+      display: none;
+      place-items: center;
+      text-align: center;
+      cursor: var(--cur-hand)
+    }
+
+    .off-t {
+      color: #e8a33d;
+      font: 34px/1.35 var(--bios);
+      letter-spacing: 1px
+    }
+
+    .off-s {
+      color: #5a5a5a;
+      font: 16px var(--bios);
+      margin-top: 18px
+    }
+
+    /* ============ CRT overlay ============ */
+    #crt {
+      position: fixed;
+      inset: 0;
+      z-index: 4000;
+      pointer-events: none;
+      display: none
+    }
+
+    body.crt #crt {
+      display: block
+    }
+
+    #crt .scan {
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, rgba(0, 0, 0, .16) 0 1px, transparent 1px 3px);
+      animation: flick .09s steps(1) infinite
+    }
+
+    @keyframes flick {
+      0% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .84
+      }
+
+      100% {
+        opacity: 1
+      }
+    }
+
+    #crt .roll {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 110px;
+      background: linear-gradient(180deg, transparent, rgba(0, 0, 10, .06) 50%, transparent);
+      animation: roll 7s linear infinite
+    }
+
+    @keyframes roll {
+      from {
+        transform: translateY(-120px)
+      }
+
+      to {
+        transform: translateY(110vh)
+      }
+    }
+
+    #crt .vig {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 62%, rgba(0, 0, 10, .16) 100%)
+    }

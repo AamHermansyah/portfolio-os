@@ -1,0 +1,243 @@
+/* ============ testimoni & notifikasi ============ */
+    #testbtn {
+      position: relative
+    }
+
+    .badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: #c00000;
+      color: #fff;
+      font-size: 9px;
+      font-weight: bold;
+      line-height: 1;
+      padding: 2px 3px;
+      border: 1px solid #fff;
+      min-width: 8px;
+      text-align: center;
+      pointer-events: none
+    }
+
+    .toast {
+      position: fixed;
+      right: 4px;
+      bottom: 34px;
+      width: 252px;
+      max-width: calc(100vw - 8px);
+      z-index: 2600;
+      background: var(--face);
+      padding: 3px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #fff, inset -2px -2px #808080, inset 2px 2px #dfdfdf
+    }
+
+    .toast-body {
+      display: flex;
+      gap: 8px;
+      padding: 7px 8px 4px
+    }
+
+    .t-av {
+      flex: 0 0 auto;
+      padding: 2px;
+      background: #fff;
+      box-shadow: inset -1px -1px #fff, inset 1px 1px #808080
+    }
+
+    .t-av svg,
+    .prev-av svg {
+      display: block
+    }
+
+    .t-msg {
+      flex: 1;
+      min-width: 0
+    }
+
+    .t-from {
+      font-size: 11px
+    }
+
+    .t-role {
+      color: #555;
+      font-size: 10px;
+      margin: 1px 0 3px
+    }
+
+    .t-prev {
+      font: 11px/1.45 var(--mono);
+      color: #222;
+      max-height: 34px;
+      overflow: hidden
+    }
+
+    .t-stars {
+      margin-top: 4px
+    }
+
+    .t-stars svg,
+    .prev-stars svg {
+      display: inline-block;
+      margin-right: 1px;
+      vertical-align: middle
+    }
+
+    .toast-foot {
+      font: 10px var(--mono);
+      color: #555;
+      padding: 3px 8px 6px;
+      border-top: 1px dotted #808080
+    }
+
+    .app-inbox {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden
+    }
+
+    .ib-tools {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex: 0 0 auto;
+      margin-bottom: 3px
+    }
+
+    .ib-list {
+      flex: 1 1 auto;
+      min-height: 56px;
+      overflow-y: auto;
+      background: #fff;
+      box-shadow: inset -1px -1px #fff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px #808080
+    }
+
+    .ib-prev {
+      flex: 0 0 38%;
+      min-height: 118px;
+      overflow-y: auto;
+      margin-top: 3px;
+      background: #fff;
+      padding: 8px 10px;
+      box-shadow: inset -1px -1px #fff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px #808080
+    }
+
+    .ib-empty {
+      color: #777;
+      font: 11px var(--mono);
+      padding: 8px 4px
+    }
+
+    .msg-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px
+    }
+
+    .msg-row.sel {
+      background: var(--sel);
+      color: #fff
+    }
+
+    .msg-row.sel .m-subj,
+    .msg-row.sel .m-date {
+      color: #c9d4ff
+    }
+
+    .m-ic {
+      flex: 0 0 16px;
+      display: grid;
+      place-items: center
+    }
+
+    .m-ic svg {
+      display: block
+    }
+
+    .m-from {
+      flex: 0 0 122px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap
+    }
+
+    .m-subj {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: #555;
+      font-size: 10px
+    }
+
+    .m-date {
+      flex: 0 0 auto;
+      font: 10px var(--mono);
+      color: #777
+    }
+
+    .msg-row.unread .m-from,
+    .msg-row.unread .m-subj {
+      font-weight: bold;
+      color: #000
+    }
+
+    .prev-hdr {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      border-bottom: 1px solid #c8c8c8;
+      padding-bottom: 6px;
+      margin-bottom: 6px
+    }
+
+    .prev-av {
+      flex: 0 0 auto;
+      padding: 2px;
+      background: #fff;
+      box-shadow: inset -1px -1px #fff, inset 1px 1px #808080
+    }
+
+    .prev-who {
+      flex: 1;
+      min-width: 0
+    }
+
+    .prev-from {
+      font-size: 12px
+    }
+
+    .prev-from .dim {
+      font-size: 11px
+    }
+
+    .prev-subj {
+      font: 11px var(--mono);
+      color: #333;
+      margin-top: 2px
+    }
+
+    .prev-date {
+      flex: 0 0 auto;
+      font: 10px var(--mono);
+      color: #666
+    }
+
+    .prev-stars {
+      margin: 0 0 6px
+    }
+
+    .prev-quote {
+      font: italic 13px/1.55 'Times New Roman', Times, serif;
+      color: #111;
+      user-select: text;
+      cursor: var(--cur-text)
+    }
+
+    /* busy hourglass — sprite arrives in --cur-wait */
+    body.busy,
+    body.busy * {
+      cursor: var(--cur-wait) !important
+    }

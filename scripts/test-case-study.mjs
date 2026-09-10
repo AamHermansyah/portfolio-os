@@ -75,6 +75,22 @@ const expression = `
           scripts,
       );
     };
+    const activateDesktopIcon = async (icon, pointerSeed = 1) => {
+      const bounds = icon.getBoundingClientRect();
+      for (let index = 0; index < 2; index += 1) {
+        const options = {
+          bubbles: true,
+          button: 0,
+          clientX: bounds.left + 12,
+          clientY: bounds.top + 12,
+          pointerId: pointerSeed + index,
+          pointerType: "mouse",
+        };
+        icon.dispatchEvent(new PointerEvent("pointerdown", options));
+        icon.dispatchEvent(new PointerEvent("pointerup", options));
+        await delay(60);
+      }
+    };
 
     const projectIcon = await waitFor(".dicon[data-id=projects]");
     const boot = document.querySelector("#boot");
@@ -94,20 +110,7 @@ const expression = `
     );
     welcome?.querySelector(".dlg-btns .btn")?.click();
 
-    const iconBounds = projectIcon.getBoundingClientRect();
-    for (let index = 0; index < 2; index += 1) {
-      const options = {
-        bubbles: true,
-        button: 0,
-        clientX: iconBounds.left + 12,
-        clientY: iconBounds.top + 12,
-        pointerId: index + 1,
-        pointerType: "mouse",
-      };
-      projectIcon.dispatchEvent(new PointerEvent("pointerdown", options));
-      projectIcon.dispatchEvent(new PointerEvent("pointerup", options));
-      await delay(60);
-    }
+    await activateDesktopIcon(projectIcon);
     const firstProject = await waitFor(".app-expl .ex-item");
     firstProject.dispatchEvent(new MouseEvent("dblclick", { bubbles: true }));
     const caseWindow = await waitFor(".app-proj");
@@ -123,6 +126,75 @@ const expression = `
     const secondThumb = caseWindow.querySelectorAll(".gallery-thumb")[1];
     secondThumb.click();
 
+    document.querySelector("#desktop").dispatchEvent(new MouseEvent("contextmenu", {
+      bubbles: true,
+      clientX: 320,
+      clientY: 180,
+    }));
+    const crtMenuItem = [...document.querySelectorAll(".ctx .mi")].find(
+      (item) => item.textContent === "CRT scanline filter",
+    );
+    const crtIndicatorStyle = crtMenuItem
+      ? getComputedStyle(crtMenuItem, "::before")
+      : null;
+    const crtIndicatorTailStyle = crtMenuItem
+      ? getComputedStyle(crtMenuItem, "::after")
+      : null;
+    const crtMenuStyle = crtMenuItem ? getComputedStyle(crtMenuItem) : null;
+    const crtIndicatorIsPixelCheck =
+      crtMenuItem?.classList.contains("checked") &&
+      crtIndicatorStyle?.content === '""' &&
+      crtIndicatorTailStyle?.content === '""' &&
+      parseFloat(crtIndicatorStyle.width) === 5 &&
+      parseFloat(crtIndicatorTailStyle.width) === 9 &&
+      parseFloat(crtIndicatorStyle.borderBottomWidth) === 0 &&
+      crtMenuItem.offsetWidth > 100 &&
+      crtMenuItem.offsetHeight > 13 &&
+      crtMenuStyle?.boxShadow === "none";
+    crtMenuItem?.click();
+
+    const certificatesIcon = await waitFor(".dicon[data-id=certs]");
+    await activateDesktopIcon(certificatesIcon, 10);
+    await delay(100);
+    const certificatesWindow = [...document.querySelectorAll(".win")].find(
+      (windowElement) =>
+        windowElement.querySelector(".tb-text")?.textContent === "Certificates",
+    );
+    const certificateCount = certificatesWindow?.querySelectorAll(
+      ".app-expl .ex-item",
+    ).length ?? 0;
+
+    const changelogIcon = await waitFor(".dicon[data-id=changelog]");
+    await activateDesktopIcon(changelogIcon, 20);
+    await delay(300);
+    const changelogWindow = [...document.querySelectorAll(".win")].find(
+      (windowElement) =>
+        windowElement.querySelector(".tb-text")?.textContent?.startsWith(
+          "Changelog.log",
+        ),
+    );
+    const changelogText = changelogWindow?.querySelector(".npad")?.textContent ?? "";
+
+    const careerIcon = await waitFor(".dicon[data-id=career-log]");
+    await activateDesktopIcon(careerIcon, 30);
+    await delay(100);
+    const careerWindow = [...document.querySelectorAll(".win")].find(
+      (windowElement) =>
+        windowElement.querySelector(".tb-text")?.textContent?.startsWith(
+          "Career.log",
+        ),
+    );
+    const careerText = careerWindow?.querySelector(".npad")?.textContent ?? "";
+
+    document.querySelector("#testbtn").click();
+    const inbox = await waitFor(".app-inbox");
+    const receive = inbox.querySelector('[data-a="sr"]');
+    receive.click();
+    await delay(650);
+    receive.click();
+    await delay(650);
+    const testimonialCount = inbox.querySelectorAll(".msg-row").length;
+
     return {
       title: caseWindow.closest(".win").querySelector(".tb-text").textContent,
       tabCount: tabs.length,
@@ -136,6 +208,15 @@ const expression = `
         .querySelector(".gallery-main img")
         .dataset.shot === "1",
       hasLiveDemo: Boolean(caseWindow.querySelector('.pj-actions a[href*="vercel.app"]')),
+      crtIndicatorIsPixelCheck,
+      certificatesVisible: Boolean(certificatesIcon),
+      certificateCount,
+      changelogSeparated:
+        !changelogText.includes("Career") && !changelogText.includes("[DEMO]"),
+      careerLogVisible:
+        careerText.includes("CAREER.LOG") && careerText.includes("[DEMO]"),
+      testimonialCount,
+      testimonialDemoVisible: inbox.textContent.includes("(Demo)"),
       status: caseWindow
         .closest(".win")
         .querySelector(".statusbar .sb").textContent,
@@ -182,7 +263,14 @@ const passed =
   report.screenshotsVisible &&
   report.activeThumb &&
   report.mainShotChanged &&
-  report.hasLiveDemo;
+  report.hasLiveDemo &&
+  report.crtIndicatorIsPixelCheck &&
+  report.certificatesVisible &&
+  report.certificateCount === 4 &&
+  report.changelogSeparated &&
+  report.careerLogVisible &&
+  report.testimonialCount === 3 &&
+  report.testimonialDemoVisible;
 
 console.log(JSON.stringify({ passed, ...report }, null, 2));
 
