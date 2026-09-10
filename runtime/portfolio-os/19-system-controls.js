@@ -37,9 +37,7 @@
       setInterval(tick, 1000); tick();
       function setCRT(on) {
         document.body.classList.toggle('crt', on);
-        $('#crtbtn').classList.toggle('on', on);
       }
-      $('#crtbtn').addEventListener('click', () => setCRT(!document.body.classList.contains('crt')));
 
       /* hourglass on external links */
       document.addEventListener('click', e => {

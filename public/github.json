@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-09-10T01:00:44.016Z",
+  "syncedAt": "2026-09-10T09:47:43.972Z",
   "profile": {
     "login": "AamHermansyah",
     "name": "Aam Hermansyah",
@@ -15,9 +15,9 @@
     {
       "name": "portfolio-os",
       "description": null,
-      "language": "HTML",
+      "language": "JavaScript",
       "stars": 0,
-      "pushedAt": "2026-09-09T10:44:51Z",
+      "pushedAt": "2026-09-10T01:31:50Z",
       "homepage": "https://portfolio-os-five-gray.vercel.app",
       "url": "https://github.com/AamHermansyah/portfolio-os",
       "topics": []
@@ -480,11 +480,11 @@
     },
     {
       "name": "JavaScript",
-      "count": 8
+      "count": 9
     },
     {
       "name": "HTML",
-      "count": 7
+      "count": 6
     },
     {
       "name": "Jupyter Notebook",

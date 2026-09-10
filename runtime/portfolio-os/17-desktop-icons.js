@@ -94,6 +94,7 @@
         e.preventDefault();
         closeCtx();
         const m = document.createElement('div'); m.className = 'dropdown ctx';
+        const isOrbit = currentWallpaper()?.id === 'star';
         const items = [
           { t: 'Arrange Icons', act: () => layoutIcons(true) },
           { t: 'Refresh', act: () => hourglass(350) },
@@ -103,7 +104,7 @@
           { t: 'CRT scanline filter', check: () => document.body.classList.contains('crt'), act: () => setCRT(!document.body.classList.contains('crt')) },
           { sep: true },
           { t: 'New Terminal', act: openTerminal },
-          { t: 'Jupiter Observatory', act: openJupiter },
+          ...(isOrbit ? [{ t: 'Jupiter Observatory', act: openJupiter }] : []),
           { t: 'About PortfolioOS', act: aboutOS }
         ];
         items.forEach(it => {

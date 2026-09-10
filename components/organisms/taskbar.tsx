@@ -9,7 +9,6 @@ export function Taskbar() {
       <div id="tabs" />
       <div id="tray">
         <button className="trayb" id="testbtn" title="Testimonials — Testimonial Express inbox" type="button" />
-        <button className="trayb on" id="crtbtn" title="Toggle CRT scanline filter" type="button" />
         <div id="clock" title="" />
       </div>
     </div>

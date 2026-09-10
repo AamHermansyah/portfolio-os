@@ -35,12 +35,21 @@
 
     .toast-body {
       display: flex;
+      align-items: flex-start;
       gap: 8px;
       padding: 7px 8px 4px
     }
 
     .t-av {
       flex: 0 0 auto;
+      align-self: flex-start;
+      width: 34px;
+      height: 34px;
+      aspect-ratio: 1 / 1;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       padding: 2px;
       background: #fff;
       box-shadow: inset -1px -1px #fff, inset 1px 1px #808080
