@@ -24,6 +24,7 @@
           { ic: 'briefcase', t: 'Career.log', fn: openCareerLog },
           { ic: 'txt', t: 'Changelog.log', fn: openChangelog },
           ...(CREDENTIALS.length ? [{ ic: 'cert', t: 'Certificates', fn: openCertificates }] : []),
+          ...(PUBLICATIONS.length ? [{ ic: 'journal', t: 'Publications', fn: openPublications }] : []),
           { ic: 'find', t: 'Find\u2026', fn: openFind },
           { ic: 'gear', t: 'Accessibility\u2026', fn: openAccessibility },
           { ic: 'computer', t: 'System Properties', fn: openSysProps },
@@ -64,6 +65,8 @@
                 'changelog': openChangelog,
                 'certificates': openCertificates,
                 'certs': openCertificates,
+                'publications': openPublications,
+                'papers': openPublications,
                 'nethood': openNetwork,
                 'github': openNetwork, 'sysdm': openSysProps, 'sysdm.cpl': openSysProps,
                 'computer': openSysProps,
@@ -78,7 +81,7 @@
                 if (OPEN[t]) OPEN[t]();
                 else openProject(p);
               }
-              else errorDialog('Run', `Cannot find '<b>${esc(v)}</b>'. Check the name and try again.<br><span class="dim">Suggestions: skills, projects, career, changelog, terminal, resume, contact, testimonials</span>`);
+              else errorDialog('Run', `Cannot find '<b>${esc(v)}</b>'. Check the name and try again.<br><span class="dim">Suggestions: skills, projects, publications, career, terminal, resume, contact</span>`);
             }
           },
           buttons: [{ t: 'OK', act: null }, { t: 'Cancel' }]

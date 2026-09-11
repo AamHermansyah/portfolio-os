@@ -3,7 +3,10 @@ import path from "node:path";
 
 const MAX_LINES = 500;
 const CODE_EXTENSIONS = new Set([".css", ".html", ".js", ".mjs", ".ts", ".tsx"]);
-const IGNORED_DIRECTORIES = new Set([".git", ".next", "node_modules"]);
+// `generated` holds machine-written output (Prisma Client). The cap is a
+// readability rule for code people maintain by hand, so it has nothing to say
+// about files a generator rewrites on every `prisma generate`.
+const IGNORED_DIRECTORIES = new Set([".git", ".next", "generated", "node_modules"]);
 const oversized = [];
 
 function visit(directory) {

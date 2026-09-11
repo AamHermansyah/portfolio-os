@@ -274,6 +274,47 @@
         }
       ];
 
+      /* Demo publications keep the research-library UI reviewable before real
+         papers are connected to the public data source. Every placeholder is
+         labelled plainly so it cannot be mistaken for a real publication. */
+      const PUBLICATIONS = [
+        {
+          title: '[Demo] Offline-First Interfaces for Intermittent Networks',
+          venue: 'Sample Journal of Applied Web Systems',
+          authors: ['Aam Hermansyah', 'Example Collaborator'],
+          date: '2026',
+          doi: 'Demo DOI — replace before launch',
+          abstract: 'A placeholder paper exploring practical interface patterns for applications that must remain understandable and useful while connectivity changes throughout a user journey.',
+          notes: [
+            'Demo publication used to review the library and reading-pane layouts.',
+            'Replace the title, venue, authors, abstract and DOI with verified material.'
+          ]
+        },
+        {
+          title: '[Demo] Practical Type Safety Across Full-Stack Boundaries',
+          venue: 'Example Conference on Software Delivery',
+          authors: ['Aam Hermansyah'],
+          date: '2025',
+          abstract: 'A sample conference paper about keeping contracts explicit as data moves through browser interfaces, server actions, validation layers and relational storage.',
+          notes: [
+            'Placeholder conference entry; it does not represent a real accepted paper.',
+            'The single-author layout is intentional for UI coverage.'
+          ]
+        },
+        {
+          title: '[Demo] Human-Centred Administration in Legacy Visual Systems',
+          venue: 'Sample Interaction Design Review',
+          authors: ['Aam Hermansyah', 'Example Research Partner', 'Example Reviewer'],
+          date: '2024',
+          doi: 'Demo DOI — not registered',
+          abstract: 'A placeholder article examining how familiar desktop metaphors can make dense administrative workflows feel approachable without hiding validation, permissions or destructive actions.',
+          notes: [
+            'Demo article included to exercise longer author lists and abstracts.',
+            'No external publication URL is attached to this placeholder.'
+          ]
+        }
+      ];
+
       const CREDENTIAL_KINDS = {
         certificate: { label: 'Certificate', ext: 'cer' },
         award: { label: 'Award', ext: 'awd' },

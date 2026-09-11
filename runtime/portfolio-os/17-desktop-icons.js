@@ -16,6 +16,9 @@
         ...(CREDENTIALS.length
           ? [{ id: 'certs', label: 'Certificates', ic: () => svg('cert', 32), open: openCertificates }]
           : []),
+        ...(PUBLICATIONS.length
+          ? [{ id: 'publications', label: 'Publications', ic: () => svg('journal', 32), open: openPublications }]
+          : []),
         { id: 'fiverr', label: 'Fiverr.url', ic: () => svg('globe', 32), open: openFiverr },
         { id: 'bin', label: 'Recycle Bin', ic: () => svg(binContents.length ? 'binF' : 'binE', 32), open: openBin }
       ];

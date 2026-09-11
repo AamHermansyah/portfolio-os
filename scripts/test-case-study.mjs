@@ -164,6 +164,26 @@ const expression = `
       ".app-expl .ex-item",
     ).length ?? 0;
 
+    const publicationsIcon = await waitFor(".dicon[data-id=publications]");
+    const publicationIconDistinct =
+      publicationsIcon.querySelector(".di-img")?.innerHTML !==
+      certificatesIcon.querySelector(".di-img")?.innerHTML;
+    await activateDesktopIcon(publicationsIcon, 15);
+    const publicationsWindow = await waitFor('.win[data-id="publications"]');
+    const publicationItems = [...publicationsWindow.querySelectorAll(".pub-item")];
+    const publicationCount = publicationItems.length;
+    const publicationPreviewVisible = Boolean(
+      publicationsWindow.querySelector(".pub-paper h2")?.textContent,
+    );
+    publicationItems[1]?.click();
+    publicationsWindow.querySelector('[data-a="details"]')?.click();
+    const publicationDetail = await waitFor(
+      '.win[data-id^="publication-"] .pub-detail-cover',
+    );
+    const publicationDetailVisible = publicationDetail.textContent.includes(
+      "Practical Type Safety",
+    );
+
     const changelogIcon = await waitFor(".dicon[data-id=changelog]");
     await activateDesktopIcon(changelogIcon, 20);
     await delay(300);
@@ -195,6 +215,11 @@ const expression = `
     await delay(650);
     const testimonialCount = inbox.querySelectorAll(".msg-row").length;
 
+    const publicationsTab = [...document.querySelectorAll(".tab")].find(
+      (tab) => tab.querySelector(".tab-t")?.textContent === "Publications — Research Library",
+    );
+    publicationsTab?.click();
+
     return {
       title: caseWindow.closest(".win").querySelector(".tb-text").textContent,
       tabCount: tabs.length,
@@ -211,6 +236,11 @@ const expression = `
       crtIndicatorIsPixelCheck,
       certificatesVisible: Boolean(certificatesIcon),
       certificateCount,
+      publicationsVisible: Boolean(publicationsIcon),
+      publicationIconDistinct,
+      publicationCount,
+      publicationPreviewVisible,
+      publicationDetailVisible,
       changelogSeparated:
         !changelogText.includes("Career") && !changelogText.includes("[DEMO]"),
       careerLogVisible:
@@ -267,6 +297,11 @@ const passed =
   report.crtIndicatorIsPixelCheck &&
   report.certificatesVisible &&
   report.certificateCount === 4 &&
+  report.publicationsVisible &&
+  report.publicationIconDistinct &&
+  report.publicationCount === 3 &&
+  report.publicationPreviewVisible &&
+  report.publicationDetailVisible &&
   report.changelogSeparated &&
   report.careerLogVisible &&
   report.testimonialCount === 3 &&

@@ -1,3 +1,4 @@
+import { AdminBridge } from "@/components/atoms/admin-bridge";
 import { CrtFilter } from "@/components/atoms/crt-filter";
 import { PortfolioRuntime } from "@/components/atoms/portfolio-runtime";
 import { BootScreen } from "@/components/molecules/boot-screen";
@@ -15,6 +16,7 @@ export function PortfolioTemplate() {
       <StartMenu />
       <SystemOverlay />
       <CrtFilter />
+      <AdminBridge />
       <PortfolioRuntime />
     </>
   );

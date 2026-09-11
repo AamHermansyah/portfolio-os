@@ -1,5 +1,7 @@
 import { connection } from "next/server";
 
+import { prisma } from "@/lib/prisma";
+
 /**
  * Inquiries from Hire_Me.exe (`kind: "inquiry"`) and Contact.exe (`kind: "message"`).
  *
@@ -155,10 +157,56 @@ async function deliver(
   if (!response.ok) throw new Error(`resend responded ${response.status}`);
 }
 
-/** Lets the wizard word its final step honestly before anyone fills it in. */
+/**
+ * Writes the submission down before anything is attempted with it, so a webhook
+ * that is down, misconfigured or simply absent costs a visitor's message
+ * nothing. The terminal reads these rows back through the `hire` and `contact`
+ * resources. Returns the row id, or null if even this failed.
+ */
+async function store(kind: Kind, values: Record<Field, string>): Promise<string | null> {
+  try {
+    const row = await prisma.inquiry.create({
+      data: {
+        kind,
+        name: values.name,
+        email: values.email,
+        company: values.company || null,
+        engagement: values.engagement || null,
+        projectType: values.projectType || null,
+        budget: values.budget || null,
+        timeline: values.timeline || null,
+        subject: values.subject || null,
+        message: values.message || null,
+      },
+      select: { id: true },
+    });
+    return row.id;
+  } catch (error) {
+    console.error("[hire] could not store submission:", error);
+    return null;
+  }
+}
+
+/** Best-effort note of how delivery went. Never allowed to fail the request. */
+async function markDelivery(id: string, delivered: boolean, deliveryError: string | null): Promise<void> {
+  try {
+    await prisma.inquiry.update({ where: { id }, data: { delivered, deliveryError } });
+  } catch (error) {
+    console.error("[hire] could not record delivery state:", error);
+  }
+}
+
+/**
+ * Lets the wizard word its final step honestly before anyone fills it in.
+ *
+ * A configured transport is no longer the only way a message survives: with a
+ * database attached, the submission is kept either way, so the mailto fallback
+ * is reserved for a deployment that has neither.
+ */
 export async function GET() {
   await connection();
-  return Response.json({ ok: true, configured: configuredTransport() !== null });
+  const configured = configuredTransport() !== null || !!process.env.DATABASE_URL;
+  return Response.json({ ok: true, configured });
 }
 
 export async function POST(request: Request) {
@@ -198,17 +246,33 @@ export async function POST(request: Request) {
     return Response.json({ ok: false, error: "rate_limit" }, { status: 429 });
   }
 
-  if (configuredTransport() === null) {
+  const stored = await store(kind, values);
+  const transport = configuredTransport();
+
+  // Nothing kept it and nothing will carry it: this is the one case where the
+  // visitor still needs the mailto fallback.
+  if (!stored && transport === null) {
     return Response.json({ ok: false, error: "not_configured" }, { status: 503 });
   }
 
   const source = readField(input.source, "subject") || (kind === "inquiry" ? "Hire_Me.exe" : "Contact.exe");
+  if (transport === null) {
+    return Response.json({ ok: true, stored: true });
+  }
+
   try {
     await deliver(kind, values, source, summarise(kind, values, source));
   } catch (error) {
     console.error("[hire] delivery failed:", error);
+    if (stored) {
+      // It is safe in the database and readable from the terminal, so the
+      // visitor is not asked to send it a second time.
+      await markDelivery(stored, false, error instanceof Error ? error.message.slice(0, 300) : "unknown");
+      return Response.json({ ok: true, stored: true, delivered: false });
+    }
     return Response.json({ ok: false, error: "transport" }, { status: 502 });
   }
 
+  if (stored) await markDelivery(stored, true, null);
   return Response.json({ ok: true });
 }

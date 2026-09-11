@@ -1,0 +1,297 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// Certificates and awards share an identical field set and appear in the same
+/// explorer window, so they are one table told apart by this discriminator.
+enum CredentialKind {
+  certificate
+  award
+}
+
+/// The owner of this portfolio — one row in practice. A table rather than a
+/// pair of environment variables because the failed-login counter, the token
+/// version and the last-login stamp all need somewhere durable to live, and a
+/// serverless deployment has no shared memory to keep them in.
+model AdminUser {
+  id           String    @id @default(cuid())
+  /// Stored lowercase; the login path normalizes before it looks up.
+  username     String    @unique
+  /// scrypt$N$r$p$salt$key — see lib/admin/password.ts. Never leaves the server.
+  passwordHash    String
+  /// scrypt hash of the recovery PIN specific to this user account.
+  recoveryPinHash String
+  displayName     String?
+  /// Raising this by one invalidates every token already in circulation. A
+  /// token carries the version it was minted with; a mismatch is a rejection.
+  tokenVersion Int       @default(1)
+  /// A durable brake on brute force. An in-memory counter is per-instance, so
+  /// every cold start would hand an attacker a fresh budget of guesses.
+  failedCount  Int       @default(0)
+  lockedUntil  DateTime?
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+/// One row per sign-in attempt. This is what makes per-IP rate limiting real
+/// across serverless instances — the in-memory window alongside it resets on
+/// every redeploy. Pruned on write, so no cron job is needed.
+model AdminLoginAttempt {
+  id        String   @id @default(cuid())
+  username  String
+  ok        Boolean
+  /// SHA-256 of the client IP: enough to count against, useless for tracking.
+  ipHash    String
+  createdAt DateTime @default(now())
+
+  @@index([ipHash, createdAt])
+  @@index([createdAt])
+}
+
+/// Certificates and awards.
+model Credential {
+  id        String         @id @default(cuid())
+  kind      CredentialKind
+  /// Stable handle for CRUD commands and window ids. The runtime currently
+  /// derives this from the title (credentialSlug), which means renaming an
+  /// entry changes its identity — storing it here is what stops that.
+  slug      String         @unique
+  title     String
+  issuer    String
+  /// Rendered verbatim. The existing data is free text such as "2024".
+  dateLabel String
+  /// Optional machine-readable date, so ordering need not be lexicographic.
+  issuedOn  DateTime?      @db.Date
+  /// The bullet list in the properties dialog. Ordered, never queried on its
+  /// own, so a Postgres text[] beats a child table.
+  notes     String[]
+  /// Drives the "Verify" link in openCredential().
+  verifyUrl String?
+  published Boolean        @default(true)
+  /// Manual ordering — a portfolio owner wants to pin entries, not sort them.
+  sortIndex Int            @default(0)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@index([published, kind, sortIndex])
+}
+
+/// Papers and articles. Separate from Credential because the fields genuinely
+/// diverge: co-authors, a DOI, and a venue that has no counterpart on a
+/// certificate or an award.
+model Publication {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  title       String
+  /// Journal, conference or publisher.
+  venue       String
+  /// Author order carries meaning, so this is an ordered array, not a relation.
+  authors     String[]
+  doi         String?
+  url         String?
+  publishedOn DateTime? @db.Date
+  dateLabel   String
+  abstract    String?
+  notes       String[]
+  published   Boolean   @default(true)
+  sortIndex   Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([published, sortIndex])
+}
+
+/// Work history.
+model Experience {
+  id             String    @id @default(cuid())
+  slug           String    @unique
+  role           String
+  company        String
+  location       String?
+  employmentType String?
+  startDate      DateTime  @db.Date
+  /// null means the role is still current.
+  endDate        DateTime? @db.Date
+  /// Ready-to-render label such as "2022 — Present", so the renderer never has
+  /// to know a date format.
+  dateLabel      String
+  notes          String[]
+  published      Boolean   @default(true)
+  sortIndex      Int       @default(0)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([published, sortIndex])
+}
+
+/// Schools and degrees.
+model Education {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  degree      String
+  institution String
+  field       String?
+  startDate   DateTime  @db.Date
+  endDate     DateTime? @db.Date
+  dateLabel   String
+  notes       String[]
+  published   Boolean   @default(true)
+  sortIndex   Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([published, sortIndex])
+}
+
+/// Which app a submission came from: Hire_Me.exe sends an engagement brief,
+/// Contact.exe sends a plain message. One table, because they are the same
+/// event to whoever reads them and most of the columns overlap.
+enum InquiryKind {
+  inquiry
+  message
+}
+
+/// Self-assessed skill levels, rendered as the ASCII bars in Skills.exe.
+model Skill {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  name      String
+  /// The joke filename shown in the installer, e.g. "tsconfig.sys".
+  file      String
+  /// 0-100. Validated at the edge; the column stays a plain Int.
+  level     Int
+  /// Renders the entry as a failed install. One skill is meant to look stuck.
+  failing   Boolean  @default(false)
+  published Boolean  @default(true)
+  sortIndex Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([published, sortIndex])
+}
+
+/// Project files on the desktop. Screenshots are deliberately not modelled:
+/// the gallery was procedurally generated art rather than stored images, and
+/// dropping it was an explicit decision rather than an oversight.
+model Project {
+  id           String   @id @default(cuid())
+  /// The short handle the runtime uses as a window id, e.g. "mykaggo".
+  slug         String   @unique
+  /// The fake DOS filename, e.g. "mykaggo.exe" — it also picks the icon.
+  file         String
+  name         String
+  version      String
+  /// Hex colour driving the generated pixel icon.
+  color        String
+  /// Fake Win32 file type, e.g. "Win32 application".
+  type         String
+  /// Fake size, e.g. "4.2 MB". Free text on purpose; it is set dressing.
+  size         String
+  /// Free text such as "08-31-2026", matching the existing data.
+  releaseDate  String
+  tagline      String
+  description  String
+  notes        String[]
+  stack        String[]
+  demoUrl      String?
+  repoUrl      String?
+  requirements String?
+  published    Boolean  @default(true)
+  sortIndex    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([published, sortIndex])
+}
+
+/// Entries in Testimonial Express. The three colours drive the generated pixel
+/// avatar; there are no uploaded images anywhere in this project.
+model Testimonial {
+  id         String   @id @default(cuid())
+  slug       String   @unique
+  author     String
+  role       String
+  subject    String
+  /// Free text, e.g. "Today, 10:30 AM", and its short form for the list column.
+  dateLabel  String
+  dateShort  String
+  /// 1-5.
+  stars      Int
+  skinColor  String
+  hairColor  String
+  shirtColor String
+  body       String
+  published  Boolean  @default(true)
+  sortIndex  Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([published, sortIndex])
+}
+
+/// Career.log — the career timeline.
+model CareerEntry {
+  id        String   @id @default(cuid())
+  year      Int
+  text      String
+  published Boolean  @default(true)
+  sortIndex Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([published, year, sortIndex])
+}
+
+/// Changelog.log — the shipping history of the OS itself. Structurally a twin
+/// of CareerEntry, kept apart because they are two different logs and merging
+/// them would mean every read carried a discriminator for no gain.
+model ChangelogEntry {
+  id        String   @id @default(cuid())
+  year      Int
+  text      String
+  published Boolean  @default(true)
+  sortIndex Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([published, year, sortIndex])
+}
+
+/// Everything submitted through /api/hire. Stored so the terminal can list it;
+/// the route still delivers to the configured webhook or mailbox exactly as
+/// before, and a storage failure never costs the owner the message.
+model Inquiry {
+  id            String      @id @default(cuid())
+  kind          InquiryKind
+  name          String
+  email         String
+  company       String?
+  /// Hire_Me.exe only.
+  engagement    String?
+  projectType   String?
+  budget        String?
+  timeline      String?
+  /// Contact.exe only.
+  subject       String?
+  message       String?
+  /// Whether the configured transport accepted it, and why not if it did not.
+  delivered     Boolean     @default(false)
+  deliveryError String?
+  /// Set the first time the owner opens it in the terminal.
+  readAt        DateTime?
+  createdAt     DateTime    @default(now())
+
+  @@index([kind, createdAt])
+  @@index([createdAt])
+}

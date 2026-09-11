@@ -95,12 +95,22 @@
       function openTerminal() {
         WM.create({
           id: 'terminal', title: 'Terminal — fauxcmd.exe', icon: svg('monitor', 14), w: 620, h: 400,
+          /* WM.close() reads onClose off the options object, so the handler that
+             used to be assigned to api inside build() never ran and every timer
+             the terminal started outlived its window. openSkills above already
+             does it this way. */
+          onClose(api) {
+            if (api.term) api.term.alive = false;
+            (api.timers || []).forEach(clearInterval);
+          },
           build(body, api) {
             body.className = 'win-body app-term';
             body.innerHTML = `<div class="t-out"></div><div class="t-line"><span class="t-ps">C:\\PORTFOLIO&gt;</span><input class="t-in" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="terminal input"></div>`;
-            const out = body.querySelector('.t-out'), inp = body.querySelector('.t-in');
-            const PS = 'C:\\PORTFOLIO> ';
-            let pending = null, hist = [], hi = 0;
+            const out = body.querySelector('.t-out'), inp = body.querySelector('.t-in'), psEl = body.querySelector('.t-ps');
+            /* The rendered prompt and the echoed one are two separate strings:
+               the span carries no trailing space so the caret sits flush. */
+            let PS = 'C:\\PORTFOLIO> ';
+            let pending = null, hist = [], hi = 0, busy = false;
             api.timers = [];
             function print(txt, cls) {
               String(txt).split('\n').forEach(l => {
@@ -113,16 +123,56 @@
               const d = document.createElement('div'); d.className = 't-row'; d.innerHTML = html;
               out.appendChild(d); out.scrollTop = out.scrollHeight;
             }
+            function setPrompt(text, admin) {
+              PS = text + ' '; psEl.textContent = text; psEl.classList.toggle('admin', !!admin);
+            }
+            /* One-shot prompt. A secret prompt masks the echo, hands back the
+               reply byte for byte, and locks the history keys while it is open. */
+            function ask(label, secret, fn, cancel) {
+              pending = { label, secret, fn, cancel };
+              psEl.textContent = label.replace(/\s+$/, '');
+              if (secret) inp.type = 'password';
+              inp.focus();
+            }
+            function endAsk() { inp.type = 'text'; psEl.textContent = PS.slice(0, -1); }
+            /* Rewrites the last echoed line and drops it from history, for a
+               command that should never have been typed out in full. */
+            function redactLast(replacement) {
+              if (out.lastElementChild) out.lastElementChild.textContent = PS + replacement;
+              if (hist.length) { hist.pop(); hi = hist.length; }
+            }
+            const term = {
+              api, out, alive: true, timers: api.timers,
+              print, printHTML, ask, setPrompt, redactLast,
+              setBusy(v) { busy = !!v; }
+            };
+            api.term = term;
             print('PortfolioOS 98 [Version 4.10.1998]\n(C) Copyright 1998-2026 Aam Hermansyah.');
             print('Type "help" to see available commands.\n', 'dim');
             body.addEventListener('pointerdown', e => { if (!e.target.closest('a')) setTimeout(() => inp.focus(), 0); });
             inp.addEventListener('keydown', e => {
+              /* History has to be unreachable while a secret is on screen, or
+                 ArrowUp pastes an earlier line straight into the password. */
+              if (pending && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) { e.preventDefault(); return; }
+              if (e.key === 'Escape' && pending) {
+                const p = pending; pending = null; inp.value = ''; endAsk();
+                print(p.label + '^C', 'dim'); if (p.cancel) p.cancel(); return;
+              }
+              if (busy) { if (e.key === 'Enter') { e.preventDefault(); beep(300, 60); } return; }
               if (e.key === 'ArrowUp') { if (hi > 0) { hi--; inp.value = hist[hi] || ''; } e.preventDefault(); return; }
               if (e.key === 'ArrowDown') { if (hi < hist.length) { hi++; inp.value = hist[hi] || ''; } e.preventDefault(); return; }
               if (e.key !== 'Enter') return;
               const raw = inp.value; inp.value = '';
+              if (pending) {
+                const p = pending; pending = null; endAsk();
+                /* The echo used to run before this branch, which would print a
+                   password into the scrollback, and the reply used to be
+                   lowercased, which would destroy a case-sensitive one. */
+                print(p.label + (p.secret ? '********' : raw));
+                p.fn(p.secret ? raw : raw.trim().toLowerCase());
+                return;
+              }
               print(PS + raw);
-              if (pending) { const p = pending; pending = null; p(raw.trim().toLowerCase()); return; }
               const line = raw.trim();
               if (!line) return;
               hist.push(raw); hi = hist.length;
@@ -139,12 +189,18 @@
               'resume': openResume, 'contact': openContact, 'bin': openBin, 'recycle': openBin,
               'testimonials': openInbox, 'praise': openInbox, 'inbox': openInbox,
               'career': openCareerLog, 'career-log': openCareerLog,
-              'changelog': openChangelog,
+              'changelog': openChangelog, 'publications': openPublications, 'papers': openPublications,
               'fiverr': openFiverr, 'globe': openFiverr, 'jupiter': openJupiter,
               'wallpaper': openWallpaperPicker, 'display': openWallpaperPicker
             };
             function exec(line) {
               const parts = line.split(/\s+/), c = parts[0].toLowerCase(), arg = parts.slice(1).join(' ');
+              /* Several resource names — career, projects, publications, skills and contact — are
+                 already public commands below. While signed in the administrative
+                 meaning wins, because that is what the operator came here for;
+                 the visitor's window is still one "open <name>" away. Signed out
+                 this returns false immediately and nothing changes. */
+              if (adminIntercept(c, arg, parts, term)) return;
               switch (c) {
                 case 'help':
                   print(
@@ -154,6 +210,7 @@
                     '  projects         list installed project files\n' +
                     '  skills           print skill levels (ASCII mode)\n' +
                     '  testimonials     what people say\n' +
+                    '  publications    open the research library\n' +
                     '  career          open the separate career timeline\n' +
                     '  changelog       open PortfolioOS shipping history\n' +
                     '  fiverr           freelance profile\n' +
@@ -169,6 +226,7 @@
                     '  clear / cls      wipe the screen\n' +
                     '  format c:        (do not)\n' +
                     '  exit             close this terminal\n\n' +
+                    adminHelpText() +
                     'Type commands at your own risk.', 'ok');
                   break;
                 case 'about':
@@ -211,6 +269,11 @@
           print('Opening Certificates \u2026', 'ok');
           openCertificates();
           break;
+        case 'publications':
+        case 'papers':
+          print('Opening Publications \u2026', 'ok');
+          openPublications();
+          break;
         case 'github':
         case 'network':
           print('Opening Network Neighborhood \u2026', 'ok');
@@ -242,7 +305,7 @@
                     const q = arg.toLowerCase();
                     const wall = WALLPAPERS.find(w => w.id === q || w.name.toLowerCase() === q);
                     if (wall) { setWallpaper(wall.id, true); print('Wallpaper changed to ' + wall.name + '.', 'ok'); }
-                    else print('Unknown wallpaper: ' + arg + '\nType "wallpaper" to list available names.', 'bad');
+                    else print('Unknown wallpaper: ' + arg + '\nType "wallpaper" to list available names.', 'err');
                   }
                   break;
                 case 'skills':
@@ -258,10 +321,11 @@
                     'RESUME   PDF   128,000 03-14-25  Printable resume\n' +
                     'CONTACT  EXE     9,216 01-02-25  Mail composer\n' +
                     'TESTIMON EXE    10,240 05-09-25  Testimonial inbox\n' +
+                    'PUBLICAT LIB    12,288 09-11-26  Research library\n' +
                     'CAREER   LOG     4,096 09-10-26  Career timeline\n' +
                     'CHANGELO LOG     6,144 09-10-26  Portfolio shipping history\n' +
                     'FIVERR   URL     1,024 05-12-25  Freelance profile link\n' +
-                    'RECYCLED      <DIR>    01-02-25  Deleted regrets\n\n       11 item(s)');
+                    'RECYCLED      <DIR>    01-02-25  Deleted regrets\n\n       12 item(s)');
                   break;
                 case 'open': case 'run': {
                   const t = arg.toLowerCase().replace(/\.exe$|\.dll$|\.sys$|\.html$|\.pdf$|\.txt$|\.url$|\.log$/, '');
@@ -297,13 +361,16 @@
                   info.slice(art.length).forEach(l => print('                   ' + l));
                   break;
                 }
-                case 'whoami': print('PORTFOLIO\\aam — fullstack developer, ' + PROFILE.experience.toLowerCase() + ', ' + PROFILE.location + '.'); break;
+                case 'whoami': print(adminWhoami() || ('PORTFOLIO\\aam — fullstack developer, ' + PROFILE.experience.toLowerCase() + ', ' + PROFILE.location + '.')); break;
                 case 'ver': print('PortfolioOS 98 [Version 4.10.1998]\nBuilt from scratch out of spite for one-page scrollers.'); break;
                 case 'date': print(fmtDate()); break;
                 case 'clear': case 'cls': out.innerHTML = ''; break;
                 case 'exit': api.close(); break;
                 case 'echo': print(arg); break;
-                case 'sudo': print('sudo: permission denied. This is a family operating system.', 'err'); break;
+                case 'sudo':
+                  if (adminExec(c, arg, parts, term)) break;
+                  print('sudo: permission denied. This is a family operating system.', 'err');
+                  break;
                 case 'coffee':
                   print('      ( (\n       ) )\n    ........\n    |      |]\n    \\      /\n     `----\'');
                   print('\nBrewing\u2026 done. Caffeine levels nominal.', 'ok');
@@ -315,21 +382,24 @@
                 case 'format':
                   if (arg.replace(/\s/g, '') === 'c:' || arg.toLowerCase() === 'c') {
                     print('WARNING: ALL DATA ON NON-REMOVABLE DISK\nDRIVE C: WILL BE LOST!\nProceed with format (Y/N)?', 'err');
-                    pending = v => {
+                    ask(PS, false, v => {
                       if (v === 'y' || v === 'yes') {
                         print('Formatting 1,204M\n');
                         print('Formatting\u2026  23%', 'dim');
                         api.timers.push(setTimeout(() => print('Formatting\u2026  71%', 'dim'), 700));
                         api.timers.push(setTimeout(() => bsod(), 1500));
                       } else print('Wise choice. Career preserved.', 'ok');
-                    };
+                    });
                   } else print('Syntax: format c:', 'err');
                   break;
                 default:
+                  /* Everything administrative lives in 22-admin-auth.js and
+                     23-admin-crud.js. One hook here keeps this file, already the
+                     largest in the runtime, out of the way of that growth. */
+                  if (adminExec(c, arg, parts, term)) break;
                   print(`'${parts[0]}' is not recognized as an internal or external command,\noperable program or batch file.`, 'err');
               }
             }
-            api.onClose = () => api.timers.forEach(clearTimeout);
             setTimeout(() => inp.focus(), 80);
           }
         });

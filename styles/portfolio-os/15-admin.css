@@ -1,0 +1,309 @@
+    /* ============ app: administration ============ */
+    /* The form and record windows behind the terminal CRUD commands. They stay
+       inside the Win98 vocabulary already established by .field and .btn rather
+       than inventing a second visual language for the admin side. */
+
+    .app-adm {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 8px;
+      overflow: hidden
+    }
+
+    .adm-head {
+      flex: 0 0 auto;
+      padding: 3px 6px;
+      background: #000080;
+      color: #fff;
+      font: 700 12px var(--mono);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap
+    }
+
+    .adm-form,
+    .adm-view {
+      flex: 1 1 auto;
+      overflow-y: auto;
+      padding: 4px 2px 4px 0
+    }
+
+    .adm-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 7px;
+      align-items: flex-start
+    }
+
+    .adm-row label {
+      flex: 0 0 130px;
+      text-align: right;
+      padding-top: 4px;
+      color: #333;
+      font: 12px var(--mono)
+    }
+
+    .adm-control {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px
+    }
+
+    .adm-control .field {
+      width: 100%;
+      box-sizing: border-box
+    }
+
+    .adm-area {
+      min-height: 58px;
+      resize: vertical;
+      font: 12px/1.4 var(--mono)
+    }
+
+    .adm-hint {
+      color: #555;
+      font: 11px var(--mono)
+    }
+
+    .adm-req {
+      color: #a00
+    }
+
+    /* A rejected save marks the field it came from, so the reason and the cause
+       are visible together instead of only in the message line. */
+    .adm-row.bad label {
+      color: #a00;
+      font-weight: 700
+    }
+
+    .adm-row.bad .field {
+      outline: 1px solid #a00
+    }
+
+    .adm-error {
+      flex: 0 0 auto;
+      padding: 4px 6px;
+      background: #ffe9e9;
+      color: #a00;
+      font: 12px var(--mono);
+      box-shadow: inset -1px -1px #fff, inset 1px 1px #808080
+    }
+
+    .adm-actions {
+      flex: 0 0 auto;
+      display: flex;
+      justify-content: flex-end;
+      gap: 6px;
+      padding-top: 2px
+    }
+
+    .adm-view-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 6px;
+      align-items: flex-start
+    }
+
+    .adm-view-k {
+      flex: 0 0 130px;
+      text-align: right;
+      color: #333;
+      font: 700 12px var(--mono)
+    }
+
+    .adm-view-v {
+      flex: 1;
+      min-width: 0;
+      font: 12px/1.45 var(--mono);
+      word-break: break-word
+    }
+
+    .adm-notes {
+      margin: 0;
+      padding-left: 16px
+    }
+
+    .adm-id {
+      flex: 0 0 auto;
+      color: #555;
+      font: 11px var(--mono)
+    }
+
+    /* Resource browser: the terminal `list` command remains available, while
+       this window adds direct mouse and keyboard CRUD controls. */
+    .adm-list-shell {
+      gap: 6px
+    }
+
+    .adm-toolbar {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      min-height: 25px
+    }
+
+    .adm-toolbar-spacer {
+      flex: 1 1 auto
+    }
+
+    .adm-list-message {
+      flex: 0 0 auto;
+      padding: 4px 6px;
+      color: #333;
+      background: #ffffdf;
+      font: 12px var(--mono);
+      box-shadow: inset -1px -1px #fff, inset 1px 1px #808080
+    }
+
+    .adm-list-message[data-kind="error"] {
+      color: #a00;
+      background: #ffe9e9
+    }
+
+    .adm-list-message[data-kind="success"] {
+      color: #064f06;
+      background: #e8ffe8
+    }
+
+    .adm-list-message[data-kind="busy"] {
+      color: #444;
+      background: #eee
+    }
+
+    .adm-grid-wrap {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: auto;
+      background: #fff;
+      box-shadow: inset -1px -1px #fff, inset 1px 1px #404040,
+        inset -2px -2px #dfdfdf, inset 2px 2px #808080
+    }
+
+    .adm-grid {
+      width: 100%;
+      min-width: max-content;
+      border-collapse: collapse;
+      color: #111;
+      font: 12px var(--mono)
+    }
+
+    .adm-grid th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      padding: 4px 7px;
+      background: #c0c0c0;
+      text-align: left;
+      white-space: nowrap;
+      border-right: 1px solid #808080;
+      border-bottom: 1px solid #404040
+    }
+
+    .adm-grid td {
+      max-width: 300px;
+      padding: 4px 7px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      border-right: 1px solid #ddd;
+      border-bottom: 1px solid #e7e7e7
+    }
+
+    .adm-grid-row {
+      cursor: default
+    }
+
+    .adm-grid-row:hover {
+      background: #efefef
+    }
+
+    .adm-grid-row.selected,
+    .adm-grid-row.selected:hover {
+      color: #fff;
+      background: #000080
+    }
+
+    .adm-grid-row:focus {
+      outline: 1px dotted #fff;
+      outline-offset: -3px
+    }
+
+    .adm-grid-handle {
+      max-width: 260px;
+      font-weight: 700
+    }
+
+    .adm-grid-actions {
+      max-width: none !important;
+      padding: 2px 4px !important
+    }
+
+    .adm-grid-actions .btn {
+      min-width: 48px;
+      margin-right: 3px
+    }
+
+    .adm-grid-empty {
+      height: 80px;
+      color: #555;
+      text-align: center;
+      white-space: normal !important
+    }
+
+    .adm-list-shell.busy .adm-grid-wrap {
+      opacity: .65
+    }
+
+    .adm-pager {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px
+    }
+
+    .adm-page-label {
+      min-width: 100px;
+      text-align: center;
+      font: 12px var(--mono)
+    }
+
+    .adm-delete-error {
+      margin-top: 8px;
+      padding: 4px 6px;
+      color: #a00;
+      background: #ffe9e9;
+      font: 12px/1.35 var(--mono);
+      box-shadow: inset -1px -1px #fff, inset 1px 1px #808080
+    }
+
+    @media (max-width: 520px) {
+
+      .adm-row,
+      .adm-view-row {
+        flex-direction: column;
+        gap: 2px
+      }
+
+      .adm-row label,
+      .adm-view-k {
+        flex: 0 0 auto;
+        text-align: left
+      }
+
+      .adm-toolbar {
+        flex-wrap: wrap
+      }
+
+      .adm-toolbar-spacer {
+        display: none
+      }
+
+      .adm-grid td {
+        max-width: 210px
+      }
+    }

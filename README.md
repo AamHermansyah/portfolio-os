@@ -120,7 +120,7 @@ Copy-Item .env.example .env.local
 
 ## Environment variables
 
-All variables are optional. Without an inquiry transport, the contact applications fall back to the visitor's configured e-mail client.
+All variables are optional. With a database attached, submissions are stored and readable from the Terminal even when no delivery transport is configured; the fallback to the visitor's own e-mail client is reserved for a deployment that has neither.
 
 ### Inquiry delivery
 
@@ -134,6 +134,23 @@ Choose one delivery method:
 | `HIRE_FROM_EMAIL` | Optional verified sender address for Resend. |
 
 `HIRE_WEBHOOK_URL` takes precedence when both methods are configured.
+
+### Database and terminal administration
+
+| Variable | Purpose |
+| --- | --- |
+| `DATABASE_URL` | Pooled Neon connection string. Used by the application at runtime. |
+| `DATABASE_URL_UNPOOLED` | Direct Neon connection string. Used by Prisma Migrate, which needs a session-level advisory lock the pooler cannot hold. |
+| `NEON_BRANCH` | Which Neon branch the two URLs point at. Informational. |
+| `ADMIN_TOKEN_SECRET` | Signing key for the in-memory admin session token. At least 32 characters. Without it the admin commands report `not_configured`. |
+
+`neon link` writes the first three. Generate `ADMIN_TOKEN_SECRET` with:
+
+```bash
+node -e "console.log(require('node:crypto').randomBytes(32).toString('base64url'))"   # ADMIN_TOKEN_SECRET
+```
+
+Content is managed from the Terminal, not from a web dashboard. Sign in with `sudo login --admin`, then `help` lists the administrative commands and `resources` lists what can be managed. The session lives in memory only — reloading the page signs you out, and nothing is written to a cookie or to local storage. The first administrator is created with `sudo setup --admin`, which prompts to create a recovery PIN that is securely hashed (scrypt) and stored per-account in the database. A forgotten password is recovered with `sudo reset --admin`, which validates against that account's recovery PIN and invalidates every token already issued. End the session anytime with `logout`.
 
 ### GitHub snapshot
 
