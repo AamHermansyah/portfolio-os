@@ -132,6 +132,10 @@
       box-shadow: inset -1px -1px #fff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px #808080
     }
 
+    .ib-prev[hidden] {
+      display: none
+    }
+
     .ib-empty {
       color: #777;
       font: 11px var(--mono);

@@ -208,6 +208,15 @@ const expression = `
 
     document.querySelector("#testbtn").click();
     const inbox = await waitFor(".app-inbox");
+    const testimonialPreview = inbox.querySelector(".ib-prev");
+    const testimonialDetailInitiallyHidden =
+      testimonialPreview.hidden &&
+      !testimonialPreview.textContent.includes("undefined");
+    inbox.querySelector(".msg-row")?.click();
+    const testimonialDetailAfterSelection =
+      !testimonialPreview.hidden &&
+      Boolean(testimonialPreview.querySelector(".prev-hdr")) &&
+      !testimonialPreview.textContent.includes("undefined");
     const receive = inbox.querySelector('[data-a="sr"]');
     receive.click();
     await delay(650);
@@ -247,6 +256,8 @@ const expression = `
         careerText.includes("CAREER.LOG") && careerText.includes("[DEMO]"),
       testimonialCount,
       testimonialDemoVisible: inbox.textContent.includes("(Demo)"),
+      testimonialDetailInitiallyHidden,
+      testimonialDetailAfterSelection,
       status: caseWindow
         .closest(".win")
         .querySelector(".statusbar .sb").textContent,
@@ -305,7 +316,9 @@ const passed =
   report.changelogSeparated &&
   report.careerLogVisible &&
   report.testimonialCount === 3 &&
-  report.testimonialDemoVisible;
+  report.testimonialDemoVisible &&
+  report.testimonialDetailInitiallyHidden &&
+  report.testimonialDetailAfterSelection;
 
 console.log(JSON.stringify({ passed, ...report }, null, 2));
 

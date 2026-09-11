@@ -98,10 +98,10 @@
         if (testiState.started && testiState.count < TESTIMONIALS.length) scheduleNext(15000);
       }
 
-      function openInbox(select) {
+      function openInbox(initialSelection) {
         if (WM.wins.has('testimonials')) {
           WM.focus('testimonials');
-          if (select && inboxRefs) inboxRefs.select(select);
+          if (initialSelection && inboxRefs) inboxRefs.select(initialSelection);
           return;
         }
         WM.create({
@@ -120,7 +120,7 @@
         <span class="grow"></span>
       </div>
       <div class="ib-list"></div>
-      <div class="ib-prev"><div class="ib-empty">Select a message to read it.</div></div>`;
+      <div class="ib-prev" hidden></div>`;
             const ibList = body.querySelector('.ib-list'), ibPrev = body.querySelector('.ib-prev');
             let selIdx = -1;
             function render() {
@@ -135,13 +135,14 @@
                 row.innerHTML = `<span class="m-ic">${svg(t._read ? 'openmail' : 'mail', 14)}</span>` +
                   `<span class="m-from">${esc(t.from)}</span><span class="m-subj">${esc(t.subject)}</span>` +
                   `<span class="m-date">${esc(t.dateShort)}</span>`;
-                row.addEventListener('click', () => select(t));
+                row.addEventListener('click', () => selectItem(t));
                 ibList.appendChild(row);
               });
             }
-            function select(t) {
+            function selectItem(t) {
               t._read = true; selIdx = TESTIMONIALS.indexOf(t);
               updateTrayBadge(); render();
+              ibPrev.hidden = false;
               ibPrev.innerHTML = `<div class="prev-hdr">
           <div class="prev-av">${personIcon(t, 36)}</div>
           <div class="prev-who">
@@ -160,10 +161,9 @@
             body.querySelector('[data-a="reply"]').addEventListener('click', () => {
               errorDialog('Testimonial Express', 'Reply failed: SMTP server not configured.<br>This is a one-way mailbox &mdash; like most references.');
             });
-            inboxRefs = { api, render, select };
+            inboxRefs = { api, render, select: selectItem };
             render();
-            if (select) select(select);
-            else if (testiState.count) select(TESTIMONIALS[0]);
+            if (initialSelection) selectItem(initialSelection);
           }
         });
       }

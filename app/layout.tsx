@@ -1,12 +1,63 @@
 import type { Metadata } from "next";
+import { siteConfig } from "@/lib/site";
 import "./globals.css";
 
 /* eslint-disable @next/next/no-page-custom-font */
 
 export const metadata: Metadata = {
-  title: "PortfolioOS 98 — Aam Hermansyah",
-  description:
-    "An interactive Windows 98-inspired portfolio for fullstack developer Aam Hermansyah.",
+  metadataBase: siteConfig.url,
+  title: {
+    default: siteConfig.title,
+    template: `%s | ${siteConfig.personName}`,
+  },
+  description: siteConfig.description,
+  applicationName: siteConfig.name,
+  authors: [
+    {
+      name: siteConfig.personName,
+      url: siteConfig.url,
+    },
+  ],
+  creator: siteConfig.personName,
+  publisher: siteConfig.personName,
+  category: "technology",
+  keywords: [
+    "Aam Hermansyah",
+    "fullstack developer Indonesia",
+    "Next.js developer",
+    "React developer",
+    "TypeScript developer",
+    "Node.js developer",
+    "web application developer",
+    "software engineer portfolio",
+  ],
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    url: "/",
+    locale: "en_US",
+    siteName: siteConfig.name,
+    title: siteConfig.title,
+    description: siteConfig.description,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteConfig.title,
+    description: siteConfig.description,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
