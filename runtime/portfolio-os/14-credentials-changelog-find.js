@@ -24,7 +24,9 @@
           id: 'cred-' + credentialFile(opened), title: credentialFile(opened) + ' Properties',
           icon: svg(credentialIcon(opened), 14), w: 440, h: 'auto', dialog: true, refreshable: true,
           build(body, api) {
-            body.className = 'win-body app-sys';
+            /* cred-detail: no right-side icon column, so the notes and values
+               get the full window width instead of wrapping early. */
+            body.className = 'win-body app-sys cred-detail';
             /* Built from the current copy, so a Refresh shows the edited entry. */
             const c = CREDENTIALS.find(x => x.kind === opened.kind && x.id === opened.id);
             if (!c) {
@@ -47,7 +49,6 @@
                     ${notes}
                   </div>
                 </div>
-                <div class="sys-logo">${svg(credentialIcon(c), 48)}</div>
               </div>
               <div class="sys-sep"></div>
               <div class="sys-actions">

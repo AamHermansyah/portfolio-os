@@ -258,7 +258,7 @@ export async function loadPortfolioContent(): Promise<PortfolioContent> {
         date: e.dateLabel,
         notes: e.notes,
         url: "",
-        details: details([["Location", e.location], ["Employment", e.employmentType]]),
+        details: details([["Employment", e.employmentType], ["Location", e.location]]),
       })),
       ...education.map((e) => ({
         id: e.slug,

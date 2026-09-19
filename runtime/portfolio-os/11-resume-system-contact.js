@@ -24,6 +24,7 @@
             const skills = SKILLS.filter(s => !s.fail);
             const entry = c => `<div class="r-job">
         <div class="r-row"><b>${esc(c.title)}</b> — ${esc(c.issuer)}<span>${esc(c.date)}</span></div>
+        ${c.kind === 'experience' && c.details.length ? `<div class="r-sub">${c.details.map(([, v]) => esc(v)).join(' &middot; ')}</div>` : ''}
         ${c.notes.length ? `<ul>${c.notes.map(n => `<li>${esc(n)}</li>`).join('')}</ul>` : ''}</div>`;
             const linkHost = u => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch { return u; } };
             const links = p => [
