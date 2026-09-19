@@ -1,18 +1,33 @@
 /* =================================================================
-         Find, Certificates, Changelog, Career
+         Find, Certificates, Experience, Education, Changelog, Career
       ================================================================= */
 
-      const credentialSlug = c => c.title.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '').slice(0, 28);
+      /* Named after the stored slug, which is unique within its table; the
+         extension differs per kind, so the name is unique across all of them.
+         The slug is not truncated — two long titles sharing a prefix would
+         otherwise open the same window. */
+      const credentialSlug = c => String(c.id || c.title).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
       const credentialFile = c => credentialSlug(c) + '.' + (CREDENTIAL_KINDS[c.kind] || { ext: 'doc' }).ext;
+      const credentialIcon = c => (CREDENTIAL_KINDS[c.kind] || { icon: 'cert' }).icon;
+
+      /* Certificates, work history and education are three tables and three
+         desktop apps. They share the file-and-properties presentation. */
+      const CREDENTIAL_FOLDERS = {
+        certs: { title: 'Certificates', icon: 'cert', kinds: ['certificate', 'award'], empty: 'No certificates on file yet.' },
+        experience: { title: 'Experience', icon: 'experience', kinds: ['experience'], empty: 'No work experience on file yet.' },
+        education: { title: 'Education', icon: 'education', kinds: ['education'], empty: 'No education on file yet.' }
+      };
+      const credentialsIn = id => CREDENTIALS.filter(c => CREDENTIAL_FOLDERS[id].kinds.includes(c.kind));
 
       function openCredential(c) {
-        const kind = CREDENTIAL_KINDS[c.kind] || { label: 'Document' };
+        const kind = CREDENTIAL_KINDS[c.kind] || { label: 'Document', by: 'Issued by' };
         const rows = [['Type', kind.label], ['Title', c.title]];
-        if (c.issuer) rows.push(['Issued by', c.issuer]);
+        if (c.issuer) rows.push([kind.by, c.issuer]);
         if (c.date) rows.push(['Date', c.date]);
+        (c.details || []).forEach(row => rows.push(row));
         WM.create({
-          id: 'cred-' + credentialSlug(c), title: credentialFile(c) + ' Properties',
-          icon: svg('cert', 14), w: 440, h: 'auto', dialog: true,
+          id: 'cred-' + credentialFile(c), title: credentialFile(c) + ' Properties',
+          icon: svg(credentialIcon(c), 14), w: 440, h: 'auto', dialog: true,
           build(body, api) {
             body.className = 'win-body app-sys';
             const notes = (c.notes || []).length
@@ -24,7 +39,7 @@
                     ${notes}
                   </div>
                 </div>
-                <div class="sys-logo">${svg('cert', 48)}</div>
+                <div class="sys-logo">${svg(credentialIcon(c), 48)}</div>
               </div>
               <div class="sys-sep"></div>
               <div class="sys-actions">
@@ -37,25 +52,30 @@
         });
       }
 
-      function openCertificates() {
-        const items = () => CREDENTIALS.map(c => ({
+      function openCredentialFolder(id) {
+        const folder = CREDENTIAL_FOLDERS[id];
+        const items = () => credentialsIn(id).map(c => ({
           f: credentialFile(c),
           type: (CREDENTIAL_KINDS[c.kind] || { label: 'Document' }).label,
           size: c.date || '\u2014',
           desc: c.issuer || c.title,
-          icon: s => svg('cert', s),
+          icon: s => svg(folder.icon, s),
           open: () => openCredential(c)
         }));
         openExplorerWin({
-          id: 'certs', title: 'Certificates', icon: s => svg('cert', s), path: 'C:\\Certificates',
-          items, stat2: 'My Portfolio (C:)', empty: 'No certificates on file yet.'
+          id, title: folder.title, icon: s => svg(folder.icon, s), path: 'C:\\' + folder.title,
+          items, stat2: 'My Portfolio (C:)', empty: folder.empty
         });
       }
+      function openCertificates() { openCredentialFolder('certs'); }
+      function openExperience() { openCredentialFolder('experience'); }
+      function openEducation() { openCredentialFolder('education'); }
 
       /* ---- Changelog.log ----
-         Portfolio milestones are kept by hand because they describe this repository.
-         Repository activity is derived from the GitHub snapshot, so the shipping
-         history stays current without mixing it with the separate career timeline. */
+         Portfolio milestones come from the ChangelogEntry table ("changelog new"
+         in the terminal). Repository activity is derived from the GitHub snapshot,
+         so the shipping history stays current without mixing it with the
+         separate career timeline. */
       function changelogText(data) {
         const years = new Map();
         const bucket = y => {
@@ -140,7 +160,6 @@
         });
         if (!CAREER_LOG.length) lines.push('No career milestones on file yet.', '');
         lines.push('-'.repeat(52));
-        lines.push('Entries marked [DEMO] are placeholders for layout review.');
         return lines.join('\n');
       }
 

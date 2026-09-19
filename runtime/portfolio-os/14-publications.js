@@ -2,8 +2,9 @@
          Publications — public research library
       ================================================================= */
 
-      const publicationSlug = publication => publication.title
-        .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 42);
+      /* The stored slug is unique, so it is used whole; only a title needs a cap. */
+      const publicationSlug = publication => publication.id ||
+        publication.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 42);
 
       const publicationAuthors = publication => (publication.authors || []).join(', ');
 
@@ -53,7 +54,7 @@
         WM.create({
           id: 'publications', title: 'Publications — Research Library',
           icon: svg('journal', 14), w: 760, h: 500,
-          status: [PUBLICATIONS.length + ' publication(s)', 'Hardcoded preview data'],
+          status: [PUBLICATIONS.length + ' publication(s)', 'Research Library'],
           menubar: [
             { label: 'File', items: [{ label: 'Close', act: api => api.close() }] },
             { label: 'Help', items: [{ label: 'About PortfolioOS', act: aboutOS }] }

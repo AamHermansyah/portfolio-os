@@ -6,8 +6,9 @@ import { DesktopShell } from "@/components/organisms/desktop-shell";
 import { StartMenu } from "@/components/organisms/start-menu";
 import { SystemOverlay } from "@/components/organisms/system-overlay";
 import { Taskbar } from "@/components/organisms/taskbar";
+import type { PortfolioContent } from "@/lib/portfolio/contract";
 
-export function PortfolioTemplate() {
+export function PortfolioTemplate({ content }: { content: PortfolioContent }) {
   return (
     <>
       <BootScreen />
@@ -17,7 +18,7 @@ export function PortfolioTemplate() {
       <SystemOverlay />
       <CrtFilter />
       <AdminBridge />
-      <PortfolioRuntime />
+      <PortfolioRuntime content={content} />
     </>
   );
 }

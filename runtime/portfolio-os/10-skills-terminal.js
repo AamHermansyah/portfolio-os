@@ -6,12 +6,20 @@
           build(body, api) {
             api.timers = [];
             body.className = 'win-body app-skill';
+            /* Every count and filename below comes from the Skill table, so the
+               summary stays true as entries are added or removed. */
+            const owner = esc(PROFILE.name.split(' ')[0]) + '&rsquo;s';
+            const failed = SKILLS.filter(s => s.fail);
+            const summary = (SKILLS.length - failed.length) + ' of ' + SKILLS.length + ' components installed';
+            const sizeKb = Math.round(SKILLS.reduce((a, s) => a + s.level, 0) * 1.312);
             body.innerHTML = `
-    <div class="sk-banner">${svg('gear', 28)}<div><b>SkillPack&trade; 98 &mdash; Setup</b><div class="sk-bver">Installing Alex's core competencies</div></div></div>
+    <div class="sk-banner">${svg('gear', 28)}<div><b>SkillPack&trade; 98 &mdash; Setup</b><div class="sk-bver">Installing ${owner} core competencies</div></div></div>
     <div class="sk-main">
       <div data-p="1">
-        <p class="sk-lead">This wizard will install Alex's core competencies onto this portfolio.</p>
-        <p class="sk-dim">9 components, 874 KB total. Installation is entirely metaphorical &mdash; no actual skills can be transferred over HTTP, unfortunately.</p>
+        <p class="sk-lead">This wizard will install ${owner} core competencies onto this portfolio.</p>
+        ${SKILLS.length
+          ? `<p class="sk-dim">${SKILLS.length} component${SKILLS.length === 1 ? '' : 's'}, ${sizeKb.toLocaleString('en-US')} KB total. Installation is entirely metaphorical &mdash; no actual skills can be transferred over HTTP, unfortunately.</p>`
+          : '<p class="sk-dim">No components are available to install yet. Check back after the next release.</p>'}
         <ul class="sk-files">${SKILLS.map(s => `<li>${esc(s.file)}</li>`).join('')}</ul>
       </div>
       <div data-p="2" hidden>
@@ -22,8 +30,8 @@
       </div>
       <div data-p="3" hidden>
         <p class="sk-lead"><b>Setup completed.</b></p>
-        <p class="sk-dim">8 of 9 components installed successfully.<br>
-        rustc.exe reported error 0x00DEAD &mdash; "insufficient weekends". Setup recommends scheduling more of them.</p>
+        <p class="sk-dim">${summary} successfully.${failed.length ? `<br>
+        ${esc(failed[0].file)} reported error 0x00DEAD &mdash; "insufficient weekends". Setup recommends scheduling more of them.` : ''}</p>
         <p class="sk-dim" style="margin-top:10px">Proficiency values are self-reported.<br>Trust, but verify in an interview.</p>
       </div>
     </div>
@@ -36,6 +44,7 @@
             const allRow = body.querySelector('.sk-all');
             const status = body.querySelector('.sk-status');
             const bGo = body.querySelector('[data-b="go"]'), bCancel = body.querySelector('[data-b="cancel"]');
+            if (!SKILLS.length) { bGo.style.display = 'none'; bCancel.textContent = 'Close'; }
             function setPhase(n) {
               phases.forEach(p => p.hidden = p.dataset.p !== String(n));
               if (n === 1) { bGo.textContent = 'Install\u2026'; bGo.style.display = ''; bCancel.textContent = 'Cancel'; }
@@ -53,11 +62,11 @@
             });
             function install() {
               let i = 0;
-              const total = SKILLS.reduce((a, s) => a + s.level, 0);
+              const total = SKILLS.reduce((a, s) => a + s.level, 0) || 1;
               let doneSum = 0;
               function next() {
                 if (i >= SKILLS.length) {
-                  status.textContent = 'Installation complete \u2014 8 of 9 components installed. Review the results or close this window when you are ready.';
+                  status.textContent = 'Installation complete \u2014 ' + summary + '. Review the results or close this window when you are ready.';
                   bGo.style.display = '';
                   bGo.textContent = 'Reinstall';
                   bCancel.textContent = 'Close';
@@ -190,6 +199,9 @@
               'testimonials': openInbox, 'praise': openInbox, 'inbox': openInbox,
               'career': openCareerLog, 'career-log': openCareerLog,
               'changelog': openChangelog, 'publications': openPublications, 'papers': openPublications,
+              'certificates': openCertificates, 'certs': openCertificates,
+              'experience': openExperience, 'work': openExperience,
+              'education': openEducation, 'school': openEducation,
               'fiverr': openFiverr, 'globe': openFiverr, 'jupiter': openJupiter,
               'wallpaper': openWallpaperPicker, 'display': openWallpaperPicker
             };
@@ -209,7 +221,7 @@
                     '  about            who is behind this OS\n' +
                     '  projects         list installed project files\n' +
                     '  skills           print skill levels (ASCII mode)\n' +
-                    '  testimonials     what people say\n' +
+                    '  testimonials [n] what people say, page n\n' +
                     '  publications    open the research library\n' +
                     '  career          open the separate career timeline\n' +
                     '  changelog       open PortfolioOS shipping history\n' +
@@ -238,15 +250,28 @@
                     'Dislikes: infinite scroll. (Hence all this.)');
                   break;
                 case 'projects':
-                  print('Project files on drive C:\n\n' + PROJECTS.map(p => '  ' + p.file.padEnd(17) + p.tagline).join('\n') +
+                  if (!PROJECTS.length) { print('No project files on drive C: yet.', 'dim'); break; }
+                  print('Project files on drive C:\n\n' + PROJECTS.map(p => '  ' + p.file.padEnd(17) + ' ' + p.tagline).join('\n') +
                     '\n\nType: open <filename>  to run any of them.', 'ok');
                   break;
-                case 'testimonials': case 'praise':
-                  if (!TESTIMONIALS.length) { print('No testimonials on file yet.', 'dim'); break; }
-                  print('What people say (delivered via Testimonial Express):\n');
-                  TESTIMONIALS.forEach(t => print('  ' + t.from.padEnd(19) + ('*'.repeat(t.stars)) + '  ' + t.role));
-                  print('\nType "open testimonials" to launch the inbox.', 'dim');
+                case 'testimonials': case 'praise': {
+                  /* Paged from the same endpoint the inbox uses, five at a time. */
+                  const page = Math.max(1, parseInt(arg, 10) || 1);
+                  busy = true;
+                  fetchTestimonials(page, 5).then(result => {
+                    busy = false;
+                    if (!term.alive) return;
+                    if (!result.ok) { print('Testimonial Express could not be reached. Try again shortly.', 'err'); return; }
+                    if (!result.total) { print('No testimonials on file yet.', 'dim'); return; }
+                    if (!result.items.length) { print('There is no page ' + page + '. The last one is ' + result.pages + '.', 'err'); return; }
+                    print('What people say — page ' + result.page + ' of ' + result.pages + ' (' + result.total + ' total):\n');
+                    result.items.forEach(t => print('  ' + t.from.padEnd(19) + ('*'.repeat(t.stars)) + '  ' + t.role));
+                    print(result.page < result.pages
+                      ? '\nType "testimonials ' + (result.page + 1) + '" for the next page, or "open testimonials" for the inbox.'
+                      : '\nType "open testimonials" to launch the inbox.', 'dim');
+                  });
                   break;
+                }
                 case 'access':
         case 'accessibility':
           print('Opening Accessibility Properties \u2026', 'ok');
@@ -309,6 +334,7 @@
                   }
                   break;
                 case 'skills':
+                  if (!SKILLS.length) { print('No skills on file yet.', 'dim'); break; }
                   SKILLS.forEach(s => print('  ' + s.name.padEnd(13) + bar(s.level) + ' ' + s.level + '%' + (s.fail ? '  (still installing\u2026)' : '')));
                   print('\nRun Skills.exe for the graphical installer. Very 1998.', 'dim');
                   break;
@@ -329,7 +355,7 @@
                   break;
                 case 'open': case 'run': {
                   const t = arg.toLowerCase().replace(/\.exe$|\.dll$|\.sys$|\.html$|\.pdf$|\.txt$|\.url$|\.log$/, '');
-                  const p = PROJECTS.find(p => p.id === t || p.file === arg);
+                  const p = findProject(arg);
                   if (OPEN[t]) { print('Launching ' + arg + ' \u2026', 'ok'); OPEN[t](); }
                   else if (p) { print('Launching ' + p.file + ' \u2026', 'ok'); openProject(p); }
                   else print(`Cannot find '${arg}'. Type "projects" for available files.`, 'err');
@@ -354,9 +380,9 @@
                     '| |  &gt;_      | |',
                     '| |__________| |',
                     '|______________|'];
-                  const info = ['alex@portfolio', '---------------------', 'OS: PortfolioOS 98 (4.10.1998)', 'Kernel: React 19 on hope',
+                  const info = ['aam@portfolio', '---------------------', 'OS: PortfolioOS 98 (4.10.1998)', 'Kernel: React 19 on hope',
                     'Uptime: ' + uptime(), 'Shell: fauxcmd.exe', 'Resolution: ' + innerWidth + 'x' + innerHeight,
-                    'CPU: fullstack dev (7 yrs)', 'Memory: 65,536 KB', 'Packages: 5 (projects)', 'Planets: 1 (interactive)', 'Moons: 4 (Galilean)', 'Emojis: 0 (by design)'];
+                    'CPU: fullstack dev (' + PROFILE.experience.toLowerCase() + ')', 'Memory: 65,536 KB', 'Packages: ' + PROJECTS.length + ' (projects)', 'Planets: 1 (interactive)', 'Moons: 4 (Galilean)', 'Emojis: 0 (by design)'];
                   art.forEach((a, i) => print(a + '   ' + (info[i] || ''), i < 2 ? 'hdr' : ''));
                   info.slice(art.length).forEach(l => print('                   ' + l));
                   break;

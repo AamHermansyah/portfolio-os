@@ -14,28 +14,51 @@
           ],
           build(body) {
             body.className = 'win-body app-resume';
+            /* Work history and education live in the same list as certificates;
+               the résumé shows each section only when it has entries. */
+            const summary = PROFILE.summary || '';
+            const jobs = CREDENTIALS.filter(c => c.kind === 'experience');
+            const schools = CREDENTIALS.filter(c => c.kind === 'education');
+            const certs = CREDENTIALS.filter(c => c.kind === 'certificate');
+            const skills = SKILLS.filter(s => !s.fail);
+            const entry = c => `<div class="r-job">
+        <div class="r-row"><b>${esc(c.title)}</b> — ${esc(c.issuer)}<span>${esc(c.date)}</span></div>
+        ${c.notes.length ? `<ul>${c.notes.map(n => `<li>${esc(n)}</li>`).join('')}</ul>` : ''}</div>`;
+            const linkHost = u => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch { return u; } };
+            const links = p => [
+              p.demo ? `<a href="${esc(p.demo)}" target="_blank" rel="noopener">${esc(linkHost(p.demo))}</a>` : '',
+              p.repo ? `<a href="${esc(p.repo)}" target="_blank" rel="noopener">Source</a>` : ''
+            ].filter(Boolean).join(' &middot; ');
+            const groups = [...new Set(skills.map(s => s.group).filter(Boolean))];
+            const skillHtml = groups.length
+              ? groups.map(g => `<div class="r-grp"><b>${esc(g)}:</b> ${skills.filter(s => s.group === g).map(s => esc(s.name)).join(', ')}</div>`).join('')
+              : `<div class="r-sk">${skills.map(s => esc(s.name)).join(' &middot; ')}</div>`;
             body.innerHTML = `<div class="resume-page">
       <h1>AAM HERMANSYAH</h1>
       <div class="r-sub">${esc(PROFILE.role)} — ${esc(PROFILE.location)}</div>
-      <div class="r-links"><a href="mailto:${LINKS.email}">${LINKS.email}</a> &middot;
-        <a href="${LINKS.github}" target="_blank" rel="noopener">github.com/${LINKS.githubUser}</a> &middot;
+      <div class="r-links"><a href="mailto:${LINKS.email}">${LINKS.email}</a> &middot; ${esc(LINKS.phone)} &middot;
         <a href="${LINKS.linkedin}" target="_blank" rel="noopener">linkedin.com/in/${LINKS.linkedinUser}</a> &middot;
-        <a href="${LINKS.site}" target="_blank" rel="noopener">${LINKS.siteLabel}</a></div>
-      <h2>SELECTED PROJECTS</h2>
+        <a href="${LINKS.github}" target="_blank" rel="noopener">github.com/${LINKS.githubUser}</a> &middot;
+        <a href="${LINKS.site}" target="_blank" rel="noopener">${LINKS.siteLabel}</a> &middot;
+        <a href="${LINKS.fiverr}" target="_blank" rel="noopener">fiverr.com/${LINKS.fiverrUser}</a></div>
+      ${summary ? `<h2>SUMMARY</h2><p class="r-sum">${esc(summary)}</p>` : ''}
+      ${skills.length ? `<h2>SKILLS</h2>${skillHtml}` : ''}
+      ${jobs.length ? `<h2>EXPERIENCE</h2>${jobs.map(entry).join('')}` : ''}
+      ${PROJECTS.length ? `<h2>SELECTED PROJECTS</h2>
       ${PROJECTS.slice(0, 4).map(p => `<div class="r-job">
         <div class="r-row"><b>${esc(p.name)} — ${esc(p.tagline)}</b><span>${esc(p.date.slice(-4))}</span></div>
+        ${links(p) ? `<div class="r-sub">${links(p)}</div>` : ''}
         <ul>
-          <li>${esc(p.desc)}</li>
-          <li>${esc(p.stack.join(' · '))}</li>
-          <li><a href="${p.demo}" target="_blank" rel="noopener">Live</a> &middot;
-              <a href="${p.repo}" target="_blank" rel="noopener">Source</a></li>
-        </ul></div>`).join('')}
-      <h2>SKILLS</h2>
-      <div class="r-sk">${SKILLS.filter(s => !s.fail).map(s => esc(s.name)).join(' &middot; ')}</div>
-      <h2>CONTACT</h2>
-      <div class="r-sk">${LINKS.email} &middot; ${LINKS.phone}<br>
-        Fiverr: <a href="${LINKS.fiverr}" target="_blank" rel="noopener">fiverr.com/${LINKS.fiverrUser}</a></div>
-      <div class="r-note">Full employment history, education and references available on request.</div>
+          ${p.notes && p.notes.length ? p.notes.map(n => `<li>${esc(n)}</li>`).join('') : `<li>${esc(p.desc)}</li>`}
+          ${p.stack.length ? `<li>${esc(p.stack.join(' · '))}</li>` : ''}
+        </ul></div>`).join('')}` : ''}
+      ${schools.length ? `<h2>EDUCATION</h2>${schools.map(entry).join('')}` : ''}
+      ${certs.length ? `<h2>CERTIFICATIONS</h2>
+      ${certs.map(c => `<div class="r-job">
+        <div class="r-row"><b>${esc(c.title)}</b><span>${esc(c.issuer)}</span></div>
+        ${c.notes.length ? `<div class="r-sub">${esc(c.notes.join(' · '))}</div>` : ''}</div>`).join('')}` : ''}
+      ${PROFILE.additional ? `<h2>ADDITIONAL INFORMATION</h2><div class="r-sk">${esc(PROFILE.additional)}</div>` : ''}
+      <div class="r-note">${jobs.length && schools.length ? 'References' : 'Full employment history, education and references'} available on request.</div>
     </div>`;
           }
         });

@@ -50,6 +50,7 @@ export async function adminResourceInfo(token: unknown, resourceId: unknown) {
       label: spec.label,
       readOnly: !!spec.readOnly,
       fields: spec.fields,
+      groups: spec.groups ?? [],
       columns: spec.columns,
     },
   };

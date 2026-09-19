@@ -26,6 +26,19 @@ export type FieldSpec = {
   hint?: string;
   /** Default applied when the field is left blank on create. */
   fallback?: string | number | boolean;
+  /** Id of an optional section in ResourceSpec.groups; the form hides it until asked. */
+  group?: string;
+};
+
+/**
+ * An optional block of fields. The form window shows a button in its place and
+ * reveals the fields only when asked; closing it again sends none of them, so
+ * a create leaves them empty and an edit leaves the stored values untouched.
+ */
+export type FieldGroup = {
+  id: string;
+  label: string;
+  hint?: string;
 };
 
 export type ResourceSpec = {
@@ -36,6 +49,7 @@ export type ResourceSpec = {
   /** Columns shown by `list`, in order. */
   columns: { field: string; width: number; header: string }[];
   fields: FieldSpec[];
+  groups?: FieldGroup[];
   orderBy: Record<string, "asc" | "desc">[];
   /** Fixed filter, so contact and hire can share the Inquiry table. */
   where?: Record<string, unknown>;
@@ -58,6 +72,23 @@ const NOTES: FieldSpec = {
   max: 20,
   hint: "one per line, blank line ends",
 };
+
+/** Every field optional: a project may have all, some or none of its case study. */
+const CASE_STUDY_FIELDS: FieldSpec[] = [
+  { name: "role", label: "My role", type: "string", optional: true, max: 80, hint: "e.g. Fullstack Developer" },
+  { name: "duration", label: "Duration", type: "string", optional: true, max: 60, hint: "e.g. 3 months" },
+  { name: "team", label: "Team", type: "string", optional: true, max: 80, hint: "e.g. 2 engineers, 1 designer" },
+  { name: "problem", label: "Challenge", type: "text", optional: true, max: 2000 },
+  { name: "responsibilities", label: "Responsibilities", type: "list", optional: true, max: 20, hint: "one per line" },
+  { name: "solution", label: "Solution points", type: "list", optional: true, max: 12, hint: "one per line: Title | explanation" },
+  { name: "architecture", label: "Architecture", type: "list", optional: true, max: 12, hint: "one per line: Layer | responsibility" },
+  { name: "architectureNote", label: "Engineering note", type: "text", optional: true, max: 600 },
+  { name: "result", label: "Results", type: "text", optional: true, max: 2000 },
+  { name: "metrics", label: "Metrics", type: "list", optional: true, max: 6, hint: "one per line: value | label, e.g. 40% | faster checkout" },
+  { name: "captions", label: "Preview captions", type: "list", optional: true, max: 6, hint: "one generated screenshot per caption" },
+];
+
+const CASE_STUDY = CASE_STUDY_FIELDS.map((field) => ({ ...field, group: "caseStudy" }));
 
 export const RESOURCES: ResourceSpec[] = [
   {
@@ -197,6 +228,7 @@ export const RESOURCES: ResourceSpec[] = [
       { name: "file", label: "Filename", type: "string", max: 40, hint: "e.g. tsconfig.sys" },
       { name: "level", label: "Level", type: "int", min: 0, ceiling: 100 },
       { name: "failing", label: "Show as failed install", type: "bool", optional: true, fallback: false },
+      { name: "group", label: "Résumé group", type: "string", optional: true, max: 40, hint: "e.g. Frontend — blank renders flat" },
       ...PUBLISHING,
     ],
   },
@@ -227,6 +259,14 @@ export const RESOURCES: ResourceSpec[] = [
       { name: "repoUrl", label: "Repository URL", type: "string", optional: true, max: 500 },
       { name: "requirements", label: "Requirements line", type: "string", optional: true, max: 120 },
       ...PUBLISHING,
+      ...CASE_STUDY,
+    ],
+    groups: [
+      {
+        id: "caseStudy",
+        label: "Case study",
+        hint: "Optional. Fills the Challenge, Solution, Architecture, Results and Preview tabs; an empty tab says so.",
+      },
     ],
   },
   {

@@ -24,9 +24,9 @@ enum CredentialKind {
 /// version and the last-login stamp all need somewhere durable to live, and a
 /// serverless deployment has no shared memory to keep them in.
 model AdminUser {
-  id           String    @id @default(cuid())
+  id              String    @id @default(cuid())
   /// Stored lowercase; the login path normalizes before it looks up.
-  username     String    @unique
+  username        String    @unique
   /// scrypt$N$r$p$salt$key — see lib/admin/password.ts. Never leaves the server.
   passwordHash    String
   /// scrypt hash of the recovery PIN specific to this user account.
@@ -34,14 +34,14 @@ model AdminUser {
   displayName     String?
   /// Raising this by one invalidates every token already in circulation. A
   /// token carries the version it was minted with; a mismatch is a rejection.
-  tokenVersion Int       @default(1)
+  tokenVersion    Int       @default(1)
   /// A durable brake on brute force. An in-memory counter is per-instance, so
   /// every cold start would hand an attacker a fresh budget of guesses.
-  failedCount  Int       @default(0)
-  lockedUntil  DateTime?
-  lastLoginAt  DateTime?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  failedCount     Int       @default(0)
+  lockedUntil     DateTime?
+  lastLoginAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 }
 
 /// One row per sign-in attempt. This is what makes per-IP rate limiting real
@@ -173,6 +173,8 @@ model Skill {
   level     Int
   /// Renders the entry as a failed install. One skill is meant to look stuck.
   failing   Boolean  @default(false)
+  /// Level grouping on the résumé, e.g. "Frontend" or "Tools". null renders flat.
+  group     String?
   published Boolean  @default(true)
   sortIndex Int      @default(0)
   createdAt DateTime @default(now())
@@ -207,10 +209,31 @@ model Project {
   demoUrl      String?
   repoUrl      String?
   requirements String?
-  published    Boolean  @default(true)
-  sortIndex    Int      @default(0)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+
+  // The case study behind the Challenge, Solution, Architecture, Results and
+  // Preview tabs. Every field is optional: a tab without material shows an
+  // empty state instead of invented detail.
+  role             String?
+  duration         String?
+  team             String?
+  problem          String?
+  responsibilities String[]
+  /// One "Title | explanation" per entry. Ordered, rendered as cards, never
+  /// queried on its own — a text[] rather than a child table, like notes.
+  solution         String[]
+  /// Same "Title | explanation" format as solution.
+  architecture     String[]
+  architectureNote String?
+  result           String?
+  /// One "value | label" per entry, e.g. "40% | faster checkout".
+  metrics          String[]
+  /// One caption per generated preview screenshot, in order.
+  captions         String[]
+
+  published Boolean  @default(true)
+  sortIndex Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([published, sortIndex])
 }
@@ -218,23 +241,23 @@ model Project {
 /// Entries in Testimonial Express. Each entry carries a real photo instead of
 /// a procedural avatar; the image is referenced by URL, not uploaded.
 model Testimonial {
-  id         String   @id @default(cuid())
-  slug       String   @unique
-  author     String
-  role       String
-  subject    String
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  author    String
+  role      String
+  subject   String
   /// Free text, e.g. "Today, 10:30 AM", and its short form for the list column.
-  dateLabel  String
-  dateShort  String
+  dateLabel String
+  dateShort String
   /// 1-5.
-  stars      Int
+  stars     Int
   /// The author's photo, hosted externally, e.g. a Drive share link.
-  imageUrl   String
-  body       String
-  published  Boolean  @default(true)
-  sortIndex  Int      @default(0)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  imageUrl  String
+  body      String
+  published Boolean  @default(true)
+  sortIndex Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([published, sortIndex])
 }

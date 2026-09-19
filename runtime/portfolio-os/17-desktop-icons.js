@@ -1,7 +1,10 @@
 /* =================================================================
          desktop icons
       ================================================================= */
-      const DESKTOP_ICONS = [
+      /* A function rather than a list: Certificates, Experience, Education and
+         Publications exist only while they have entries, and a save from the
+         terminal can change that. */
+      const desktopIcons = () => [
         { id: 'about', label: 'About_Me.txt', ic: () => svg('txt', 32), open: openAbout },
         { id: 'projects', label: 'Projects', ic: () => svg('folder', 32), open: openProjects },
         { id: 'skills', label: 'Skills.exe', ic: () => svg('gear', 32), open: openSkills },
@@ -13,8 +16,14 @@
         { id: 'network', label: 'Network Neighborhood', ic: () => svg('network', 32), open: openNetwork },
         { id: 'career-log', label: 'Career.log', ic: () => svg('briefcase', 32), open: openCareerLog },
         { id: 'changelog', label: 'Changelog.log', ic: () => svg('txt', 32), open: openChangelog },
-        ...(CREDENTIALS.length
+        ...(credentialsIn('certs').length
           ? [{ id: 'certs', label: 'Certificates', ic: () => svg('cert', 32), open: openCertificates }]
+          : []),
+        ...(credentialsIn('experience').length
+          ? [{ id: 'experience', label: 'Experience', ic: () => svg('experience', 32), open: openExperience }]
+          : []),
+        ...(credentialsIn('education').length
+          ? [{ id: 'education', label: 'Education', ic: () => svg('education', 32), open: openEducation }]
           : []),
         ...(PUBLICATIONS.length
           ? [{ id: 'publications', label: 'Publications', ic: () => svg('journal', 32), open: openPublications }]
@@ -26,7 +35,7 @@
       let lastIconTap = null;
       const iconEls = [];
       function buildIcons() {
-        DESKTOP_ICONS.forEach(def => {
+        desktopIcons().forEach(def => {
           const d = document.createElement('div');
           d.className = 'dicon'; d.dataset.id = def.id; d.tabIndex = 0;
           d.setAttribute('role', 'button');
@@ -38,6 +47,14 @@
           DESK.appendChild(d); iconEls.push(d);
         });
         layoutIcons(true);
+      }
+      /* Rebuilds only when the set of icons changed, so an ordinary edit does not
+         undo the visitor's own arrangement. */
+      function refreshDesktopIcons() {
+        const ids = desktopIcons().map(def => def.id).join();
+        if (ids === iconEls.map(el => el.dataset.id).join()) return;
+        iconEls.splice(0).forEach(el => el.remove());
+        buildIcons();
       }
       function selectIcon(el) {
         iconEls.forEach(i => i.classList.remove('sel'));

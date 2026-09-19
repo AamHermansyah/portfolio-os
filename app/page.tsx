@@ -1,5 +1,13 @@
 import { PortfolioTemplate } from "@/components/templates/portfolio-template";
+import { loadPortfolioContent } from "@/lib/portfolio/content";
 import { siteConfig, siteOrigin } from "@/lib/site";
+
+/**
+ * The page is still prerendered, with the public content read from Postgres
+ * baked in. It regenerates hourly as a backstop, and at once whenever the
+ * terminal saves a change (app/api/portfolio/refresh).
+ */
+export const revalidate = 3600;
 
 const personId = `${siteOrigin}/#person`;
 const websiteId = `${siteOrigin}/#website`;
@@ -51,7 +59,9 @@ const structuredData = {
   ],
 };
 
-export default function HomePage() {
+export default async function HomePage() {
+  const content = await loadPortfolioContent();
+
   return (
     <>
       <script
@@ -60,7 +70,7 @@ export default function HomePage() {
         }}
         type="application/ld+json"
       />
-      <PortfolioTemplate />
+      <PortfolioTemplate content={content} />
     </>
   );
 }

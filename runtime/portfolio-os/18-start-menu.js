@@ -23,7 +23,9 @@
           { ic: 'network', t: 'Network Neighborhood', fn: openNetwork },
           { ic: 'briefcase', t: 'Career.log', fn: openCareerLog },
           { ic: 'txt', t: 'Changelog.log', fn: openChangelog },
-          ...(CREDENTIALS.length ? [{ ic: 'cert', t: 'Certificates', fn: openCertificates }] : []),
+          ...(credentialsIn('certs').length ? [{ ic: 'cert', t: 'Certificates', fn: openCertificates }] : []),
+          ...(credentialsIn('experience').length ? [{ ic: 'experience', t: 'Experience', fn: openExperience }] : []),
+          ...(credentialsIn('education').length ? [{ ic: 'education', t: 'Education', fn: openEducation }] : []),
           ...(PUBLICATIONS.length ? [{ ic: 'journal', t: 'Publications', fn: openPublications }] : []),
           { ic: 'find', t: 'Find\u2026', fn: openFind },
           { ic: 'gear', t: 'Accessibility\u2026', fn: openAccessibility },
@@ -65,6 +67,8 @@
                 'changelog': openChangelog,
                 'certificates': openCertificates,
                 'certs': openCertificates,
+                'experience': openExperience, 'work': openExperience,
+                'education': openEducation, 'school': openEducation,
                 'publications': openPublications,
                 'papers': openPublications,
                 'nethood': openNetwork,
@@ -74,7 +78,7 @@
                 'fiverr': openFiverr, 'globe': openFiverr, 'jupiter': openJupiter,
                 'wallpaper': openWallpaperPicker, 'display': openWallpaperPicker
               };
-              const p = PROJECTS.find(p => p.id === t || p.file === v);
+              const p = findProject(v);
               if (v.toLowerCase() === 'format c:') { api.close(); hourglass(400); setTimeout(bsod, 400); return; }
               if (OPEN[t] || p) {
                 api.close();

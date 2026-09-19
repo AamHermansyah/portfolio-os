@@ -112,6 +112,19 @@
 '.#BYYY#..#RYYY#.','.#BWWW#..#WWWR#.','.#BBBB#..#RRRR#.','.#BWWW#..#WWWR#.',
 '.#BBBB####RRRR#.','.#BWWW#..#WWWR#.','.#BWWW#..#WWWR#.','..#BBB####RRR#..',
 '...#BB####RR#...','....########....','................','................'];
+      /* A mortarboard with its tassel, for Education. */
+      M.education = [
+'................','................','.......##.......','....###BB###....',
+'.###BBBBBBBB###.','#BBBBBBBBBBBBBB#','.###BBBBBBBB###Y','....###BB###...Y',
+'....#DD##DD#...Y','....#DDDDDD#...Y','....#DDDDDD#..YY','.....######...YY',
+'................','................','................','................'];
+      /* An employee ID badge on a lanyard, for Experience — the briefcase
+         already belongs to Hire_Me.exe and Career.log. */
+      M.experience = [
+'................','......####......','.......##.......','..############..',
+'..#GGGGGGGGGG#..','..#GGGGGGGGGG#..','..#WWWWWWWWWW#..','..#WPPPWKKKKW#..',
+'..#WPPPWWWWWW#..','..#WPPPWKKKWW#..','..#WWWWWWWWWW#..','..#WKKKKKKKKW#..',
+'..#WWWWWWWWWW#..','..############..','................','................'];
       M.network = [
       '................','.######.........','.#ssss#.........','.#ssss#.........',
       '.######.........','..#WW#..........','..####..........','....##########..',
@@ -177,7 +190,9 @@
         network: { '#': '#161616', 'W': '#c9c9c9', 's': '#0c3a5c' },
         find: { '#': '#2b2b2b', 'G': '#6f9dc4', 'W': '#d8ecff', 'K': '#6b4a1e' },
         cert: { '#': '#2f2f2f', 'W': '#fdfdf5', 'K': '#8a8a8a', 'S': '#e8c760', 'R': '#c0392b' },
-        journal: { '#': '#242424', 'B': '#245ea8', 'R': '#8f2e50', 'W': '#fffdf0', 'Y': '#e2bd45' }
+        journal: { '#': '#242424', 'B': '#245ea8', 'R': '#8f2e50', 'W': '#fffdf0', 'Y': '#e2bd45' },
+        education: { '#': '#141414', 'B': '#23235f', 'D': '#3b3b8a', 'Y': '#e8c760' },
+        experience: { '#': '#2a2a2a', 'G': '#1f7a6a', 'W': '#fdfdf5', 'P': '#6b8fb8', 'K': '#8a8a8a' }
       };
 
       function px(map, pal, size) {

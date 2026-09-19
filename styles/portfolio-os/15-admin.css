@@ -83,6 +83,40 @@
       outline: 1px solid #a00
     }
 
+    /* An optional block of fields, such as a project's case study: a button
+       lined up with the controls until opened, then an etched section with its
+       own Cancel. */
+    .adm-group {
+      margin: 12px 0 4px;
+      padding-top: 10px;
+      box-shadow: inset 0 1px #808080, inset 0 2px #fff
+    }
+
+    .adm-group-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px 10px;
+      padding-left: 138px
+    }
+
+    .adm-group-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+      padding: 3px 3px 3px 6px;
+      background: #c0c0c0;
+      font: 700 12px var(--mono);
+      box-shadow: inset -1px -1px #808080, inset 1px 1px #fff
+    }
+
+    .adm-group-bar[hidden],
+    .adm-group-body[hidden] {
+      display: none
+    }
+
     .adm-error {
       flex: 0 0 auto;
       padding: 4px 6px;
@@ -293,6 +327,10 @@
       .adm-view-k {
         flex: 0 0 auto;
         text-align: left
+      }
+
+      .adm-group-bar {
+        padding-left: 0
       }
 
       .adm-toolbar {

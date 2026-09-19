@@ -183,6 +183,30 @@
       max-width: 74ch
     }
 
+    /* A case-study tab with nothing written for it yet. */
+    .case-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 240px;
+      padding: 24px 16px;
+      text-align: center;
+      color: #555;
+      font: 12px/1.5 var(--mono)
+    }
+
+    .case-empty b {
+      max-width: 46ch;
+      color: #111;
+      font: bold 13px var(--sys)
+    }
+
+    .case-empty span {
+      max-width: 52ch
+    }
+
     .case-label {
       font-weight: bold;
       margin: 12px 0 5px

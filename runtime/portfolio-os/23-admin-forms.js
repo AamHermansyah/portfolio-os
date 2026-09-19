@@ -39,6 +39,54 @@
           '<div class="adm-control">' + control + hint + '</div></div>';
       }
 
+      const admHasValue = value => value !== undefined && value !== null && value !== '' &&
+        !(Array.isArray(value) && !value.length);
+
+      /* An optional section (ResourceSpec.groups): a button until it is asked
+         for, then its fields under a heading with a Cancel that closes it. The
+         label says Edit rather than Add when the record already has some of it. */
+      function admGroupBlock(group, fields, row) {
+        const filled = !!row && fields.some(field => admHasValue(row[field.name]));
+        return '<div class="adm-group" data-group="' + esc(group.id) + '">' +
+          '<div class="adm-group-bar"><button class="btn" type="button" data-a="group-open">' +
+          esc((filled ? 'Edit ' : 'Add ') + group.label.toLowerCase()) + '…</button>' +
+          (group.hint ? '<span class="adm-hint">' + esc(group.hint) + '</span>' : '') + '</div>' +
+          '<div class="adm-group-body" hidden><div class="adm-group-head"><b>' + esc(group.label) + '</b>' +
+          '<button class="btn sm" type="button" data-a="group-cancel">Cancel</button></div>' +
+          fields.map(admFieldRow).join('') + '</div></div>';
+      }
+
+      /* Cancel puts back what was stored (or nothing, on a new record), and a
+         closed section is left out of the save entirely — so closing it never
+         changes the record. */
+      function admWireGroups(body, spec, row) {
+        body.querySelectorAll('.adm-group').forEach(block => {
+          const bar = block.querySelector('.adm-group-bar');
+          const inner = block.querySelector('.adm-group-body');
+          const fields = spec.fields.filter(field => field.group === block.dataset.group);
+          bar.querySelector('[data-a="group-open"]').addEventListener('click', () => {
+            bar.hidden = true;
+            inner.hidden = false;
+            const first = inner.querySelector('.field');
+            if (first) first.focus();
+          });
+          inner.querySelector('[data-a="group-cancel"]').addEventListener('click', () => {
+            admFill(body, fields, row);
+            inner.querySelectorAll('.adm-row.bad').forEach(r => r.classList.remove('bad'));
+            inner.hidden = true;
+            bar.hidden = false;
+            bar.querySelector('button').focus();
+          });
+        });
+      }
+
+      function admOpenFields(body, spec) {
+        const closed = new Set([...body.querySelectorAll('.adm-group')]
+          .filter(block => block.querySelector('.adm-group-body').hidden)
+          .map(block => block.dataset.group));
+        return spec.fields.filter(field => !closed.has(field.group));
+      }
+
       function admReadControl(body, field) {
         return body.querySelector('[data-f="f-' + field.name + '"]');
       }
@@ -127,13 +175,18 @@
           title: title, icon: svg('txt', 14), w: 560, h: 440,
           build(body, api) {
             body.className = 'win-body app-adm';
+            const groups = spec.groups || [];
+            const grouped = field => groups.some(group => group.id === field.group);
             body.innerHTML =
               '<div class="adm-head">' + esc(spec.label) + (editing ? ' — ' + esc(adminHandle(row)) : '') + '</div>' +
-              '<div class="adm-form">' + spec.fields.map(admFieldRow).join('') + '</div>' +
+              '<div class="adm-form">' + spec.fields.filter(field => !grouped(field)).map(admFieldRow).join('') +
+              groups.map(group => admGroupBlock(group, spec.fields.filter(field => field.group === group.id), row)).join('') +
+              '</div>' +
               '<div class="adm-error" hidden></div>' +
               '<div class="adm-actions"><button class="btn" data-a="save">Save</button>' +
               '<button class="btn" data-a="cancel">Cancel</button></div>';
             admFill(body, spec.fields, row);
+            admWireGroups(body, spec, row);
 
             let saving = false;
             const saveButton = body.querySelector('[data-a="save"]');
@@ -141,7 +194,7 @@
             const save = async () => {
               if (saving) return;
               body.querySelector('.adm-error').hidden = true;
-              const values = admCollect(body, spec.fields);
+              const values = admCollect(body, admOpenFields(body, spec));
               const result = await adminCrudWindowCall(term, 'Saving', (crud, token) =>
                 editing
                   ? crud.update(token, resource, row.id, values)
@@ -160,6 +213,7 @@
               if (!result) return;
               beep(880, 90);
               api.close();
+              adminRefreshContent();
               if (opts.onSaved) {
                 opts.onSaved(result.row, editing);
               } else if (term && term.alive) {
@@ -257,6 +311,7 @@
                 if (!result) return;
                 api.close();
                 beep(880, 90);
+                adminRefreshContent();
                 if (opts.onDeleted) {
                   opts.onDeleted(result.row);
                 } else if (term && term.alive) {
