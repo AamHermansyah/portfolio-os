@@ -12,6 +12,13 @@
         status: 'Available for Work',
         available: true,
         languages: 'Indonesian, English',
+        /* The profile photo on About_Me.txt: a Drive file shared "anyone with the
+           link", addressed as lh3.googleusercontent.com/d/<file id>. Browsers
+           refuse Drive's uc?export=view form as an <img>, even though it works
+           in curl. `photoFocus` picks the point the square frame zooms in on,
+           in percent of the photo, so a wide shot still reads as a portrait. */
+        photo: 'https://lh3.googleusercontent.com/d/11TS6NuL1O1Yzt6UOT3vLvaXpaoH3vN6H',
+        photoFocus: { x: 52, y: 40, zoom: 1.8 },
         summary: 'I started coding at 17 years old and have built several fullstack web applications using Next.js, giving me a solid understanding of both frontend and backend concepts. I\'m also an Informatics graduate with a focus on Artificial Intelligence, combining web development skills with a growing interest in intelligent systems.',
         additional: 'Freelance client rating: 5.0 / 5.0 from 26 reviews on Fiverr ("Atwom Dev").'
       };

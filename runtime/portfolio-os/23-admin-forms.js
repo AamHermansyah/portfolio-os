@@ -242,6 +242,48 @@
           : await adminCrudCall(term, 'Loading entry', run);
         if (!found) return;
 
+        const windowId = 'adm-view-' + resource + '-' + found.row.id;
+        if (WM.wins.has(windowId)) WM.close(windowId);
+        WM.create({
+          id: windowId, title: found.label + ' — ' + adminHandle(found.row),
+          icon: svg('txt', 14), w: 520, h: 400,
+          build(body, api) {
+            body.className = 'win-body app-adm';
+            let current = found;
+            const paint = () => {
+              body.innerHTML = '<div class="adm-head">' + esc(adminHandle(current.row)) + '</div>' +
+                '<div class="adm-view">' + admRecordHtml(current) + '</div>' +
+                '<div class="adm-error" hidden></div>' +
+                '<div class="adm-actions"><span class="adm-id">id: ' + esc(String(current.row.id)) + '</span>' +
+                '<span class="grow"></span><button class="btn" data-a="refresh">Refresh</button></div>';
+              body.querySelector('[data-a="refresh"]').addEventListener('click', refresh);
+            };
+            /* Reads the record again from the server, so an edit made from
+               another window or tab shows without closing this one. */
+            const refresh = async () => {
+              const button = body.querySelector('[data-a="refresh"]');
+              const note = body.querySelector('.adm-error');
+              note.hidden = true;
+              const result = await adminCrudWindowCall(term, 'Loading entry',
+                (crud, token) => crud.get(token, resource, String(current.row.id)), {
+                  busy(active) { button.disabled = active; },
+                  error(problem) {
+                    note.textContent = problem.error === 'not_found'
+                      ? 'This entry no longer exists.' : adminCrudProblem(problem);
+                    note.hidden = false;
+                  }
+                });
+              if (!result) return;
+              current = result;
+              api.setTitle(result.label + ' — ' + adminHandle(result.row));
+              paint();
+            };
+            paint();
+          }
+        });
+      }
+
+      function admRecordHtml(found) {
         const row = found.row;
         const fields = (found.fields && found.fields.length)
           ? found.fields.map(f => ({ name: f.name, label: f.label }))
@@ -265,19 +307,7 @@
           html += '<div class="adm-view-row"><div class="adm-view-k">' + esc(field.label) + '</div>' +
             '<div class="adm-view-v">' + rendered + '</div></div>';
         });
-
-        const windowId = 'adm-view-' + resource + '-' + row.id;
-        if (WM.wins.has(windowId)) WM.close(windowId);
-        WM.create({
-          id: windowId, title: found.label + ' — ' + adminHandle(row),
-          icon: svg('txt', 14), w: 520, h: 400,
-          build(body) {
-            body.className = 'win-body app-adm';
-            body.innerHTML = '<div class="adm-head">' + esc(adminHandle(row)) + '</div>' +
-              '<div class="adm-view">' + (html || '<div class="adm-view-row">Nothing stored.</div>') + '</div>' +
-              '<div class="adm-id">id: ' + esc(String(row.id)) + '</div>';
-          }
-        });
+        return html || '<div class="adm-view-row">Nothing stored.</div>';
       }
 
       /* --- delete -------------------------------------------------------- */

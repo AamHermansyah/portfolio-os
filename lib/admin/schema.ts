@@ -287,7 +287,7 @@ export const RESOURCES: ResourceSpec[] = [
       { name: "dateLabel", label: "Date label", type: "string", max: 40, hint: "e.g. Today, 10:30 AM" },
       { name: "dateShort", label: "Short date", type: "string", max: 20, hint: "e.g. Today" },
       { name: "stars", label: "Stars", type: "int", min: 1, ceiling: 5 },
-      { name: "imageUrl", label: "Image URL", type: "string", max: 500, hint: "https://…" },
+      { name: "imageUrl", label: "Image URL", type: "string", max: 500, hint: "https://…, or a Google Drive share link (shared: anyone with the link)" },
       { name: "body", label: "Testimonial", type: "text", max: 2000 },
       ...PUBLISHING,
     ],

@@ -42,6 +42,21 @@ function httpUrl(value: string | null): string {
   return /^https?:\/\/\S+$/i.test(text) ? text : "";
 }
 
+/**
+ * Photos are pasted as Google Drive links, and browsers refuse every Drive
+ * form as an <img> (uc?export=view, /file/d/…/view, open?id=) even though
+ * each one downloads fine outside a browser. Drive also serves the same file
+ * from lh3.googleusercontent.com/d/<id>, which does load, so any Drive link is
+ * rewritten to that. Anything else passes through httpUrl unchanged.
+ */
+function imageUrl(value: string | null): string {
+  const url = httpUrl(value);
+  const id =
+    url.match(/^https:\/\/drive\.google\.com\/file\/d\/([\w-]+)/)?.[1] ??
+    url.match(/^https:\/\/drive\.google\.com\/(?:uc|open|thumbnail)\?(?:[^#]*&)?id=([\w-]+)/)?.[1];
+  return id ? `https://lh3.googleusercontent.com/d/${id}` : url;
+}
+
 function hexColor(value: string): string {
   return /^#(?:[0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(value) ? value : "#000080";
 }
@@ -117,7 +132,7 @@ export async function loadTestimonialPage(page: number, limit: number): Promise<
     date: t.dateLabel,
     dateShort: t.dateShort,
     stars: t.stars,
-    avatar: httpUrl(t.imageUrl),
+    avatar: imageUrl(t.imageUrl),
     text: t.body,
   }));
   return { items, page, limit, total, pages: Math.ceil(total / limit) };

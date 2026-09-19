@@ -1,7 +1,7 @@
 /* ---- Resume.pdf ---- */
       function openResume() {
         WM.create({
-          id: 'resume', title: 'resume.pdf — Portfolio Viewer', icon: svg('pdf', 14), w: 560, h: 600,
+          id: 'resume', title: 'resume.pdf — Portfolio Viewer', icon: svg('pdf', 14), w: 560, h: 600, refreshable: true,
           menubar: [
             {
               label: 'File', items: [
@@ -10,6 +10,7 @@
                 { label: 'Close', act: a => a.close() }
               ]
             },
+            REFRESH_MENU,
             { label: 'Help', items: [{ label: 'About PortfolioOS', act: aboutOS }] }
           ],
           build(body) {
@@ -30,8 +31,11 @@
               p.repo ? `<a href="${esc(p.repo)}" target="_blank" rel="noopener">Source</a>` : ''
             ].filter(Boolean).join(' &middot; ');
             const groups = [...new Set(skills.map(s => s.group).filter(Boolean))];
+            /* A skill left without a group still belongs on the résumé. */
+            const ungrouped = skills.filter(s => !s.group);
             const skillHtml = groups.length
-              ? groups.map(g => `<div class="r-grp"><b>${esc(g)}:</b> ${skills.filter(s => s.group === g).map(s => esc(s.name)).join(', ')}</div>`).join('')
+              ? groups.map(g => `<div class="r-grp"><b>${esc(g)}:</b> ${skills.filter(s => s.group === g).map(s => esc(s.name)).join(', ')}</div>`).join('') +
+                (ungrouped.length ? `<div class="r-grp"><b>Other:</b> ${ungrouped.map(s => esc(s.name)).join(', ')}</div>` : '')
               : `<div class="r-sk">${skills.map(s => esc(s.name)).join(' &middot; ')}</div>`;
             body.innerHTML = `<div class="resume-page">
       <h1>AAM HERMANSYAH</h1>

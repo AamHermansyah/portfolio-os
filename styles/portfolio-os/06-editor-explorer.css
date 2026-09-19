@@ -26,6 +26,55 @@
       color: #551a8b
     }
 
+    /* About_Me.txt opens on a photo card above the text. */
+    .about-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 10px 10px 0;
+      padding-bottom: 10px;
+      border-bottom: 1px dashed #b5b5b5
+    }
+
+    .about-photo {
+      flex: 0 0 auto;
+      box-sizing: border-box;
+      width: 100px;
+      height: 100px;
+      padding: 2px;
+      background: #c0c0c0;
+      box-shadow: inset -1px -1px #fff, inset 1px 1px #808080, inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a
+    }
+
+    /* The zoom (PROFILE.photoFocus) must not spill over the bevel. */
+    .about-photo-clip {
+      width: 100%;
+      height: 100%;
+      overflow: hidden
+    }
+
+    .about-photo img,
+    .about-photo svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover
+    }
+
+    .about-id {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 0;
+      color: #333;
+      font: 12px/1.4 var(--mono)
+    }
+
+    .about-id b {
+      color: #111;
+      font: bold 14px var(--sys)
+    }
+
     /* ============ app: explorer ============ */
     .app-expl {
       display: flex;

@@ -1,7 +1,7 @@
 /* ---- Skills.exe (installer) ---- */
       function openSkills() {
         WM.create({
-          id: 'skills', title: 'SkillPack 98 Setup', icon: svg('gear', 14), w: 420, h: 370, dialog: true,
+          id: 'skills', title: 'SkillPack 98 Setup', icon: svg('gear', 14), w: 420, h: 370, dialog: true, refreshable: true,
           onClose(api) { (api.timers || []).forEach(clearInterval); },
           build(body, api) {
             api.timers = [];
@@ -36,9 +36,11 @@
       </div>
     </div>
     <div class="sk-btns">
+      <button class="btn" data-b="refresh">Refresh</button>
       <button class="btn" data-b="go">Install&hellip;</button>
       <button class="btn" data-b="cancel">Cancel</button>
     </div>`;
+            body.querySelector('[data-b="refresh"]').addEventListener('click', () => refreshFromWindow());
             const phases = [...body.querySelectorAll('[data-p]')];
             const rows = [...body.querySelectorAll('[data-p="2"] .sk-row:not(.sk-all)')];
             const allRow = body.querySelector('.sk-all');
@@ -230,6 +232,7 @@
                     '  wallpaper [name] list or change desktop wallpaper\n' +
                     '  open <file>      launch a window app, e.g. open projects\n' +
                     '  ls / dir         list contents of C:\\PORTFOLIO\n' +
+                    '  refresh          reload the latest content from the server\n' +
                     '  resume           open resume.pdf\n' +
                     '  contact          how to reach me\n' +
                     '  neofetch         system information, obviously\n' +
@@ -362,6 +365,16 @@
                   break;
                 }
                 case 'resume': print('Opening resume.pdf \u2026', 'ok'); openResume(); break;
+                case 'refresh':
+                  busy = true;
+                  print('Reloading content from the server \u2026', 'dim');
+                  refreshPortfolioContent().then(result => {
+                    busy = false;
+                    if (!term.alive) return;
+                    if (result === 'ok') print('Content is up to date; open windows were refreshed.', 'ok');
+                    else print('The latest content could not be loaded. Try again shortly.', 'err');
+                  });
+                  break;
                 case 'contact':
                   printHTML('E-mail   : <a href="#" class="t-mail">compose via Portfolio Mail</a> (type: open contact)\n' +
                     'Direct   : <a href="mailto:' + LINKS.email + '">' + LINKS.email + '</a>\n' +

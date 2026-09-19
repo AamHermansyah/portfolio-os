@@ -19,17 +19,25 @@
       };
       const credentialsIn = id => CREDENTIALS.filter(c => CREDENTIAL_FOLDERS[id].kinds.includes(c.kind));
 
-      function openCredential(c) {
-        const kind = CREDENTIAL_KINDS[c.kind] || { label: 'Document', by: 'Issued by' };
-        const rows = [['Type', kind.label], ['Title', c.title]];
-        if (c.issuer) rows.push([kind.by, c.issuer]);
-        if (c.date) rows.push(['Date', c.date]);
-        (c.details || []).forEach(row => rows.push(row));
+      function openCredential(opened) {
         WM.create({
-          id: 'cred-' + credentialFile(c), title: credentialFile(c) + ' Properties',
-          icon: svg(credentialIcon(c), 14), w: 440, h: 'auto', dialog: true,
+          id: 'cred-' + credentialFile(opened), title: credentialFile(opened) + ' Properties',
+          icon: svg(credentialIcon(opened), 14), w: 440, h: 'auto', dialog: true, refreshable: true,
           build(body, api) {
             body.className = 'win-body app-sys';
+            /* Built from the current copy, so a Refresh shows the edited entry. */
+            const c = CREDENTIALS.find(x => x.kind === opened.kind && x.id === opened.id);
+            if (!c) {
+              body.innerHTML = `<div class="sys-page"><div class="sys-fields"><b>This entry is no longer published.</b></div></div>
+                <div class="sys-sep"></div><div class="sys-actions"><button class="btn" type="button" data-a="ok">OK</button></div>`;
+              body.querySelector('[data-a="ok"]').addEventListener('click', () => api.close());
+              return;
+            }
+            const kind = CREDENTIAL_KINDS[c.kind] || { label: 'Document', by: 'Issued by' };
+            const rows = [['Type', kind.label], ['Title', c.title]];
+            if (c.issuer) rows.push([kind.by, c.issuer]);
+            if (c.date) rows.push(['Date', c.date]);
+            (c.details || []).forEach(row => rows.push(row));
             const notes = (c.notes || []).length
               ? `<ul class="cred-notes">${c.notes.map(n => `<li>${esc(n)}</li>`).join('')}</ul>` : '';
             body.innerHTML = `<div class="sys-page">
@@ -121,9 +129,10 @@
 
       function openChangelog() {
         WM.create({
-          id: 'changelog', title: 'Changelog.log \u2014 Notepad', icon: svg('txt', 14), w: 520, h: 470,
+          id: 'changelog', title: 'Changelog.log \u2014 Notepad', icon: svg('txt', 14), w: 520, h: 470, refreshable: true,
           menubar: [
             { label: 'File', items: [{ label: 'Close', act: a => a.close() }] },
+            REFRESH_MENU,
             { label: 'Help', items: [{ label: 'About PortfolioOS', act: aboutOS }] }
           ],
           build(body) {
@@ -165,9 +174,10 @@
 
       function openCareerLog() {
         WM.create({
-          id: 'career-log', title: 'Career.log \u2014 Notepad', icon: svg('briefcase', 14), w: 520, h: 470,
+          id: 'career-log', title: 'Career.log \u2014 Notepad', icon: svg('briefcase', 14), w: 520, h: 470, refreshable: true,
           menubar: [
             { label: 'File', items: [{ label: 'Close', act: api => api.close() }] },
+            REFRESH_MENU,
             { label: 'Help', items: [{ label: 'About PortfolioOS', act: aboutOS }] }
           ],
           build(body) {
@@ -245,11 +255,14 @@
             const query = body.querySelector('#find-q');
             const scope = body.querySelector('#find-in');
             const results = body.querySelector('.find-results');
+            let github = null;
             let entries = findEntries(null);
             let timer = null;
 
             /* repositories join the index as soon as the snapshot lands */
-            loadGithub().then(data => { entries = findEntries(data); if (query.value.trim()) search(); }).catch(() => {});
+            loadGithub().then(data => { github = data; entries = findEntries(data); if (query.value.trim()) search(); }).catch(() => {});
+            /* A content refresh re-indexes without clearing what was typed. */
+            api.refresh = () => { entries = findEntries(github); if (query.value.trim()) search(); };
 
             function highlight(text, terms) {
               let out = esc(text);

@@ -61,6 +61,17 @@
           ],
           build(body) {
             body.className = 'win-body app-notepad';
+            /* The photo card above the text. If the image cannot load, the
+               pixel person stands in, so the card never shows a broken image. */
+            const card = document.createElement('div'); card.className = 'about-card';
+            const focus = PROFILE.photoFocus || { x: 50, y: 50, zoom: 1 };
+            const framing = `object-position:${+focus.x}% ${+focus.y}%;transform-origin:${+focus.x}% ${+focus.y}%;transform:scale(${+focus.zoom})`;
+            card.innerHTML = `<div class="about-photo"><div class="about-photo-clip"><img src="${esc(PROFILE.photo)}" alt="${esc(PROFILE.name)}" width="96" height="96" referrerpolicy="no-referrer" style="${framing}"></div></div>
+              <div class="about-id"><b>${esc(PROFILE.name)}</b><span>${esc(PROFILE.role)}</span><span>${esc(PROFILE.location)}</span></div>`;
+            card.querySelector('img').addEventListener('error', () => {
+              card.querySelector('.about-photo').innerHTML = personIcon({ hair: '#2f211b', skin: '#e8b98f', shirt: '#000080' }, 96);
+            });
+            body.appendChild(card);
             const npad = document.createElement('div'); npad.className = 'npad';
             npad.innerHTML = esc(
               '================================================\n' +
@@ -120,7 +131,9 @@
             {
               label: 'View', items: [
                 { label: 'Icons', check: () => view === 'icons', act: () => setView('icons') },
-                { label: 'Details', check: () => view === 'details', act: () => setView('details') }
+                { label: 'Details', check: () => view === 'details', act: () => setView('details') },
+                { sep: true },
+                { label: 'Refresh', act: () => refreshFromWindow() }
               ]
             },
             { label: 'Help', items: [{ label: 'About PortfolioOS', act: aboutOS }] }
@@ -178,7 +191,9 @@
               view = v; render();
               tools.querySelectorAll('[data-v]').forEach(b => b.classList.toggle('on', b.dataset.v === v));
             };
-            tools.querySelector('[data-a="ref"]').addEventListener('click', () => { hourglass(300); render(); });
+            /* Fetches the current content; every open window, this one included,
+               re-renders from it through WM.refreshContent. */
+            tools.querySelector('[data-a="ref"]').addEventListener('click', () => refreshFromWindow());
             tools.querySelectorAll('[data-v]').forEach(b => b.addEventListener('click', () => setView(b.dataset.v)));
             function refresh() { render(); }
             setView('icons');
@@ -228,7 +243,27 @@
         const markup = `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360"><rect width="640" height="360" fill="#008080"/><rect x="6" y="6" width="628" height="348" fill="#c0c0c0" stroke="#fff" stroke-width="2"/><rect x="9" y="9" width="622" height="25" fill="${p.color}"/><text x="18" y="26" fill="#fff" font-family="Tahoma,Arial,sans-serif" font-size="12" font-weight="700">${esc(p.name)} — ${index === 0 ? 'Overview' : index === 1 ? 'System View' : 'Release Report'}</text><g font-family="Tahoma,Arial,sans-serif">${scene}</g><rect x="10" y="324" width="620" height="26" fill="#c0c0c0" stroke="#808080"/><text x="19" y="341" fill="#333" font-family="Tahoma,Arial,sans-serif" font-size="9">${esc(((c.captions || [])[index] || p.tagline).slice(0, 88))}</text></svg>`;
         return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(markup);
       }
-      function openProject(p) {
+      function openProject(opened) {
+        WM.create({
+          id: 'proj-' + opened.id, title: opened.file + ' \u2014 Case Study', icon: appIcon(opened.color, 14), w: 680, h: 570,
+          status: [opened.req || opened.type, 'C:\\Projects'], refreshable: true,
+          build(body, api) {
+            body.className = 'win-body app-proj';
+            /* Built from the current copy of the project, so a Refresh (or an
+               admin save) rebuilds it with the new data. */
+            const p = PROJECTS.find(x => x.id === opened.id);
+            if (!p) {
+              body.innerHTML = `<div class="case-empty">${svg('warn', 32)}<b>This project is no longer published.</b>
+                <span>It was removed or unpublished after this window was opened.</span></div>`;
+              api.status[0].textContent = 'Not published';
+              return;
+            }
+            api.setTitle(p.file + ' \u2014 Case Study');
+            projectCaseStudy(p, body, api);
+          }
+        });
+      }
+      function projectCaseStudy(p, body, api) {
         /* The case study comes from the Project row ("projects edit", then
            "Add case study"), and every part of it is optional. Every tab is
            always there: one without material says so plainly rather than
@@ -254,11 +289,6 @@
         const emptyPanel = section => `<div class="case-empty">${svg('txt', 32)}
           <b>${esc(section.empty)}</b>
           <span>The Overview tab has the summary, the stack and the links for ${esc(p.name)}.</span></div>`;
-        WM.create({
-          id: 'proj-' + p.id, title: p.file + ' \u2014 Case Study', icon: appIcon(p.color, 14), w: 680, h: 570,
-          status: [p.req || p.type, 'C:\\Projects'],
-          build(body, api) {
-            body.className = 'win-body app-proj';
             const panel = (id, content) => {
               const section = sections.find(s => s.id === id);
               return `<section class="case-panel" id="case-${p.id}-panel-${id}" data-panel="${id}" role="tabpanel" aria-labelledby="case-${p.id}-tab-${id}"${id === 'overview' ? '' : ' hidden'}>${caseHas(id) ? content() : emptyPanel(section)}</section>`;
@@ -313,6 +343,7 @@
       <div class="pj-actions">
         ${p.demo ? `<a class="btn" href="${esc(p.demo)}" target="_blank" rel="noopener">Live demo</a>` : ''}
         ${p.repo ? `<a class="btn" href="${esc(p.repo)}" target="_blank" rel="noopener">View source</a>` : ''}
+        <button class="btn" type="button" data-a="refresh">Refresh</button>
         <span class="case-location">C:\\Projects\\${esc(p.file)}</span>
       </div>
     </div>`;
@@ -328,6 +359,7 @@
                 if (active && focus) tab.focus();
               });
               panels.forEach(section => { section.hidden = section.dataset.panel !== id; });
+              api.caseTab = id;
               const current = sections.find(section => section.id === id);
               api.status[0].textContent = (current ? current.label : 'Case Study') + ' \u2014 ' + p.tagline;
               content.scrollTop = 0;
@@ -359,6 +391,7 @@
                 thumb.setAttribute('aria-pressed', String(active));
               });
             }));
-          }
-        });
+            body.querySelector('[data-a="refresh"]').addEventListener('click', () => refreshFromWindow());
+            /* A rebuild after a Refresh stays on the tab the reader was on. */
+            if (api.caseTab && api.caseTab !== 'overview') selectSection(api.caseTab);
       }

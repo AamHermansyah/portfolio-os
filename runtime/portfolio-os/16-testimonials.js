@@ -163,7 +163,7 @@
       /* After a terminal save the messages already in the inbox are fetched
          again as one page, so an edit shows at once. Read flags carry over by
          id, and delivery resumes right after them. */
-      async function resyncTestimonials() {
+      async function resyncTestimonials(schedule = true) {
         if (testiState.pending) await testiState.pending;
         testiState.total = null;
         if (TESTIMONIALS.length) {
@@ -179,7 +179,7 @@
         testiState.cursor = TESTIMONIALS.length + 1;
         updateTrayBadge();
         if (inboxRefs && WM.wins.has('testimonials')) inboxRefs.render();
-        if (testiState.started && !testiState.timers.length && !testimonialsExhausted()) scheduleNext(3000);
+        if (schedule && testiState.started && !testiState.timers.length && !testimonialsExhausted()) scheduleNext(3000);
       }
 
       function openInbox(initialSelection) {
@@ -243,6 +243,10 @@
             }
             body.querySelector('[data-a="sr"]').addEventListener('click', async () => {
               hourglass(600);
+              /* Asks the server every time, even after the last known message:
+                 edits to what is here are re-read, and anything published
+                 since arrives. */
+              await resyncTestimonials(false);
               const result = await deliverTestimonial();
               if (result === 'failed') {
                 errorDialog('Testimonial Express', 'Send/Receive failed: the server could not be reached.<br>Try again in a moment.');

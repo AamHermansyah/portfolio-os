@@ -72,7 +72,7 @@
           api.tab = tab;
 
           DESK.appendChild(el);
-          this.wins.set(id, { id, el, api, min: false, tab, o });
+          this.wins.set(id, { id, el, api, min: false, tab, o, body });
           if (o.build) o.build(body, api);
           this.focus(id);
           hourglass(380);
@@ -119,6 +119,26 @@
           if (this.active === id) { this.active = null; this._focusTop(); }
         },
         closeAll() { [...this.wins.keys()].forEach(id => this.close(id)); },
+        /* Runs a window's build again on a fresh body, keeping its place, size,
+           z-order and taskbar tab. onClose runs first, so timers the old body
+           started stop with it; swapping the element drops its listeners. */
+        rebuild(id) {
+          const r = this.wins.get(id); if (!r || !r.o.build) return;
+          if (r.o.onClose) { try { r.o.onClose(r.api) } catch { } }
+          const body = document.createElement('div'); body.className = 'win-body';
+          r.body.replaceWith(body);
+          r.body = body;
+          r.o.build(body, r.api);
+        },
+        /* After the public content changes: a window that can update in place
+           sets api.refresh; one built once from the data opts in with
+           `refreshable: true` and is rebuilt. Everything else is left alone. */
+        refreshContent() {
+          [...this.wins.values()].forEach(w => {
+            if (typeof w.api.refresh === 'function') w.api.refresh();
+            else if (w.o.refreshable) this.rebuild(w.id);
+          });
+        },
         _focusTop() {
           let best = null;
           this.wins.forEach(w => { if (!w.min && (!best || +w.el.style.zIndex > +best.el.style.zIndex)) best = w; });

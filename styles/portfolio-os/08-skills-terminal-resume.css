@@ -127,6 +127,11 @@
       border-top: 2px groove #fff
     }
 
+    /* Refresh sits apart from the wizard's own Install / Cancel pair. */
+    .sk-btns [data-b="refresh"] {
+      margin-right: auto
+    }
+
     /* ============ app: terminal ============ */
     .app-term {
       background: #050807;

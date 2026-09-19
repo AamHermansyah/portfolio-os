@@ -1,5 +1,19 @@
 import { writeFile } from "node:fs/promises";
 
+/*
+ * Browser check for the PortfolioOS content windows, driven over the Chrome
+ * DevTools Protocol against a running server:
+ *
+ *   chrome --remote-debugging-port=9223 --user-data-dir=<temp dir>
+ *   node scripts/test-case-study.mjs [debugPort=9223] [url=http://localhost:3001] [screenshot.png]
+ *
+ * Nothing here knows what the portfolio contains. Every expectation is read
+ * from the content the page itself was handed (window.portfolioOsContent) or
+ * from the public APIs, so the check passes on any data set — an empty
+ * database included — and fails when a window disagrees with the data behind
+ * it. It only reads: nothing is created, edited or deleted.
+ */
+
 const debugPort = process.argv[2] ?? "9223";
 const debugUrl = `http://127.0.0.1:${debugPort}`;
 const portfolioUrl = process.argv[3] ?? "http://localhost:3001";
@@ -11,9 +25,7 @@ const delay = (milliseconds) =>
 const targets = await fetch(`${debugUrl}/json/list`).then((response) =>
   response.json(),
 );
-const page = targets.find(
-  (target) => target.type === "page" && target.url.startsWith("http"),
-);
+const page = targets.find((target) => target.type === "page");
 
 if (!page) {
   throw new Error(`No browser page found on ${debugUrl}`);
@@ -21,6 +33,7 @@ if (!page) {
 
 const socket = new WebSocket(page.webSocketDebuggerUrl);
 const pending = new Map();
+const pageErrors = [];
 let sequence = 0;
 
 await new Promise((resolve, reject) => {
@@ -30,6 +43,11 @@ await new Promise((resolve, reject) => {
 
 socket.addEventListener("message", (event) => {
   const message = JSON.parse(String(event.data));
+  if (message.method === "Runtime.exceptionThrown") {
+    const details = message.params.exceptionDetails;
+    pageErrors.push(details.exception?.description ?? details.text);
+    return;
+  }
   const request = pending.get(message.id);
 
   if (!request) return;
@@ -56,212 +74,176 @@ const expression = `
   (async () => {
     const delay = (milliseconds) =>
       new Promise((resolve) => setTimeout(resolve, milliseconds));
-    const waitFor = async (selector, timeout = 5000) => {
+    const waitFor = async (selector, timeout = 6000) => {
       const started = performance.now();
       while (performance.now() - started < timeout) {
         const element = document.querySelector(selector);
         if (element) return element;
         await delay(50);
       }
-      const scripts = [...document.scripts]
-        .map((script) => script.src || "inline")
-        .join(", ");
-      throw new Error(
-        "Timed out waiting for " +
-          selector +
-          "; readyState=" +
-          document.readyState +
-          "; scripts=" +
-          scripts,
-      );
+      throw new Error("Timed out waiting for " + selector);
     };
-    const activateDesktopIcon = async (icon, pointerSeed = 1) => {
-      const bounds = icon.getBoundingClientRect();
-      for (let index = 0; index < 2; index += 1) {
-        const options = {
-          bubbles: true,
-          button: 0,
-          clientX: bounds.left + 12,
-          clientY: bounds.top + 12,
-          pointerId: pointerSeed + index,
-          pointerType: "mouse",
-        };
-        icon.dispatchEvent(new PointerEvent("pointerdown", options));
-        icon.dispatchEvent(new PointerEvent("pointerup", options));
-        await delay(60);
-      }
+    const checks = [];
+    const check = (name, pass, detail = "") => checks.push({ name, pass: Boolean(pass), detail: String(detail) });
+    const icon = (id) => document.querySelector('.dicon[data-id="' + id + '"]');
+    const windowOf = (id) => document.querySelector('.win[data-id="' + id + '"]');
+    const openIcon = async (id) => {
+      icon(id).dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
+      return waitFor('.win[data-id="' + id + '"]');
     };
+    const labels = (root) => [...root.querySelectorAll(".ex-item .ex-lb")].map((label) => label.textContent);
 
-    const projectIcon = await waitFor(".dicon[data-id=projects]");
+    await waitFor(".dicon[data-id=projects]");
     const boot = document.querySelector("#boot");
     if (boot && getComputedStyle(boot).display !== "none") {
-      boot.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true }));
-      await delay(80);
-      boot.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true }));
-      await delay(1400);
+      for (let index = 0; index < 3; index += 1) {
+        boot.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true }));
+        await delay(300);
+      }
+      await delay(1600);
+    }
+    [...document.querySelectorAll(".win")]
+      .find((win) => win.querySelector(".tb-text")?.textContent === "Welcome to PortfolioOS")
+      ?.querySelector(".dlg-btns .btn")?.click();
+
+    const content = window.portfolioOsContent;
+    check("content handed to the runtime", content && Array.isArray(content.projects));
+
+    /* ---- Projects and the case study ---- */
+    const projects = await openIcon("projects");
+    check("Projects lists every published project", labels(projects).length === content.projects.length,
+      labels(projects).length + " of " + content.projects.length);
+
+    const KNOWN_TABS = ["Overview", "Challenge", "Solution", "Architecture", "Results", "Preview"];
+    if (content.projects.length) {
+      const project = content.projects.find((p) => p.caseStudy.captions.length > 1) ?? content.projects[0];
+      const c = project.caseStudy;
+      const has = {
+        overview: true,
+        challenge: Boolean(c.problem || c.responsibilities.length || c.duration || c.team),
+        solution: c.solution.length > 0,
+        architecture: Boolean(c.architecture.length || c.architectureNote),
+        results: Boolean(c.result || c.metrics.length),
+        screenshots: c.captions.length > 0,
+      };
+      [...projects.querySelectorAll(".ex-item")]
+        .find((item) => item.querySelector(".ex-lb").textContent === project.file)
+        .dispatchEvent(new MouseEvent("dblclick", { bubbles: true }));
+      const caseWindow = await waitFor('.win[data-id="proj-' + project.id + '"]');
+      const tabs = [...caseWindow.querySelectorAll(".case-tab")];
+      check("case study shows all six tabs in order", tabs.map((tab) => tab.textContent).join() === KNOWN_TABS.join(),
+        tabs.map((tab) => tab.textContent).join());
+      for (const tab of tabs) {
+        tab.click();
+        const panel = caseWindow.querySelector('[data-panel="' + tab.dataset.tab + '"]');
+        const empty = Boolean(panel.querySelector(".case-empty"));
+        check("tab " + tab.textContent + " matches its data", !panel.hidden && empty === !has[tab.dataset.tab],
+          has[tab.dataset.tab] ? "has material" : "empty state");
+      }
+      if (c.captions.length > 1) {
+        caseWindow.querySelector('.case-tab[data-tab="screenshots"]').click();
+        caseWindow.querySelectorAll(".gallery-thumb")[1].click();
+        check("preview gallery switches screenshots",
+          caseWindow.querySelector(".gallery-main img").dataset.shot === "1" &&
+            caseWindow.querySelector(".gallery-caption").textContent === c.captions[1]);
+      }
+      const demo = caseWindow.querySelector(".pj-actions a.btn");
+      check("live demo link follows the data", project.demo
+        ? caseWindow.querySelector('.pj-actions a[href="' + project.demo + '"]')
+        : !demo || demo.textContent !== "Live demo");
+      check("case study has a Refresh button", caseWindow.querySelector('.pj-actions [data-a="refresh"]'));
     }
 
-    await delay(450);
-
-    const welcome = [...document.querySelectorAll(".win")].find(
-      (windowElement) =>
-        windowElement.querySelector(".tb-text")?.textContent ===
-        "Welcome to PortfolioOS",
-    );
-    welcome?.querySelector(".dlg-btns .btn")?.click();
-
-    await activateDesktopIcon(projectIcon);
-    const firstProject = await waitFor(".app-expl .ex-item");
-    firstProject.dispatchEvent(new MouseEvent("dblclick", { bubbles: true }));
-    const caseWindow = await waitFor(".app-proj");
-    const tabs = [...caseWindow.querySelectorAll(".case-tab")];
-
-    tabs.find((tab) => tab.dataset.tab === "architecture")?.click();
-    const architectureVisible = Boolean(
-      caseWindow.querySelector("[data-panel=architecture]") &&
-        !caseWindow.querySelector("[data-panel=architecture]").hidden,
-    );
-
-    tabs.find((tab) => tab.dataset.tab === "screenshots")?.click();
-    const secondThumb = caseWindow.querySelectorAll(".gallery-thumb")[1];
-    secondThumb.click();
-
-    document.querySelector("#desktop").dispatchEvent(new MouseEvent("contextmenu", {
-      bubbles: true,
-      clientX: 320,
-      clientY: 180,
-    }));
-    const crtMenuItem = [...document.querySelectorAll(".ctx .mi")].find(
-      (item) => item.textContent === "CRT scanline filter",
-    );
-    const crtIndicatorStyle = crtMenuItem
-      ? getComputedStyle(crtMenuItem, "::before")
-      : null;
-    const crtIndicatorTailStyle = crtMenuItem
-      ? getComputedStyle(crtMenuItem, "::after")
-      : null;
-    const crtMenuStyle = crtMenuItem ? getComputedStyle(crtMenuItem) : null;
-    const crtIndicatorIsPixelCheck =
-      crtMenuItem?.classList.contains("checked") &&
-      crtIndicatorStyle?.content === '""' &&
-      crtIndicatorTailStyle?.content === '""' &&
-      parseFloat(crtIndicatorStyle.width) === 5 &&
-      parseFloat(crtIndicatorTailStyle.width) === 9 &&
-      parseFloat(crtIndicatorStyle.borderBottomWidth) === 0 &&
-      crtMenuItem.offsetWidth > 100 &&
-      crtMenuItem.offsetHeight > 13 &&
-      crtMenuStyle?.boxShadow === "none";
+    /* ---- the CRT menu check the original script carried ---- */
+    document.querySelector("#desktop").dispatchEvent(new MouseEvent("contextmenu", { bubbles: true, clientX: 320, clientY: 180 }));
+    const crtMenuItem = [...document.querySelectorAll(".ctx .mi")].find((item) => item.textContent === "CRT scanline filter");
+    const before = crtMenuItem ? getComputedStyle(crtMenuItem, "::before") : null;
+    const after = crtMenuItem ? getComputedStyle(crtMenuItem, "::after") : null;
+    check("CRT menu item draws a pixel check mark",
+      crtMenuItem?.classList.contains("checked") && before?.content === '""' && after?.content === '""' &&
+        parseFloat(before.width) === 5 && parseFloat(after.width) === 9 && getComputedStyle(crtMenuItem).boxShadow === "none");
     crtMenuItem?.click();
 
-    const certificatesIcon = await waitFor(".dicon[data-id=certs]");
-    await activateDesktopIcon(certificatesIcon, 10);
-    await delay(100);
-    const certificatesWindow = [...document.querySelectorAll(".win")].find(
-      (windowElement) =>
-        windowElement.querySelector(".tb-text")?.textContent === "Certificates",
-    );
-    const certificateCount = certificatesWindow?.querySelectorAll(
-      ".app-expl .ex-item",
-    ).length ?? 0;
+    /* ---- Certificates, Experience and Education: one app per table ---- */
+    const FOLDERS = {
+      certs: ["certificate", "award"],
+      experience: ["experience"],
+      education: ["education"],
+    };
+    const folderIcons = [];
+    for (const [id, kinds] of Object.entries(FOLDERS)) {
+      const expected = content.credentials.filter((entry) => kinds.includes(entry.kind));
+      check(id + " icon appears only with entries", Boolean(icon(id)) === expected.length > 0, expected.length + " entries");
+      if (!expected.length) continue;
+      folderIcons.push(icon(id).querySelector(".di-img").innerHTML);
+      const folder = await openIcon(id);
+      check(id + " lists its own entries", labels(folder).length === expected.length, labels(folder).length + " of " + expected.length);
+      folder.querySelector(".ex-item").dispatchEvent(new MouseEvent("dblclick", { bubbles: true }));
+      const dialog = await waitFor('.win[data-id^="cred-"]');
+      check(id + " properties open", [...dialog.querySelectorAll("dt")].map((dt) => dt.textContent).includes("Title"));
+      dialog.querySelector('[data-a="ok"]').click();
+    }
+    check("credential apps have distinct icons", new Set(folderIcons).size === folderIcons.length);
 
-    const publicationsIcon = await waitFor(".dicon[data-id=publications]");
-    const publicationIconDistinct =
-      publicationsIcon.querySelector(".di-img")?.innerHTML !==
-      certificatesIcon.querySelector(".di-img")?.innerHTML;
-    await activateDesktopIcon(publicationsIcon, 15);
-    const publicationsWindow = await waitFor('.win[data-id="publications"]');
-    const publicationItems = [...publicationsWindow.querySelectorAll(".pub-item")];
-    const publicationCount = publicationItems.length;
-    const publicationPreviewVisible = Boolean(
-      publicationsWindow.querySelector(".pub-paper h2")?.textContent,
-    );
-    publicationItems[1]?.click();
-    publicationsWindow.querySelector('[data-a="details"]')?.click();
-    const publicationDetail = await waitFor(
-      '.win[data-id^="publication-"] .pub-detail-cover',
-    );
-    const publicationDetailVisible = publicationDetail.textContent.includes(
-      "Practical Type Safety",
-    );
+    /* ---- Publications ---- */
+    check("Publications icon appears only with entries", Boolean(icon("publications")) === content.publications.length > 0);
+    if (content.publications.length) {
+      const library = await openIcon("publications");
+      const items = [...library.querySelectorAll(".pub-item")];
+      check("Publications lists every entry", items.length === content.publications.length);
+      check("Publications preview is visible", library.querySelector(".pub-paper h2")?.textContent);
+      const pick = items.length > 1 ? 1 : 0;
+      items[pick].click();
+      library.querySelector('[data-a="details"]').click();
+      const detail = await waitFor('.win[data-id^="publication-"] .pub-detail-cover');
+      check("publication details match the selection", detail.textContent.includes(content.publications[pick].title));
+    }
 
-    const changelogIcon = await waitFor(".dicon[data-id=changelog]");
-    await activateDesktopIcon(changelogIcon, 20);
-    await delay(300);
-    const changelogWindow = [...document.querySelectorAll(".win")].find(
-      (windowElement) =>
-        windowElement.querySelector(".tb-text")?.textContent?.startsWith(
-          "Changelog.log",
-        ),
-    );
-    const changelogText = changelogWindow?.querySelector(".npad")?.textContent ?? "";
+    /* ---- the two logs stay separate ---- */
+    const changelog = (await openIcon("changelog"));
+    await delay(400);
+    const changelogText = changelog.querySelector(".npad").textContent;
+    check("Changelog.log is its own log", changelogText.includes("CHANGELOG.LOG") && !changelogText.includes("CAREER.LOG"));
+    check("Changelog.log carries every entry", content.changelog.every((entry) => changelogText.includes(entry.text)));
+    const careerText = (await openIcon("career-log")).querySelector(".npad").textContent;
+    check("Career.log carries every entry", careerText.includes("CAREER.LOG") &&
+      (content.career.length ? content.career.every((entry) => careerText.includes(entry.text)) : careerText.includes("No career milestones")));
 
-    const careerIcon = await waitFor(".dicon[data-id=career-log]");
-    await activateDesktopIcon(careerIcon, 30);
-    await delay(100);
-    const careerWindow = [...document.querySelectorAll(".win")].find(
-      (windowElement) =>
-        windowElement.querySelector(".tb-text")?.textContent?.startsWith(
-          "Career.log",
-        ),
-    );
-    const careerText = careerWindow?.querySelector(".npad")?.textContent ?? "";
+    /* ---- Skills.exe and the résumé ---- */
+    const skills = await openIcon("skills");
+    check("Skills.exe lists every skill", skills.querySelectorAll(".sk-files li").length === content.skills.length);
+    const resumeText = (await openIcon("resume")).textContent;
+    check("résumé sections follow the data",
+      resumeText.includes("SELECTED PROJECTS") === content.projects.length > 0 &&
+        resumeText.includes("EXPERIENCE") === content.credentials.some((entry) => entry.kind === "experience") &&
+        resumeText.includes("EDUCATION") === content.credentials.some((entry) => entry.kind === "education"));
 
+    /* ---- Testimonial Express, one page per message ---- */
+    const firstPage = await (await fetch("/api/testimonials?page=1&limit=1")).json();
     document.querySelector("#testbtn").click();
     const inbox = await waitFor(".app-inbox");
-    const testimonialPreview = inbox.querySelector(".ib-prev");
-    const testimonialDetailInitiallyHidden =
-      testimonialPreview.hidden &&
-      !testimonialPreview.textContent.includes("undefined");
-    inbox.querySelector(".msg-row")?.click();
-    const testimonialDetailAfterSelection =
-      !testimonialPreview.hidden &&
-      Boolean(testimonialPreview.querySelector(".prev-hdr")) &&
-      !testimonialPreview.textContent.includes("undefined");
-    const receive = inbox.querySelector('[data-a="sr"]');
-    receive.click();
-    await delay(650);
-    receive.click();
-    await delay(650);
-    const testimonialCount = inbox.querySelectorAll(".msg-row").length;
+    const preview = inbox.querySelector(".ib-prev");
+    check("testimonial detail starts hidden", preview.hidden);
+    for (let index = 0; index <= firstPage.total; index += 1) {
+      inbox.querySelector('[data-a="sr"]').click();
+      await delay(900);
+    }
+    check("Send/Receive delivers every testimonial", inbox.querySelectorAll(".msg-row").length === firstPage.total,
+      inbox.querySelectorAll(".msg-row").length + " of " + firstPage.total);
+    if (firstPage.total) {
+      inbox.querySelector(".msg-row").click();
+      check("testimonial detail opens on selection",
+        !preview.hidden && preview.querySelector(".prev-hdr") && !preview.textContent.includes("undefined"));
+    }
 
-    const publicationsTab = [...document.querySelectorAll(".tab")].find(
-      (tab) => tab.querySelector(".tab-t")?.textContent === "Publications — Research Library",
-    );
-    publicationsTab?.click();
+    /* ---- Refresh reads the server again ---- */
+    const fresh = await (await fetch("/api/portfolio", { cache: "no-store" })).json();
+    projects.querySelector('[data-a="ref"]').click();
+    await delay(1500);
+    check("Refresh re-reads the projects", labels(windowOf("projects")).length === fresh.content.projects.length);
 
-    return {
-      title: caseWindow.closest(".win").querySelector(".tb-text").textContent,
-      tabCount: tabs.length,
-      tabLabels: tabs.map((tab) => tab.textContent),
-      architectureVisible,
-      screenshotsVisible: !caseWindow.querySelector(
-        "[data-panel=screenshots]",
-      ).hidden,
-      activeThumb: secondThumb.classList.contains("on"),
-      mainShotChanged: caseWindow
-        .querySelector(".gallery-main img")
-        .dataset.shot === "1",
-      hasLiveDemo: Boolean(caseWindow.querySelector('.pj-actions a[href*="vercel.app"]')),
-      crtIndicatorIsPixelCheck,
-      certificatesVisible: Boolean(certificatesIcon),
-      certificateCount,
-      publicationsVisible: Boolean(publicationsIcon),
-      publicationIconDistinct,
-      publicationCount,
-      publicationPreviewVisible,
-      publicationDetailVisible,
-      changelogSeparated:
-        !changelogText.includes("Career") && !changelogText.includes("[DEMO]"),
-      careerLogVisible:
-        careerText.includes("CAREER.LOG") && careerText.includes("[DEMO]"),
-      testimonialCount,
-      testimonialDemoVisible: inbox.textContent.includes("(Demo)"),
-      testimonialDetailInitiallyHidden,
-      testimonialDetailAfterSelection,
-      status: caseWindow
-        .closest(".win")
-        .querySelector(".statusbar .sb").textContent,
-    };
+    check("no demo placeholders on screen", !/\\[DEMO\\]|\\[Demo\\]|\\(Demo\\)/.test(document.body.innerText));
+    return checks;
   })()
 `;
 
@@ -278,49 +260,14 @@ if (evaluation.exceptionDetails) {
   );
 }
 
-const report = evaluation.result.value;
-// A case study renders a section only when it has material for it, so the tab
-// strip is a subset of the known set rather than a fixed list. Assert the shape:
-// known labels, canonical order, always opening on Overview and ending on Preview.
-const knownTabs = [
-  "Overview",
-  "Challenge",
-  "Solution",
-  "Architecture",
-  "Results",
-  "Preview",
-];
-const positions = report.tabLabels.map((label) => knownTabs.indexOf(label));
-const orderedSubset =
-  positions.every((position) => position !== -1) &&
-  positions.every((position, index) => index === 0 || position > positions[index - 1]);
+const checks = evaluation.result.value;
+checks.push({ name: "no uncaught page errors", pass: pageErrors.length === 0, detail: pageErrors.join(" | ") });
+const passed = checks.every((item) => item.pass);
 
-const passed =
-  report.tabCount === report.tabLabels.length &&
-  orderedSubset &&
-  report.tabLabels[0] === "Overview" &&
-  report.tabLabels[report.tabLabels.length - 1] === "Preview" &&
-  report.architectureVisible &&
-  report.screenshotsVisible &&
-  report.activeThumb &&
-  report.mainShotChanged &&
-  report.hasLiveDemo &&
-  report.crtIndicatorIsPixelCheck &&
-  report.certificatesVisible &&
-  report.certificateCount === 4 &&
-  report.publicationsVisible &&
-  report.publicationIconDistinct &&
-  report.publicationCount === 3 &&
-  report.publicationPreviewVisible &&
-  report.publicationDetailVisible &&
-  report.changelogSeparated &&
-  report.careerLogVisible &&
-  report.testimonialCount === 3 &&
-  report.testimonialDemoVisible &&
-  report.testimonialDetailInitiallyHidden &&
-  report.testimonialDetailAfterSelection;
-
-console.log(JSON.stringify({ passed, ...report }, null, 2));
+for (const item of checks) {
+  console.log(`${item.pass ? "PASS" : "FAIL"}  ${item.name}${item.detail ? `  (${item.detail})` : ""}`);
+}
+console.log(passed ? "\nAll checks passed." : "\nSome checks failed.");
 
 if (screenshotPath) {
   const screenshot = await send("Page.captureScreenshot", {

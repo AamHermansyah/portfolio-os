@@ -12,19 +12,29 @@
         return /^https?:\/\//i.test(publication.url || '') ? publication.url : '';
       }
 
-      function openPublication(publication) {
-        const url = publicationUrl(publication);
+      function openPublication(opened) {
         WM.create({
-          id: 'publication-' + publicationSlug(publication),
-          title: publication.title + ' — Publication',
-          icon: svg('journal', 14), w: 560, h: 440,
-          status: [publication.venue, publication.date || 'Date not listed'],
+          id: 'publication-' + publicationSlug(opened),
+          title: opened.title + ' — Publication',
+          icon: svg('journal', 14), w: 560, h: 440, refreshable: true,
+          status: [opened.venue, opened.date || 'Date not listed'],
           menubar: [
             { label: 'File', items: [{ label: 'Close', act: api => api.close() }] },
+            REFRESH_MENU,
             { label: 'Help', items: [{ label: 'About PortfolioOS', act: aboutOS }] }
           ],
           build(body, api) {
             body.className = 'win-body app-pub-detail';
+            /* Built from the current copy, so a Refresh shows the edited record. */
+            const publication = PUBLICATIONS.find(x => x.id === opened.id);
+            if (!publication) {
+              body.innerHTML = '<div class="pub-empty">This publication is no longer published.</div>';
+              return;
+            }
+            const url = publicationUrl(publication);
+            api.setTitle(publication.title + ' — Publication');
+            api.status[0].textContent = publication.venue;
+            api.status[1].textContent = publication.date || 'Date not listed';
             const notes = (publication.notes || []).length
               ? '<section class="pub-detail-section"><h3>Notes</h3><ul>' +
                 publication.notes.map(note => '<li>' + esc(note) + '</li>').join('') + '</ul></section>'
@@ -53,10 +63,11 @@
         let selected = null;
         WM.create({
           id: 'publications', title: 'Publications — Research Library',
-          icon: svg('journal', 14), w: 760, h: 500,
+          icon: svg('journal', 14), w: 760, h: 500, refreshable: true,
           status: [PUBLICATIONS.length + ' publication(s)', 'Research Library'],
           menubar: [
             { label: 'File', items: [{ label: 'Close', act: api => api.close() }] },
+            REFRESH_MENU,
             { label: 'Help', items: [{ label: 'About PortfolioOS', act: aboutOS }] }
           ],
           build(body, api) {
@@ -73,6 +84,8 @@
             const search = body.querySelector('#pub-search');
             const index = body.querySelector('.pub-index');
             const preview = body.querySelector('.pub-preview');
+            /* A rebuild after a Refresh keeps what was typed. */
+            search.value = api.pubQuery || '';
 
             function show(publication, item, focus) {
               selected = publication;
@@ -144,16 +157,16 @@
                 if (!first) first = { publication, item };
               });
 
-              const preserved = matches.includes(selected)
-                ? [...index.querySelectorAll('.pub-item')][matches.indexOf(selected)]
-                : null;
-              if (preserved) show(selected, preserved, false);
+              /* By id: after a Refresh the selected record is a new object. */
+              const at = selected ? matches.findIndex(publication => publication.id === selected.id) : -1;
+              if (at >= 0) show(matches[at], [...index.querySelectorAll('.pub-item')][at], false);
               else show(first.publication, first.item, false);
             }
 
-            search.addEventListener('input', render);
+            search.addEventListener('input', () => { api.pubQuery = search.value; render(); });
             body.querySelector('[data-a="clear"]').addEventListener('click', () => {
               search.value = '';
+              api.pubQuery = '';
               render();
               search.focus();
             });
