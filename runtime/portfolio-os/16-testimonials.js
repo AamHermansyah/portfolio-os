@@ -49,7 +49,7 @@
         const short = t.text.length > 108 ? t.text.slice(0, 105) + '\u2026' : t.text;
         showToast({
           title: 'Testimonial Express', icon: svg('mail', 14),
-          html: `<div class="t-av">${personIcon(t, 30)}</div><div class="t-msg">
+          html: `<div class="t-av"><img src="${esc(t.avatar)}" alt=""></div><div class="t-msg">
       <div class="t-from">New testimonial from <b>${esc(t.from)}</b></div>
       <div class="t-role">${esc(t.role)}</div>
       <div class="t-prev">&ldquo;${esc(short)}&rdquo;</div>
@@ -144,7 +144,7 @@
               updateTrayBadge(); render();
               ibPrev.hidden = false;
               ibPrev.innerHTML = `<div class="prev-hdr">
-          <div class="prev-av">${personIcon(t, 36)}</div>
+          <div class="prev-av"><img src="${esc(t.avatar)}" alt=""></div>
           <div class="prev-who">
             <div class="prev-from"><b>${esc(t.from)}</b> <span class="dim">${esc(t.role)}</span></div>
             <div class="prev-subj">${esc(t.subject)}</div>

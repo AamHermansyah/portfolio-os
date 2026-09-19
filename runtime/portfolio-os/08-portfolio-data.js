@@ -207,24 +207,24 @@
          clearly labelled placeholders with verified client quotes before launch. */
       const TESTIMONIALS = [
         {
-          from: 'Nadia Pratama (Demo)', role: 'Product Lead · Sample testimonial',
+          from: 'Atthariq', role: '3D Animator',
           subject: '[DEMO] Product delivery feedback',
           date: 'Today, 10:30 AM', dateShort: 'Today', stars: 5,
-          skin: '#e8b98f', hair: '#2f211b', shirt: '#000080',
+          avatar: 'https://drive.google.com/uc?export=view&id=19L4luLEfvxxcUtd9VqKRAbmgDmWhh0-y',
           text: 'Demo testimonial: Aam translated a complicated workflow into a product the team could understand, test, and ship with confidence.'
         },
         {
-          from: 'Rizky Maulana (Demo)', role: 'Engineering Manager · Sample testimonial',
+          from: 'eltora49', role: 'Client in Fiverr',
           subject: '[DEMO] Engineering collaboration',
           date: 'Yesterday, 3:45 PM', dateShort: 'Yesterday', stars: 5,
-          skin: '#c98b62', hair: '#17120f', shirt: '#008080',
+          avatar: 'https://drive.google.com/uc?export=view&id=14dmNYclk4KZy-0snG9G5JQTkd5XbD-bc',
           text: 'Demo testimonial: Communication stayed clear throughout the project, technical trade-offs were documented, and every milestone arrived in a reviewable state.'
         },
         {
           from: 'Sarah Wijaya (Demo)', role: 'Founder · Sample testimonial',
           subject: '[DEMO] Working with Aam',
           date: '09/08/2026, 9:15 AM', dateShort: '09/08', stars: 4,
-          skin: '#efc69f', hair: '#5c3824', shirt: '#800080',
+          avatar: 'https://i.pravatar.cc/64',
           text: 'Demo testimonial: The final application matched the intended design closely and remained practical for our team to maintain after handover.'
         }
       ];

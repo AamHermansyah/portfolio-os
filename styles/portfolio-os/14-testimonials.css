@@ -60,6 +60,22 @@
       display: block
     }
 
+    .t-av img,
+    .prev-av img {
+      display: block;
+      object-fit: cover
+    }
+
+    .t-av img {
+      width: 34px;
+      height: 34px
+    }
+
+    .prev-av img {
+      width: 48px;
+      height: 48px
+    }
+
     .t-msg {
       flex: 1;
       min-width: 0

@@ -215,8 +215,8 @@ model Project {
   @@index([published, sortIndex])
 }
 
-/// Entries in Testimonial Express. The three colours drive the generated pixel
-/// avatar; there are no uploaded images anywhere in this project.
+/// Entries in Testimonial Express. Each entry carries a real photo instead of
+/// a procedural avatar; the image is referenced by URL, not uploaded.
 model Testimonial {
   id         String   @id @default(cuid())
   slug       String   @unique
@@ -228,9 +228,8 @@ model Testimonial {
   dateShort  String
   /// 1-5.
   stars      Int
-  skinColor  String
-  hairColor  String
-  shirtColor String
+  /// The author's photo, hosted externally, e.g. a Drive share link.
+  imageUrl   String
   body       String
   published  Boolean  @default(true)
   sortIndex  Int      @default(0)
