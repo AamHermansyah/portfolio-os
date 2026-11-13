@@ -243,6 +243,12 @@
         const markup = `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360"><rect width="640" height="360" fill="#008080"/><rect x="6" y="6" width="628" height="348" fill="#c0c0c0" stroke="#fff" stroke-width="2"/><rect x="9" y="9" width="622" height="25" fill="${p.color}"/><text x="18" y="26" fill="#fff" font-family="Tahoma,Arial,sans-serif" font-size="12" font-weight="700">${esc(p.name)} — ${index === 0 ? 'Overview' : index === 1 ? 'System View' : 'Release Report'}</text><g font-family="Tahoma,Arial,sans-serif">${scene}</g><rect x="10" y="324" width="620" height="26" fill="#c0c0c0" stroke="#808080"/><text x="19" y="341" fill="#333" font-family="Tahoma,Arial,sans-serif" font-size="9">${esc(((c.captions || [])[index] || p.tagline).slice(0, 88))}</text></svg>`;
         return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(markup);
       }
+      /* A preview slide is a real screenshot when the project has one at that
+         position, and the generated illustration otherwise. The number of
+         slides is whichever of images and captions is longer. */
+      const shotCount = c => Math.max((c.images || []).length, (c.captions || []).length);
+      const shotSrc = (p, c, index) => (c.images || [])[index] || caseStudyShot(p, c, index);
+      const shotCaption = (p, c, index) => (c.captions || [])[index] || p.name + ' — screenshot ' + (index + 1);
       function openProject(opened) {
         WM.create({
           id: 'proj-' + opened.id, title: opened.file + ' \u2014 Case Study', icon: appIcon(opened.color, 14), w: 680, h: 570,
@@ -275,7 +281,7 @@
           if (id === 'solution') return c.solution.length > 0;
           if (id === 'architecture') return !!(c.architecture.length || c.architectureNote);
           if (id === 'results') return !!(c.result || c.metrics.length);
-          if (id === 'screenshots') return c.captions.length > 0;
+          if (id === 'screenshots') return shotCount(c) > 0;
           return true;
         };
         const sections = [
@@ -336,9 +342,9 @@
           ${p.notes.length ? `<div class="case-label">What shipped</div>
           <ul class="pj-notes">${p.notes.map(n => `<li>${esc(n)}</li>`).join('')}</ul>` : ''}`)}
         ${panel('screenshots', () => `<h2 class="case-heading">Interface preview</h2>
-          <div class="gallery-main"><img src="${caseStudyShot(p, c, 0)}" data-shot="0" alt="${esc(c.captions[0])}" width="640" height="360"></div>
-          <div class="gallery-caption" aria-live="polite">${esc(c.captions[0])}</div>
-          <div class="gallery-thumbs">${c.captions.map((caption, i) => `<button class="gallery-thumb${i === 0 ? ' on' : ''}" type="button" data-shot="${i}" aria-label="View screenshot ${i + 1}: ${esc(caption)}" aria-pressed="${i === 0 ? 'true' : 'false'}"><img src="${caseStudyShot(p, c, i)}" alt="" width="240" height="135"></button>`).join('')}</div>`)}
+          <div class="gallery-main"><img src="${esc(shotSrc(p, c, 0))}" data-shot="0" alt="${esc(shotCaption(p, c, 0))}" width="640" height="360" referrerpolicy="no-referrer"></div>
+          <div class="gallery-caption" aria-live="polite">${esc(shotCaption(p, c, 0))}</div>
+          <div class="gallery-thumbs">${Array.from({ length: shotCount(c) }, (_, i) => `<button class="gallery-thumb${i === 0 ? ' on' : ''}" type="button" data-shot="${i}" aria-label="View screenshot ${i + 1}: ${esc(shotCaption(p, c, i))}" aria-pressed="${i === 0 ? 'true' : 'false'}"><img src="${esc(shotSrc(p, c, i))}" alt="" width="240" height="135" referrerpolicy="no-referrer"></button>`).join('')}</div>`)}
       </div>
       <div class="pj-actions">
         ${p.demo ? `<a class="btn" href="${esc(p.demo)}" target="_blank" rel="noopener">Live demo</a>` : ''}
@@ -379,12 +385,27 @@
             });
             const mainShot = body.querySelector('.gallery-main img');
             const caption = body.querySelector('.gallery-caption');
+            /* A screenshot that cannot be loaded (a Drive file that is not shared,
+               a removed GitHub asset) falls back to the generated illustration
+               for that slot, once, instead of leaving a broken-image icon. */
+            const withFallback = (img, indexOf) => {
+              img.addEventListener('error', () => {
+                if (img.dataset.fallback) return;
+                img.dataset.fallback = '1';
+                img.src = caseStudyShot(p, c, indexOf());
+              });
+            };
+            if (mainShot) withFallback(mainShot, () => Number(mainShot.dataset.shot));
+            body.querySelectorAll('.gallery-thumb').forEach(button => {
+              withFallback(button.querySelector('img'), () => Number(button.dataset.shot));
+            });
             body.querySelectorAll('.gallery-thumb').forEach(button => button.addEventListener('click', () => {
               const index = Number(button.dataset.shot);
-              mainShot.src = caseStudyShot(p, c, index);
+              delete mainShot.dataset.fallback;
+              mainShot.src = shotSrc(p, c, index);
               mainShot.dataset.shot = String(index);
-              mainShot.alt = c.captions[index];
-              caption.textContent = c.captions[index];
+              mainShot.alt = shotCaption(p, c, index);
+              caption.textContent = shotCaption(p, c, index);
               body.querySelectorAll('.gallery-thumb').forEach(thumb => {
                 const active = thumb === button;
                 thumb.classList.toggle('on', active);

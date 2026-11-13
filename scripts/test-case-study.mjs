@@ -116,7 +116,9 @@ const expression = `
 
     const KNOWN_TABS = ["Overview", "Challenge", "Solution", "Architecture", "Results", "Preview"];
     if (content.projects.length) {
-      const project = content.projects.find((p) => p.caseStudy.captions.length > 1) ?? content.projects[0];
+      /* A preview slide exists for every image and every caption. */
+      const slides = (caseStudy) => Math.max(caseStudy.captions.length, (caseStudy.images ?? []).length);
+      const project = content.projects.find((p) => slides(p.caseStudy) > 1) ?? content.projects[0];
       const c = project.caseStudy;
       const has = {
         overview: true,
@@ -124,7 +126,7 @@ const expression = `
         solution: c.solution.length > 0,
         architecture: Boolean(c.architecture.length || c.architectureNote),
         results: Boolean(c.result || c.metrics.length),
-        screenshots: c.captions.length > 0,
+        screenshots: slides(c) > 0,
       };
       [...projects.querySelectorAll(".ex-item")]
         .find((item) => item.querySelector(".ex-lb").textContent === project.file)
@@ -140,12 +142,16 @@ const expression = `
         check("tab " + tab.textContent + " matches its data", !panel.hidden && empty === !has[tab.dataset.tab],
           has[tab.dataset.tab] ? "has material" : "empty state");
       }
-      if (c.captions.length > 1) {
+      if (slides(c) > 1) {
         caseWindow.querySelector('.case-tab[data-tab="screenshots"]').click();
+        check("preview gallery has one thumbnail per slide",
+          caseWindow.querySelectorAll(".gallery-thumb").length === slides(c),
+          caseWindow.querySelectorAll(".gallery-thumb").length + " of " + slides(c));
         caseWindow.querySelectorAll(".gallery-thumb")[1].click();
         check("preview gallery switches screenshots",
           caseWindow.querySelector(".gallery-main img").dataset.shot === "1" &&
-            caseWindow.querySelector(".gallery-caption").textContent === c.captions[1]);
+            caseWindow.querySelector(".gallery-caption").textContent ===
+              (c.captions[1] || project.name + " — screenshot 2"));
       }
       const demo = caseWindow.querySelector(".pj-actions a.btn");
       check("live demo link follows the data", project.demo

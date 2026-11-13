@@ -1,14 +1,19 @@
 /* =================================================================
          TESTIMONI SEBAGAI NOTIFIKASI
       ================================================================= */
-      /* Nothing is preloaded. Each delivery is its own request for the next
-         page of GET /api/testimonials with a limit of 1, so TESTIMONIALS only
-         ever holds what has already arrived. `cursor` is the page to ask for
+      /* Only the first INITIAL_TESTIMONIALS are preloaded. After that each
+         delivery is its own request for the next page of GET /api/testimonials
+         with a limit of 1, so TESTIMONIALS only ever holds what has already
+         arrived. `cursor` is the page to ask for
          next; `total` comes back with every page and says when to stop. `gen`
          changes on restart, so a request that was in flight then cannot
          schedule into the new session. */
       const TESTIMONIALS = [];
       const TESTIMONIAL_ENDPOINT = '/api/testimonials';
+      /* The first batch arrives silently in one request; everything after it is
+         delivered one at a time, each with a popup, 4-10 seconds apart. */
+      const INITIAL_TESTIMONIALS = 8;
+      const nextTestimonialDelay = () => 4000 + Math.random() * 6000;
       const testiState = { cursor: 1, total: null, pending: null, gen: 0, started: false, doneToast: false, timers: [] };
       /* id → read flag for everything delivered this visit, so a message a
          resync pushed out of the list comes back quietly, not as news. */
@@ -137,21 +142,44 @@
           const result = await deliverTestimonial();
           testiState.timers = testiState.timers.filter(x => x !== id);
           if (gen !== testiState.gen) return;
-          if (result === 'delivered') scheduleNext(40000 + Math.random() * 35000);
+          if (result === 'delivered') scheduleNext(nextTestimonialDelay());
           else if (result === 'failed') scheduleNext(60000);
           else if (TESTIMONIALS.length) upToDateToast();
         }, ms);
         testiState.timers.push(id);
       }
+      /* The opening batch: one request for the first INITIAL_TESTIMONIALS messages,
+         dropped into the inbox without popups or sound. It shares the `pending`
+         slot with deliverTestimonial, so the two can never fetch at once. */
+      function preloadTestimonials(count) {
+        if (!testiState.pending) {
+          testiState.pending = (async () => {
+            const result = await fetchTestimonials(testiState.cursor, count);
+            if (!result.ok) return 'failed';
+            testiState.total = result.total;
+            result.items.forEach(t => {
+              testiState.cursor++;
+              if (TESTIMONIALS.some(x => x.id === t.id)) return;
+              t._read = testiSeen.has(t.id) && testiSeen.get(t.id);
+              testiSeen.set(t.id, t._read);
+              TESTIMONIALS.push(t);
+            });
+            updateTrayBadge();
+            if (inboxRefs && WM.wins.has('testimonials')) inboxRefs.render();
+            return result.items.length ? 'delivered' : 'done';
+          })().finally(() => { testiState.pending = null; });
+        }
+        return testiState.pending;
+      }
       async function startTestimonials() {
         if (testiState.started) return;
         testiState.started = true;
         const gen = testiState.gen;
-        const result = await deliverTestimonial(true);
+        const result = await preloadTestimonials(INITIAL_TESTIMONIALS);
         if (gen !== testiState.gen) return;
         /* An empty inbox stays quiet rather than announcing it has been read. */
-        if (result === 'delivered') scheduleNext(9000);
-        else if (result === 'failed') scheduleNext(60000);
+        if (result === 'failed') scheduleNext(60000);
+        else if (!testimonialsExhausted()) scheduleNext(nextTestimonialDelay());
       }
       function resetTestiTimers() {
         testiState.gen++;

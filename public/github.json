@@ -1,11 +1,11 @@
 {
-  "syncedAt": "2026-09-19T08:31:51.270Z",
+  "syncedAt": "2026-11-13T13:34:33.968Z",
   "profile": {
     "login": "AamHermansyah",
     "name": "Aam Hermansyah",
     "bio": "Typescript/Javascript Developer",
     "location": "Garut, Jawa Barat, Indonesia.",
-    "publicRepos": 45,
+    "publicRepos": 47,
     "followers": 6,
     "createdAt": "2020-11-17T23:13:22Z",
     "url": "https://github.com/AamHermansyah",
@@ -13,11 +13,41 @@
   },
   "repos": [
     {
+      "name": "gridlab-graphic",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "pushedAt": "2026-11-13T08:17:14Z",
+      "homepage": "https://gridlab-graphic.vercel.app",
+      "url": "https://github.com/AamHermansyah/gridlab-graphic",
+      "topics": []
+    },
+    {
+      "name": "word-alive",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "pushedAt": "2026-11-11T23:05:50Z",
+      "homepage": "https://word-alive.vercel.app",
+      "url": "https://github.com/AamHermansyah/word-alive",
+      "topics": []
+    },
+    {
+      "name": "AturTripWeb",
+      "description": "Platform untuk membantu tour guide dan event kegiatan yang mempunyai timeline dengan mudah",
+      "language": "TypeScript",
+      "stars": 0,
+      "pushedAt": "2026-10-04T00:06:36Z",
+      "homepage": "https://aturtrip.vercel.app",
+      "url": "https://github.com/AamHermansyah/AturTripWeb",
+      "topics": []
+    },
+    {
       "name": "portfolio-os",
       "description": null,
       "language": "JavaScript",
       "stars": 0,
-      "pushedAt": "2026-09-19T08:21:11Z",
+      "pushedAt": "2026-09-19T08:51:19Z",
       "homepage": "https://portfolio-os-five-gray.vercel.app",
       "url": "https://github.com/AamHermansyah/portfolio-os",
       "topics": []
@@ -30,16 +60,6 @@
       "pushedAt": "2026-08-31T20:53:56Z",
       "homepage": "https://kaggo.vercel.app",
       "url": "https://github.com/AamHermansyah/kaggo",
-      "topics": []
-    },
-    {
-      "name": "AturTripWeb",
-      "description": "Platform untuk membantu tour guide dan event kegiatan yang mempunyai timeline dengan mudah",
-      "language": "TypeScript",
-      "stars": 0,
-      "pushedAt": "2026-08-23T12:06:51Z",
-      "homepage": "https://aturtrip.vercel.app",
-      "url": "https://github.com/AamHermansyah/AturTripWeb",
       "topics": []
     },
     {
@@ -476,7 +496,7 @@
   "languages": [
     {
       "name": "TypeScript",
-      "count": 26
+      "count": 28
     },
     {
       "name": "JavaScript",

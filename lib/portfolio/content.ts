@@ -157,7 +157,7 @@ export async function loadPortfolioContent(): Promise<PortfolioContent> {
           releaseDate: true, tagline: true, description: true, notes: true, stack: true,
           demoUrl: true, repoUrl: true, requirements: true,
           role: true, duration: true, team: true, problem: true, responsibilities: true, solution: true,
-          architecture: true, architectureNote: true, result: true, metrics: true, captions: true,
+          architecture: true, architectureNote: true, result: true, metrics: true, captions: true, images: true,
         },
       }),
       prisma.skill.findMany({
@@ -232,6 +232,7 @@ export async function loadPortfolioContent(): Promise<PortfolioContent> {
         result: p.result ?? "",
         metrics: pairs(p.metrics).map(({ head, tail }) => ({ value: head, label: tail })),
         captions: p.captions ?? [],
+        images: (p.images ?? []).map(imageUrl).filter((url) => url !== ""),
       },
     })),
     skills: skills.map((s) => ({

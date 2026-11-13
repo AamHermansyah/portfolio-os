@@ -27,8 +27,10 @@ export type PublicCaseStudy = {
   architectureNote: string;
   result: string;
   metrics: { value: string; label: string }[];
-  /** One per generated preview screenshot. */
+  /** One per preview: describes the matching image, or drives a generated one. */
   captions: string[];
+  /** Real screenshots, in order. Only http(s) URLs survive; Drive links are rewritten. */
+  images: string[];
 };
 
 export type PublicProject = {

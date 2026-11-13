@@ -183,9 +183,9 @@ model Skill {
   @@index([published, sortIndex])
 }
 
-/// Project files on the desktop. Screenshots are deliberately not modelled:
-/// the gallery was procedurally generated art rather than stored images, and
-/// dropping it was an explicit decision rather than an oversight.
+/// Project files on the desktop. Screenshots are referenced by URL, never
+/// uploaded: `images` holds real interface screenshots, and the Preview tab
+/// falls back to generated illustrations only while that list is empty.
 model Project {
   id           String   @id @default(cuid())
   /// The short handle the runtime uses as a window id, e.g. "mykaggo".
@@ -227,8 +227,12 @@ model Project {
   result           String?
   /// One "value | label" per entry, e.g. "40% | faster checkout".
   metrics          String[]
-  /// One caption per generated preview screenshot, in order.
+  /// One caption per preview, in order. Describes the matching entry of
+  /// `images`, or drives a generated illustration when there is no image.
   captions         String[]
+  /// Real interface screenshots for the Preview tab, in order: https URLs or
+  /// Google Drive share links, hosted elsewhere (GitHub, Drive).
+  images           String[]
 
   published Boolean  @default(true)
   sortIndex Int      @default(0)

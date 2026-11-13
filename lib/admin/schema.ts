@@ -85,7 +85,8 @@ const CASE_STUDY_FIELDS: FieldSpec[] = [
   { name: "architectureNote", label: "Engineering note", type: "text", optional: true, max: 600 },
   { name: "result", label: "Results", type: "text", optional: true, max: 2000 },
   { name: "metrics", label: "Metrics", type: "list", optional: true, max: 6, hint: "one per line: value | label, e.g. 40% | faster checkout" },
-  { name: "captions", label: "Preview captions", type: "list", optional: true, max: 6, hint: "one generated screenshot per caption" },
+  { name: "images", label: "Preview images", type: "list", optional: true, max: 6, hint: "one image URL per line: https, or a Google Drive share link (shared: anyone with the link)" },
+  { name: "captions", label: "Preview captions", type: "list", optional: true, max: 6, hint: "one per line, matching the images in order; with no images, one generated screenshot per caption" },
 ];
 
 const CASE_STUDY = CASE_STUDY_FIELDS.map((field) => ({ ...field, group: "caseStudy" }));
