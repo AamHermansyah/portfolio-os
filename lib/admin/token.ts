@@ -17,6 +17,16 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 
 export const TOKEN_TTL_MS = 30 * 60 * 1000;
 
+/**
+ * The Mailbox session lives in an HttpOnly cookie rather than in a JavaScript
+ * variable, so it can outlast a reload — that is its whole purpose. It is the
+ * same HMAC token with a `k` (kind) claim, and it is long-lived on purpose.
+ * Scoping it keeps that lifetime from leaking into anything else: the terminal's
+ * CRUD refuses a token that carries `k`, and the Mailbox refuses one that does not.
+ */
+export const INBOX_TOKEN_KIND = "inbox";
+export const INBOX_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+
 /** The shortest secret worth accepting; below this, fail rather than pretend. */
 const MIN_SECRET_LENGTH = 32;
 
@@ -29,6 +39,8 @@ export type TokenClaims = {
   v: number;
   /** Expiry, epoch milliseconds. */
   exp: number;
+  /** Absent on a terminal token; "inbox" on the Mailbox cookie. */
+  k?: string;
 };
 
 export type ReadResult =
@@ -55,7 +67,13 @@ function sign(body: string, key: string): string {
   return createHmac("sha256", key).update(body).digest("base64url");
 }
 
-export function issueToken(input: { sub: string; username: string; tokenVersion: number }): string | null {
+export function issueToken(input: {
+  sub: string;
+  username: string;
+  tokenVersion: number;
+  kind?: string;
+  ttlMs?: number;
+}): string | null {
   const key = secret();
   if (!key) return null;
 
@@ -63,7 +81,8 @@ export function issueToken(input: { sub: string; username: string; tokenVersion:
     sub: input.sub,
     u: input.username,
     v: input.tokenVersion,
-    exp: Date.now() + TOKEN_TTL_MS,
+    exp: Date.now() + (input.ttlMs ?? TOKEN_TTL_MS),
+    ...(input.kind ? { k: input.kind } : {}),
   };
   const body = Buffer.from(JSON.stringify(claims), "utf8").toString("base64url");
   return `${body}.${sign(body, key)}`;
@@ -98,7 +117,8 @@ export function readToken(token: unknown): ReadResult {
     typeof claims?.sub !== "string" ||
     typeof claims?.u !== "string" ||
     typeof claims?.v !== "number" ||
-    typeof claims?.exp !== "number"
+    typeof claims?.exp !== "number" ||
+    (claims.k !== undefined && typeof claims.k !== "string")
   ) {
     return { ok: false, error: "malformed" };
   }

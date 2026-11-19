@@ -6,6 +6,7 @@ export function QuickLaunch() {
       <a className="ql-btn" href="https://github.com/AamHermansyah" id="ql-git" rel="noopener" target="_blank" title="GitHub — github.com/AamHermansyah" />
       <a className="ql-btn" href="https://www.linkedin.com/in/aam-hermansyah/" id="ql-in" rel="noopener" target="_blank" title="LinkedIn — linkedin.com/in/aam-hermansyah" />
       <a className="ql-btn" href="https://www.fiverr.com/aam_hermansyah" id="ql-fiverr" rel="noopener" target="_blank" title="Fiverr — freelance profile" />
+      <a className="ql-btn" href="https://wa.me/6282316126449" id="ql-wa" rel="noopener" target="_blank" title="WhatsApp — wa.me/6282316126449" />
     </div>
   );
 }

@@ -29,6 +29,10 @@
           ? [{ id: 'publications', label: 'Publications', ic: () => svg('journal', 32), open: openPublications }]
           : []),
         { id: 'fiverr', label: 'Fiverr.url', ic: () => svg('globe', 32), open: openFiverr },
+        /* Only while the Mailbox cookie is good; a visitor never sees it. */
+        ...(MAILBOX.signedIn
+          ? [{ id: 'mailbox', label: 'Mailbox', ic: () => svg('mail', 32), open: openMailbox }]
+          : []),
         { id: 'bin', label: 'Recycle Bin', ic: () => svg(binContents.length ? 'binF' : 'binE', 32), open: openBin }
       ];
       const ICON_DOUBLE_TAP_MS = 500;

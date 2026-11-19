@@ -40,6 +40,7 @@ The interface began as a standalone HTML experience and now runs on the Next.js 
 | `Resume.pdf` | Displays the résumé inside a retro document viewer. |
 | `Contact.exe` | Sends a direct message through the inquiry API, with an honest e-mail-client fallback. |
 | `Hire_Me.exe` | Guides prospective clients through engagement type, project focus, budget, timeline, and contact information. |
+| `Mailbox` | Owner only. Lists the Hire_Me and Contact submissions with unread counts. It appears on the desktop after an administrator signs in and stays for 30 days. Visitors never see it. |
 | `System Properties` | Gives recruiters a fast summary of role, experience, location, availability, and languages. |
 | `Network Neighborhood` | Browses the GitHub profile and repositories from a resilient build-time snapshot. |
 | `Find` | Searches projects, skills, credentials, and GitHub repositories from one place. |
@@ -66,9 +67,9 @@ Every listed project links to its live deployment and public source repository w
 
 ```text
 styles/portfolio-os.css
-        └── styles/portfolio-os/*.css (14 ordered style modules)
+        └── styles/portfolio-os/*.css (ordered style modules)
 
-runtime/portfolio-os/*.js (22 ordered runtime modules)
+runtime/portfolio-os/*.js (ordered runtime modules)
         └── scripts/sync-portfolio-assets.mjs
                 └── public/portfolio-runtime.js
 
@@ -80,7 +81,11 @@ Next.js atomic shell
 
 GitHub API ── scripts/sync-github.mjs ── public/github.json
 
-Contact.exe / Hire_Me.exe ── POST /api/hire ── Webhook or Resend
+Contact.exe / Hire_Me.exe ── POST /api/hire ── Postgres (Inquiry) + Webhook or Resend
+                                                     │
+Terminal sign-in ── POST /api/inbox/session ── HttpOnly cookie (30 days)
+                                                     │
+Mailbox.exe ── GET /api/inbox, PATCH /api/inbox/:id ─┘
 ```
 
 Key implementation details:
@@ -92,6 +97,8 @@ Key implementation details:
 - **Build-time GitHub snapshots** keep Network Neighborhood fast and usable even when GitHub is unavailable or rate-limited.
 - **Progressive inquiry delivery** supports a generic webhook or Resend, then falls back to `mailto:` when no transport is configured.
 - **Basic abuse protection** includes input limits, validation, a honeypot, minimum form-fill time, and an in-memory rate limit.
+- **Database-backed content** keeps projects, skills, credentials, publications, testimonials, and both logs in Postgres. The public windows read published rows only, and the Terminal edits the same rows.
+- **Cookie session for the Mailbox** uses a scoped, HttpOnly, `SameSite=Strict` cookie that opens the Mailbox and nothing else. See [Mailbox](#mailbox-hire_me-and-contact-submissions).
 
 ## Getting started
 
@@ -142,7 +149,7 @@ Choose one delivery method:
 | `DATABASE_URL` | Pooled Neon connection string. Used by the application at runtime. |
 | `DATABASE_URL_UNPOOLED` | Direct Neon connection string. Used by Prisma Migrate, which needs a session-level advisory lock the pooler cannot hold. |
 | `NEON_BRANCH` | Which Neon branch the two URLs point at. Informational. |
-| `ADMIN_TOKEN_SECRET` | Signing key for the in-memory admin session token. At least 32 characters. Without it the admin commands report `not_configured`. |
+| `ADMIN_TOKEN_SECRET` | Signing key for the terminal session token and the Mailbox cookie. At least 32 characters. Without it the admin commands report `not_configured`. Changing it signs out every session. |
 
 `neon link` writes the first three. Generate `ADMIN_TOKEN_SECRET` with:
 
@@ -150,7 +157,25 @@ Choose one delivery method:
 node -e "console.log(require('node:crypto').randomBytes(32).toString('base64url'))"   # ADMIN_TOKEN_SECRET
 ```
 
-Content is managed from the Terminal, not from a web dashboard. Sign in with `sudo login --admin`, then `help` lists the administrative commands and `resources` lists what can be managed. The session lives in memory only — reloading the page signs you out, and nothing is written to a cookie or to local storage. The first administrator is created with `sudo setup --admin`, which prompts to create a recovery PIN that is securely hashed (scrypt) and stored per-account in the database. A forgotten password is recovered with `sudo reset --admin`, which validates against that account's recovery PIN and invalidates every token already issued. End the session anytime with `logout`.
+Content is managed from the Terminal, not from a web dashboard. Sign in with `sudo login --admin`, then `help` lists the administrative commands and `resources` lists what can be managed. The terminal session lives in memory only — it ends after 30 minutes or when the page is reloaded, and nothing about it is written to local storage. Content editing always needs this fresh sign-in. The first administrator is created with `sudo setup --admin`, which prompts to create a recovery PIN that is securely hashed (scrypt) and stored per-account in the database. A forgotten password is recovered with `sudo reset --admin`, which validates against that account's recovery PIN and invalidates every token already issued. End the terminal session anytime with `logout`.
+
+### Mailbox: Hire_Me and Contact submissions
+
+Everything sent through `Hire_Me.exe` and `Contact.exe` is stored in the `Inquiry` table. `Mailbox` is the window for reading it, so you do not have to sign in to the Terminal and list the rows by hand.
+
+Sign in once with `sudo login --admin`. The server then sets a cookie, and the `Mailbox` icon appears on the desktop and in the Start menu with a badge for unread messages. It survives reloads and new browser sessions. Open it any time, with no further sign-in, until the cookie ends. The window has a Hire Me tab and a Contact tab. Opening a message marks it as read, which is the same behavior as the Terminal.
+
+| Property | Behavior |
+| --- | --- |
+| Lifetime | 30 days. Using the site after the halfway point renews it, so a browser you use now and then stays signed in. |
+| Cookie | `portfolioos_inbox`, `HttpOnly` (page scripts cannot read it), `SameSite=Strict`, and `Secure` on HTTPS. |
+| Scope | Reading submissions and marking them read. It cannot edit or delete anything. The Terminal's content commands reject it, and the Mailbox rejects a terminal token. |
+| Revocation | `sudo reset --admin` invalidates it everywhere. `ADMIN_TOKEN_SECRET` rotation does too. |
+| Request checks | Writes also verify the request's `Origin` and `Sec-Fetch-Site`, on top of `SameSite`. |
+
+`logout` ends the terminal session only, so that habit does not undo the Mailbox. There are three ways to sign out. **Start → Log Off** ends everything at once: the terminal session and the Mailbox cookie. `logout --all` in the Terminal does the same from the keyboard. **File → Sign out** in the Mailbox window removes only the cookie.
+
+The endpoints behind it are `POST`/`GET`/`DELETE /api/inbox/session`, `GET /api/inbox?kind=hire|contact&page=N`, and `PATCH /api/inbox/:id?kind=hire|contact`. They are private and never cached.
 
 ### GitHub snapshot
 
@@ -175,7 +200,7 @@ If synchronization fails, the previous `public/github.json` snapshot is retained
 
 ## Customizing the portfolio
 
-The main profile, project, case-study, skill, social-link, testimonial, credential, and career-history data live in [`runtime/portfolio-os/08-portfolio-data.js`](./runtime/portfolio-os/08-portfolio-data.js).
+The profile and social links live in [`runtime/portfolio-os/08-portfolio-data.js`](./runtime/portfolio-os/08-portfolio-data.js). Projects, case studies, skills, testimonials, credentials, publications, and both logs are rows in Postgres (see [`prisma/schema.prisma`](./prisma/schema.prisma)), edited from the Terminal with `sudo login --admin`. After a save, the open windows update without a reload.
 
 Important editing rules:
 
@@ -216,6 +241,7 @@ Configure the inquiry environment variables in the deployment dashboard if `Cont
 - GitHub: [github.com/AamHermansyah](https://github.com/AamHermansyah)
 - LinkedIn: [linkedin.com/in/aam-hermansyah](https://www.linkedin.com/in/aam-hermansyah/)
 - Fiverr: [fiverr.com/aam_hermansyah](https://www.fiverr.com/aam_hermansyah)
+- WhatsApp: [wa.me/6282316126449](https://wa.me/6282316126449)
 - E-mail: [aamhermansyah283@gmail.com](mailto:aamhermansyah283@gmail.com)
 
 ---

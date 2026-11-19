@@ -79,6 +79,11 @@
           '.BBBBBBBBBBBBBB.', '.BBBWWBBWWWWWWB.', '.BBBWWBBWWBBWWB.', '.BBBWWBBWWBBWWB.',
           '.BBBWWBBWWBBWWB.', '.BBBWWBBWWBBWWB.', '.BBBWWBBWWBBWWB.', '.BBBWWBBWWBBWWB.',
           '.BBBBBBBBBBBBBB.', '.BBBBBBBBBBBBBB.', '.BBBBBBBBBBBBBB.', '................'],
+        whatsapp: [
+          '................', '....GGGGGGGG....', '..GGGGGGGGGGGG..', '.GGGGGGGGGGGGGG.',
+          '.GGGWWGGGGGGGGG.', '.GGWWWWGGGGGGGG.', '.GGGWWWWGGGGGGG.', '.GGGGWWWWGGGGGG.',
+          '.GGGGGWWWWWGGGG.', '.GGGGGGWWWWWGGG.', '.GGGGGGGGWWWWGG.', '..GGGGGGGGGWWG..',
+          '..GGGGGGGGGGGG..', '.GGGGGGGGGG.....', '.GG.............', '................'],
         globe: [
           '................', '....oooooooo....', '...oooggggooo...', '..oogggggooooo..',
           '.oogggggooooggg.', '.oooooooooogggg.', '.oooooooooooooo.', '.ooggggoooooooo.',
@@ -183,6 +188,7 @@
         starE: { '#': '#a8a8a8' },
         github: { 'G': '#181717', 'W': '#ffffff' },
         linkedin: { 'B': '#0077b5', 'W': '#ffffff' },
+        whatsapp: { 'G': '#25d366', 'W': '#ffffff' },
         globe: { 'o': '#2a5fa8', 'g': '#3aa845' },
         moon: { 'M': '#f2ecd8', 'm': '#c9c2a4', 'c': '#a9a184' },
         briefcase: { '#': '#3f2d14', 'L': '#a9702c', 'K': '#e8c760' },

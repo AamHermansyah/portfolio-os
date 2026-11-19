@@ -29,6 +29,7 @@
         fiverr: 'https://www.fiverr.com/aam_hermansyah', fiverrUser: 'aam_hermansyah',
         email: 'hermansyahaam283@gmail.com',
         phone: '+62 823-1612-6449',
+        whatsapp: 'https://wa.me/6282316126449', whatsappLabel: 'wa.me/6282316126449',
         site: 'https://aamhermansyah.vercel.app', siteLabel: 'aamhermansyah.vercel.app'
       };
 

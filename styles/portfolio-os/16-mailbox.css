@@ -1,0 +1,84 @@
+/* ============ Mailbox.exe — Hire_Me and Contact submissions ============ */
+    /* The window reuses the Testimonial Express layout (.app-inbox, .msg-row,
+       .prev-*); only what that layout lacks is defined here. */
+
+    .dicon .di-img {
+      position: relative;
+      width: 32px;
+      margin: 0 auto
+    }
+
+    .di-badge {
+      position: absolute;
+      top: -4px;
+      right: -8px;
+      background: #c00000;
+      color: #fff;
+      font-size: 9px;
+      font-weight: bold;
+      line-height: 1;
+      padding: 2px 3px;
+      border: 1px solid #fff;
+      min-width: 8px;
+      text-align: center;
+      pointer-events: none
+    }
+
+    .app-mailbox .ib-tools .btn.on {
+      font-weight: bold
+    }
+
+    .app-mailbox .ib-prev {
+      flex-basis: 44%;
+      font-size: 12px;
+      user-select: text;
+      cursor: var(--cur-text)
+    }
+
+    .app-mailbox .prev-from a {
+      color: #0000ee
+    }
+
+    .mb-row {
+      display: flex;
+      gap: 8px;
+      padding: 1px 0
+    }
+
+    .mb-k {
+      flex: 0 0 82px;
+      color: #666
+    }
+
+    .mb-v {
+      flex: 1;
+      min-width: 0;
+      overflow-wrap: anywhere
+    }
+
+    .mb-label {
+      margin-top: 8px;
+      padding-top: 5px;
+      border-top: 1px dotted #808080;
+      color: #666
+    }
+
+    .mb-body {
+      margin-top: 6px;
+      font: 12px/1.55 var(--mono);
+      white-space: pre-wrap;
+      overflow-wrap: anywhere
+    }
+
+    .mb-foot {
+      margin-top: 8px;
+      padding-top: 5px;
+      border-top: 1px dotted #808080;
+      font: 10px var(--mono);
+      color: #777
+    }
+
+    .mb-more {
+      display: block;
+      margin: 6px auto
+    }

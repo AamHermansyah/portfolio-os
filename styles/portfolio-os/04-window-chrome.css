@@ -40,8 +40,12 @@
       flex: 0 0 16px
     }
 
+    /* Title-bar icons are always 14px. Dialogs reuse the 32px icon from their body
+       for the title bar too, so the size is fixed here instead of in each caller. */
     .tb-ic svg {
-      display: block
+      display: block;
+      width: 14px;
+      height: auto
     }
 
     .tb-text {

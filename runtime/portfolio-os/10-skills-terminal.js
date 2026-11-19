@@ -379,6 +379,7 @@
                   printHTML('E-mail   : <a href="#" class="t-mail">compose via Portfolio Mail</a> (type: open contact)\n' +
                     'Direct   : <a href="mailto:' + LINKS.email + '">' + LINKS.email + '</a>\n' +
                     'Phone    : ' + LINKS.phone + '\n' +
+                    'WhatsApp : <a href="' + LINKS.whatsapp + '" target="_blank" rel="noopener">' + LINKS.whatsappLabel + '</a>\n' +
                     'GitHub   : <a href="' + LINKS.github + '" target="_blank" rel="noopener">github.com/' + LINKS.githubUser + '</a>\n' +
                     'LinkedIn : <a href="' + LINKS.linkedin + '" target="_blank" rel="noopener">linkedin.com/in/' + LINKS.linkedinUser + '</a>\n' +
                     'Fiverr   : <a href="' + FIVERR.url + '" target="_blank" rel="noopener">fiverr.com/' + FIVERR.user + '</a>');

@@ -19,6 +19,7 @@
           { ic: 'mail', t: 'Contact.exe', fn: openContact },
           { ic: 'briefcase', t: 'Hire_Me.exe', fn: openHire },
           { ic: 'mail', t: 'Testimonials', fn: () => openInbox() },
+          ...(MAILBOX.signedIn ? [{ ic: 'mail', t: 'Mailbox', fn: openMailbox }] : []),
           { ic: 'globe', t: 'Fiverr Profile', fn: openFiverr },
           { ic: 'network', t: 'Network Neighborhood', fn: openNetwork },
           { ic: 'briefcase', t: 'Career.log', fn: openCareerLog },
@@ -32,6 +33,7 @@
           { ic: 'computer', t: 'System Properties', fn: openSysProps },
           { ic: 'monitor', t: 'Display Properties', fn: openWallpaperPicker },
           { sep: true },
+          ...(MAILBOX.signedIn ? [{ ic: 'power', t: 'Log Off ' + MAILBOX.username + '\u2026', fn: logOffDialog }] : []),
           { ic: 'gear', t: 'Run\u2026', fn: runDialog },
           { ic: 'power', t: 'Shut Down\u2026', fn: shutdownDialog }
         ];

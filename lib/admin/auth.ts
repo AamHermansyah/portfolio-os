@@ -3,7 +3,14 @@ import "server-only";
 import { dummySecretHash, hashSecret, verifySecret } from "@/lib/admin/password";
 import type { AdminResource } from "@/lib/admin/contract";
 import { ADMIN_RESOURCES } from "@/lib/admin/resources";
-import { issueToken, readToken, tokenConfigured, TOKEN_TTL_MS } from "@/lib/admin/token";
+import {
+  INBOX_TOKEN_KIND,
+  INBOX_TTL_MS,
+  issueToken,
+  readToken,
+  tokenConfigured,
+  TOKEN_TTL_MS,
+} from "@/lib/admin/token";
 import { prisma } from "@/lib/prisma";
 
 /**
@@ -234,13 +241,14 @@ export async function resetPassword(
 }
 
 /**
- * The gate every future CRUD action calls first. It re-reads the row rather
- * than trusting the token alone, because tokenVersion is the only way to hang
- * up on a token that has already been handed out.
+ * Resolves a token to the account behind it, and refuses it when the account is
+ * gone or `tokenVersion` has moved on. `kind` says which sort of token is
+ * acceptable: a terminal token carries none, the Mailbox cookie carries "inbox",
+ * and neither is accepted in the other's place.
  */
-export async function requireAdmin(token: unknown): Promise<{ id: string; username: string } | null> {
+async function resolveToken(token: unknown, kind: string | undefined) {
   const result = readToken(token);
-  if (!result.ok) return null;
+  if (!result.ok || result.claims.k !== kind) return null;
 
   const user = await prisma.adminUser.findUnique({
     where: { id: result.claims.sub },
@@ -248,5 +256,56 @@ export async function requireAdmin(token: unknown): Promise<{ id: string; userna
   });
   if (!user || user.tokenVersion !== result.claims.v) return null;
 
-  return { id: user.id, username: user.username };
+  return { user, claims: result.claims };
+}
+
+/**
+ * The gate every CRUD action calls first. It re-reads the row rather than
+ * trusting the token alone, because tokenVersion is the only way to hang up on
+ * a token that has already been handed out.
+ */
+export async function requireAdmin(token: unknown): Promise<{ id: string; username: string } | null> {
+  const resolved = await resolveToken(token, undefined);
+  return resolved ? { id: resolved.user.id, username: resolved.user.username } : null;
+}
+
+export type InboxSession = { token: string; username: string; expiresAt: number };
+
+/**
+ * Trades a live terminal token for the long-lived Mailbox token that goes in
+ * the cookie. The terminal token proves a password was just typed; the Mailbox
+ * token is what that proof buys.
+ */
+export async function mintInboxSession(terminalToken: unknown): Promise<InboxSession | null> {
+  const resolved = await resolveToken(terminalToken, undefined);
+  if (!resolved) return null;
+  return issueInboxSession(resolved.user);
+}
+
+function issueInboxSession(user: { id: string; username: string; tokenVersion: number }): InboxSession | null {
+  const token = issueToken({
+    sub: user.id,
+    username: user.username,
+    tokenVersion: user.tokenVersion,
+    kind: INBOX_TOKEN_KIND,
+    ttlMs: INBOX_TTL_MS,
+  });
+  if (!token) return null;
+  return { token, username: user.username, expiresAt: Date.now() + INBOX_TTL_MS };
+}
+
+/**
+ * Checks the Mailbox cookie's token. `renewal` is set when more than half of
+ * the lifetime has gone, so a browser used now and then never has to sign in
+ * again, while one left alone for a month does.
+ */
+export async function requireInbox(
+  token: unknown,
+): Promise<{ id: string; username: string; expiresAt: number; renewal: InboxSession | null } | null> {
+  const resolved = await resolveToken(token, INBOX_TOKEN_KIND);
+  if (!resolved) return null;
+
+  const { user, claims } = resolved;
+  const renewal = claims.exp - Date.now() < INBOX_TTL_MS / 2 ? issueInboxSession(user) : null;
+  return { id: user.id, username: user.username, expiresAt: claims.exp, renewal };
 }

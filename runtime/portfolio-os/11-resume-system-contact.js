@@ -41,7 +41,7 @@
             body.innerHTML = `<div class="resume-page">
       <h1>AAM HERMANSYAH</h1>
       <div class="r-sub">${esc(PROFILE.role)} — ${esc(PROFILE.location)}</div>
-      <div class="r-links"><a href="mailto:${LINKS.email}">${LINKS.email}</a> &middot; ${esc(LINKS.phone)} &middot;
+      <div class="r-links"><a href="mailto:${LINKS.email}">${LINKS.email}</a> &middot; <a href="${LINKS.whatsapp}" target="_blank" rel="noopener" title="Chat on WhatsApp">${esc(LINKS.phone)}</a> &middot;
         <a href="${LINKS.linkedin}" target="_blank" rel="noopener">linkedin.com/in/${LINKS.linkedinUser}</a> &middot;
         <a href="${LINKS.github}" target="_blank" rel="noopener">github.com/${LINKS.githubUser}</a> &middot;
         <a href="${LINKS.site}" target="_blank" rel="noopener">${LINKS.siteLabel}</a> &middot;
@@ -169,6 +169,7 @@
         <div class="cm-alt">Hiring? Run <a href="#" class="alt-hire">Hire_Me.exe</a> instead &mdash; it asks the useful questions in five steps.<br>
           Prefer social? &nbsp;<a href="${LINKS.github}" target="_blank" rel="noopener">GitHub</a> &middot;
           <a href="${LINKS.linkedin}" target="_blank" rel="noopener">LinkedIn</a> &middot;
+          <a href="${LINKS.whatsapp}" target="_blank" rel="noopener">WhatsApp</a> &middot;
           <a href="#" class="alt-fiverr">Fiverr profile</a></div>
       </div>`;
             const g = k => body.querySelector('[data-f="' + k + '"]');

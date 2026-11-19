@@ -102,7 +102,8 @@
         if (!adminSignedIn()) return '';
         let text = 'Administration\n' +
           '  session              show who is signed in and for how long\n' +
-          '  logout               end the session\n' +
+          '  logout               end the terminal session\n' +
+          '  logout --all         also end the Mailbox cookie session\n' +
           '  passwd               change the password\n';
         if (typeof adminCrudHelpText === 'function') text += adminCrudHelpText();
         return text + '\n';
@@ -118,6 +119,54 @@
         if (typeof adminWindowsSignedIn === 'function') adminWindowsSignedIn();
         term.setPrompt('C:\\PORTFOLIO\\ADMIN>', true);
         term.api.setTitle('Terminal \u2014 fauxcmd.exe [ADMIN]');
+        /* The password was just typed, so this is the moment the Mailbox cookie
+           is issued. It runs beside the welcome text and adds one line when done. */
+        mailboxStart(session.token).then(ok => {
+          if (ok && term.alive) {
+            term.print('Mailbox.exe is on the desktop. It stays signed in on this browser for 30 days.', 'dim');
+          }
+        });
+      }
+
+      /* Start menu → Log Off. Ends everything at once: the terminal session (and
+         the prompt of every open terminal window) and the Mailbox cookie. */
+      async function adminLogOff() {
+        const terminals = [...WM.wins.values()].map(w => w.api && w.api.term).filter(t => t && t.alive);
+        if (ADMIN) {
+          if (terminals.length) terminals.forEach(t => adminSignOut(t));
+          else adminSignOut(null);
+        }
+        await mailboxSignOut();
+        terminals.forEach(t => t.print('Logged off. The terminal session and the Mailbox cookie were removed.', 'ok'));
+      }
+
+      function logOffDialog() {
+        dialogBox({
+          title: 'Log Off', icon: svg('power', 32), w: 400,
+          msg: '<b>Log off ' + esc(MAILBOX.username) + '?</b>This ends the Terminal session and removes the 30-day Mailbox cookie from this browser. You will need to sign in from the Terminal again.',
+          buttons: [
+            { t: 'Log Off', act: async api => { api.close(); await adminLogOff(); } },
+            { t: 'Cancel' }
+          ]
+        });
+      }
+
+      /* "logout" ends the terminal session only: the Mailbox is the part meant to
+         outlast it, and a habitual logout should not undo that. "--all" ends both. */
+      async function adminLogout(term, all) {
+        const terminalOn = adminSignedIn();
+        const mailboxOn = MAILBOX.signedIn;
+        if (!terminalOn && !(all && mailboxOn)) { term.print('Not signed in.', 'dim'); return; }
+        if (terminalOn) {
+          adminSignOut(term);
+          term.print('Session ended. The token was discarded.', 'ok');
+        }
+        if (all && mailboxOn) {
+          await mailboxSignOut();
+          if (term.alive) term.print('Mailbox session ended. The cookie was removed.', 'ok');
+        } else if (mailboxOn) {
+          term.print('Mailbox.exe stays signed in on this browser. "logout --all" ends that too.', 'dim');
+        }
       }
 
       function adminWelcome(term, session, verb) {
@@ -260,9 +309,7 @@
               return true;
             }
             case 'logout':
-              if (!adminSignedIn()) { term.print('Not signed in.', 'dim'); return true; }
-              adminSignOut(term);
-              term.print('Session ended. The token was discarded.', 'ok');
+              adminLogout(term, parts.some(p => p.toLowerCase() === '--all'));
               return true;
             case 'setup':
             case 'reset': {
@@ -284,9 +331,7 @@
 
         switch (command) {
           case 'logout':
-            if (!adminSignedIn()) { term.print('Not signed in.', 'dim'); return true; }
-            adminSignOut(term);
-            term.print('Session ended. The token was discarded.', 'ok');
+            adminLogout(term, parts.some(p => p.toLowerCase() === '--all'));
             return true;
           case 'session':
             if (!adminSignedIn()) { term.print('Not signed in.', 'dim'); return true; }
