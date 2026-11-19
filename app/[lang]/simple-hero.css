@@ -1,0 +1,173 @@
+/* ---------- hero ---------- */
+
+.sv-hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 40px;
+  min-height: calc(100svh - 52px);
+  padding-block: 56px 36px;
+}
+
+.sv-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  align-items: center;
+  gap: 56px;
+}
+
+.sv-kicker {
+  font: 400 26px/1 var(--pixel);
+  letter-spacing: 0.04em;
+  color: var(--on-desk-soft);
+  margin-bottom: 18px;
+}
+
+.sv-hero h1 {
+  font: 400 clamp(46px, 8vw, 104px) / 0.98 var(--sans);
+  letter-spacing: -0.045em;
+  color: #fff;
+}
+
+.sv-hero h1 span {
+  display: block;
+  margin-top: 14px;
+  font-size: 0.36em;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--on-desk-soft);
+}
+
+.sv-lead {
+  max-width: 46ch;
+  margin-top: 26px;
+  font-size: 20px;
+  line-height: 1.55;
+  color: #fff;
+}
+
+.sv-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 34px;
+}
+
+/* ---------- About_Me.txt ---------- */
+
+.sv-about .sv-win-body {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+}
+
+.sv-about-top {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.sv-photo {
+  width: 132px;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: 2px solid;
+  border-color: var(--lo) var(--hi) var(--hi) var(--lo);
+  box-shadow: inset 1px 1px var(--dk);
+  background: var(--face);
+}
+
+.sv-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sv-facts {
+  display: grid;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.sv-facts dt {
+  font: 400 18px/1 var(--pixel);
+  letter-spacing: 0.03em;
+  color: var(--muted);
+}
+
+.sv-facts dd {
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.sv-summary {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #222;
+}
+
+.sv-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  justify-self: start;
+  padding: 5px 10px;
+  border: 2px solid;
+  border-color: var(--lo) var(--hi) var(--hi) var(--lo);
+  background: var(--face);
+  font: 700 13px/1 var(--sans);
+}
+
+.sv-dot {
+  width: 10px;
+  height: 10px;
+  background: #00a000;
+  box-shadow: inset -1px -1px #006000;
+}
+
+.sv-rating {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* ---------- desktop shortcuts ---------- */
+
+.sv-icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.sv-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 104px;
+  padding: 10px 6px 8px;
+  color: #fff;
+  font: 600 14px/1.25 var(--sans);
+  text-align: center;
+  text-decoration: none;
+}
+
+.sv-icon .sv-pixel {
+  transition: transform 160ms var(--ease);
+}
+
+.sv-icon span {
+  padding: 2px 5px;
+  text-shadow: 1px 1px 0 #000;
+}
+
+.sv-icon:hover .sv-pixel {
+  transform: translateY(-2px);
+}
+
+.sv-icon:hover span,
+.sv-icon:focus-visible span {
+  background: var(--navy);
+  outline: 1px dotted #ffff80;
+  text-shadow: none;
+}

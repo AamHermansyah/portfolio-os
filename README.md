@@ -37,9 +37,9 @@ The interface began as a standalone HTML experience and now runs on the Next.js 
 | Project Case Study | Presents overview, challenge, solution, architecture, results, and product screenshots when verified material is available. |
 | `Skills.exe` | Runs an animated installer for the current technology stack and keeps the completed progress visible until the visitor closes it. |
 | `Terminal` | Provides a working command prompt with discoverable commands such as `help`, `projects`, `skills`, and `open`. |
-| `Resume.pdf` | Displays the résumé inside a retro document viewer. |
-| `Contact.exe` | Sends a direct message through the inquiry API, with an honest e-mail-client fallback. |
-| `Hire_Me.exe` | Guides prospective clients through engagement type, project focus, budget, timeline, and contact information. |
+| `Resume.pdf` | Displays the résumé inside a retro document viewer, with a **Download CV (PDF)** button for the real file. |
+| `Contact.exe` | Sends a direct message through the inquiry API, with an honest e-mail-client fallback. After sending, a **Continue on WhatsApp** button opens a chat with the message already written. |
+| `Hire_Me.exe` | Guides prospective clients through engagement type, project focus, budget, timeline, and contact information. After sending, it offers the same WhatsApp hand-off with the choices summarized. |
 | `Mailbox` | Owner only. Lists the Hire_Me and Contact submissions with unread counts. It appears on the desktop after an administrator signs in and stays for 30 days. Visitors never see it. |
 | `System Properties` | Gives recruiters a fast summary of role, experience, location, availability, and languages. |
 | `Network Neighborhood` | Browses the GitHub profile and repositories from a resilient build-time snapshot. |
@@ -51,6 +51,18 @@ The interface began as a standalone HTML experience and now runs on the Next.js 
 | Display Properties | Switches between seven wallpapers, including an animated terminal and interactive orbit scene. |
 
 The desktop also supports window dragging, resizing, minimizing, maximizing, keyboard navigation, touch interaction, persistent wallpaper selection, a boot sequence, notifications, and interactive Moon/Jupiter objects.
+
+## Simple view and languages
+
+Not everyone wants to learn a fake operating system, and the desktop is cramped on a phone. The same portfolio is also an ordinary page, at **`/en`** and **`/id`** (`/simple` redirects to `/en`): hero with WhatsApp, email and CV buttons, projects, skills, experience, testimonials, and a short contact form that lands in the Mailbox like any other message. It is server-rendered and shares no stylesheet with the desktop, but it still wears the desktop's skin so the two feel like one place: the header is the taskbar, every block is a Windows 98 window with the desktop's own pixel icons, skills are install-progress bars, the rest of the projects sit in an Explorer-style list, and testimonials arrive as an inbox. The hero opens once on load, buttons bevel and press, project windows lift on hover, and everything rests under reduced motion.
+
+- **Getting there:** a link on the boot screen, **Start → Simple view**, and the desktop right-click menu. On a narrow or touch screen the desktop offers it once in a notification. Nothing redirects anyone automatically.
+- **Getting back:** every Simple view page links to the desktop.
+- **Language:** the Simple view is fully English or Indonesian. On the desktop, **Start → Language** (or the right-click menu) switches between them and reloads the page. The choice is remembered, and `?lang=id` selects it from a link. Indonesian covers Hire_Me, Contact, the résumé, and their success dialogs.
+- **What is not translated:** project descriptions and testimonials come from the database and stay in their original language, as do the Terminal, the Mailbox, and the desktop's jokes. Stored answers (for example the Hire_Me budget) are always saved in English, whichever language the form was shown in, so the Mailbox reads the same words either way.
+- **Adding a translated string:** in the runtime, wrap the English text in `tr('…')` and add the same text as a key in `runtime/portfolio-os/00-i18n-id-*.js`. A missing key simply shows English.
+
+The CV served by the **Download CV** buttons is [`public/resume.pdf`](./public/resume.pdf); replace that file to update it.
 
 ## Featured projects
 
@@ -78,6 +90,13 @@ Next.js atomic shell
         ├── molecules
         ├── organisms
         └── templates
+
+Two root layouts, so the desktop's global styles never reach a normal page:
+        ├── app/(os)/   ── /          the desktop (OS stylesheet, boot screen, runtime)
+        └── app/[lang]/ ── /en, /id   the Simple view (its own stylesheet, no runtime)
+
+lib/portfolio/profile.ts ── one profile ── Simple view, metadata, and
+                                           window.portfolioOsProfile for the runtime
 
 GitHub API ── scripts/sync-github.mjs ── public/github.json
 
@@ -200,7 +219,7 @@ If synchronization fails, the previous `public/github.json` snapshot is retained
 
 ## Customizing the portfolio
 
-The profile and social links live in [`runtime/portfolio-os/08-portfolio-data.js`](./runtime/portfolio-os/08-portfolio-data.js). Projects, case studies, skills, testimonials, credentials, publications, and both logs are rows in Postgres (see [`prisma/schema.prisma`](./prisma/schema.prisma)), edited from the Terminal with `sudo login --admin`. After a save, the open windows update without a reload.
+The profile (name, role, summary in both languages, contact details, social links) lives in one place, [`lib/portfolio/profile.ts`](./lib/portfolio/profile.ts), and feeds the Simple view, the page metadata, and the desktop. Projects, case studies, skills, testimonials, credentials, publications, and both logs are rows in Postgres (see [`prisma/schema.prisma`](./prisma/schema.prisma)), edited from the Terminal with `sudo login --admin`. After a save, the open windows update without a reload.
 
 Important editing rules:
 
@@ -242,7 +261,7 @@ Configure the inquiry environment variables in the deployment dashboard if `Cont
 - LinkedIn: [linkedin.com/in/aam-hermansyah](https://www.linkedin.com/in/aam-hermansyah/)
 - Fiverr: [fiverr.com/aam_hermansyah](https://www.fiverr.com/aam_hermansyah)
 - WhatsApp: [wa.me/6282316126449](https://wa.me/6282316126449)
-- E-mail: [aamhermansyah283@gmail.com](mailto:aamhermansyah283@gmail.com)
+- E-mail: [hermansyahaam283@gmail.com](mailto:hermansyahaam283@gmail.com)
 
 ---
 

@@ -26,7 +26,10 @@ export async function POST(request: Request) {
     const admin = await requireAdmin(token);
     if (!admin) return Response.json({ ok: false, error: "unauthorized" }, { status: 401 });
 
+    // The desktop and both languages of the Simple view all bake the same content in.
     revalidatePath("/");
+    revalidatePath("/en");
+    revalidatePath("/id");
     const content = await loadPortfolioContent();
     return Response.json({ ok: true, content });
   } catch (error) {

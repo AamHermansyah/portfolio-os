@@ -1,0 +1,348 @@
+/* The Simple view: an ordinary, readable page that still wears the desktop.
+   The colours are the desktop's own — Classic Teal ground, silver window faces, navy
+   title bars — and every block is one of its windows. Flat colour, hard edges, no
+   blur, no gradient; the one dark-to-light thing is the bevel, which is the theme.
+   It shares nothing with the desktop's stylesheet; this layout never imports it. */
+
+:root {
+  --desk: #008080;
+  --face: #c0c0c0;
+  --face-hover: #d4d0c8;
+  --hi: #ffffff;
+  --hi-soft: #dfdfdf;
+  --lo: #808080;
+  --dk: #0a0a0a;
+  --navy: #000080;
+  --navy-hover: #0000a0;
+  --paper: #ffffff;
+  --ink: #111111;
+  --muted: #4a4a4a;
+  --on-desk: #ffffff;
+  --on-desk-soft: #d8f0f0;
+  --pixel: var(--font-pixel), "VT323", ui-monospace, "Courier New", monospace;
+  --sans: var(--font-hanken), "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 64px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--desk);
+  color: var(--on-desk);
+  font: 16px/1.6 var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol,
+dl,
+dd,
+figure,
+blockquote {
+  margin: 0;
+  padding: 0;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px dotted #000;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px #fff;
+}
+
+.sv-wrap {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-inline: 24px;
+}
+
+.sv-skip {
+  position: absolute;
+  left: 12px;
+  top: -80px;
+  z-index: 30;
+  padding: 12px 16px;
+  background: var(--face);
+  color: #000;
+}
+
+.sv-skip:focus {
+  top: 8px;
+}
+
+/* ---------- taskbar (the header) ---------- */
+
+.sv-taskbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--face);
+  border-bottom: 2px solid var(--dk);
+  box-shadow: inset 0 2px 0 var(--hi), 0 1px 0 var(--lo);
+  color: #000;
+}
+
+.sv-taskbar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 52px;
+  padding-block: 4px;
+}
+
+.sv-start,
+.sv-nav a,
+.sv-lang,
+.sv-desktop {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 14px;
+  color: #000;
+  font: 600 14px/1 var(--sans);
+  text-decoration: none;
+  border: 2px solid transparent;
+  transition: background-color 120ms steps(2);
+}
+
+.sv-start {
+  border-color: var(--hi) var(--dk) var(--dk) var(--hi);
+  box-shadow: inset -1px -1px var(--lo);
+  font-weight: 700;
+}
+
+.sv-nav {
+  display: flex;
+  gap: 2px;
+  margin-inline: 8px auto;
+}
+
+.sv-nav a:hover,
+.sv-lang:hover,
+.sv-desktop:hover {
+  background: var(--face-hover);
+  border-color: var(--hi) var(--lo) var(--lo) var(--hi);
+}
+
+.sv-nav a:active,
+.sv-lang:active,
+.sv-desktop:active,
+.sv-start:active {
+  border-color: var(--dk) var(--hi) var(--hi) var(--dk);
+  box-shadow: inset 1px 1px var(--lo);
+}
+
+.sv-tray {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  padding-left: 8px;
+  border-left: 2px solid var(--lo);
+  box-shadow: -1px 0 0 var(--hi);
+}
+
+.sv-lang {
+  font-family: var(--pixel);
+  font-size: 20px;
+  letter-spacing: 0.06em;
+}
+
+/* ---------- buttons ---------- */
+
+.sv-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 46px;
+  padding: 0 20px;
+  background: var(--face);
+  color: #000;
+  font: 700 15px/1.2 var(--sans);
+  text-decoration: none;
+  border: 2px solid;
+  border-color: var(--hi) var(--dk) var(--dk) var(--hi);
+  box-shadow: inset -1px -1px var(--lo), inset 1px 1px var(--hi-soft);
+  cursor: pointer;
+  transition: background-color 120ms steps(2);
+}
+
+.sv-btn:hover {
+  background: var(--face-hover);
+}
+
+.sv-btn:active {
+  border-color: var(--dk) var(--hi) var(--hi) var(--dk);
+  box-shadow: inset 1px 1px var(--lo);
+  transform: translate(1px, 1px);
+}
+
+.sv-btn-primary {
+  background: var(--navy);
+  color: #fff;
+  border-color: #5050d0 #000040 #000040 #5050d0;
+  box-shadow: inset -1px -1px #000060, inset 1px 1px #2828a8;
+}
+
+.sv-btn-primary:hover {
+  background: var(--navy-hover);
+}
+
+.sv-btn[disabled] {
+  opacity: 0.65;
+  cursor: progress;
+}
+
+/* ---------- windows ---------- */
+
+.sv-win {
+  background: var(--face);
+  padding: 3px;
+  border: 2px solid;
+  border-color: var(--hi) var(--dk) var(--dk) var(--hi);
+  box-shadow: inset -1px -1px var(--lo), inset 1px 1px var(--hi-soft), 4px 4px 0 rgba(0, 0, 0, 0.28);
+  color: var(--ink);
+  min-width: 0;
+}
+
+.sv-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 30px;
+  padding: 2px 3px 2px 6px;
+  background: var(--navy);
+  color: #fff;
+}
+
+.sv-bar-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 400 22px/1 var(--pixel);
+  letter-spacing: 0.02em;
+}
+
+.sv-bar-ctl {
+  display: flex;
+  gap: 2px;
+  margin-left: auto;
+}
+
+.sv-bar-ctl i {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 20px;
+  background: var(--face);
+  color: #000;
+  border: 2px solid;
+  border-color: var(--hi) var(--dk) var(--dk) var(--hi);
+  font: 400 16px/1 var(--pixel);
+  font-style: normal;
+}
+
+.sv-win-body {
+  margin-top: 3px;
+  padding: 22px;
+  background: var(--paper);
+  border: 2px solid;
+  border-color: var(--lo) var(--hi) var(--hi) var(--lo);
+  box-shadow: inset 1px 1px var(--dk);
+  overflow-wrap: anywhere;
+}
+
+.sv-win-body.sv-bare {
+  padding: 0;
+}
+
+.sv-pixel {
+  display: block;
+  flex: none;
+  image-rendering: pixelated;
+}
+
+/* ---------- links ---------- */
+
+.sv-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--navy);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  text-decoration-color: rgba(0, 0, 128, 0.35);
+  transition: text-decoration-color 200ms;
+}
+
+.sv-link:hover {
+  text-decoration-color: var(--navy);
+  text-decoration-thickness: 2px;
+}
+
+.sv-link span {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+/* ---------- entrance: the hero opens once on load ---------- */
+
+[data-enter] {
+  animation: sv-open 460ms var(--ease) both;
+  animation-delay: var(--d, 0ms);
+}
+
+@keyframes sv-open {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  [data-enter] {
+    animation: none;
+  }
+
+  .sv-btn:active {
+    transform: none;
+  }
+}

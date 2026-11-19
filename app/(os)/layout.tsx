@@ -62,7 +62,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en">
+    // The inline script below applies the visitor's accessibility classes to <html>
+    // before first paint, so the server markup and the client differ there by design.
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link href="https://fonts.googleapis.com" rel="preconnect" />
         <link crossOrigin="anonymous" href="https://fonts.gstatic.com" rel="preconnect" />

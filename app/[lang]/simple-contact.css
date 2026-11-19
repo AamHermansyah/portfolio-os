@@ -1,0 +1,231 @@
+/* ---------- contact ---------- */
+
+.sv-contact {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 56px;
+  align-items: start;
+}
+
+.sv-contact .sv-lead {
+  margin-top: 20px;
+  font-size: 18px;
+}
+
+.sv-elsewhere {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 20px;
+  margin-top: 30px;
+  font-size: 15px;
+  color: var(--on-desk-soft);
+}
+
+.sv-elsewhere .sv-link {
+  color: #fff;
+  text-decoration-color: rgba(255, 255, 255, 0.5);
+}
+
+.sv-elsewhere .sv-link:hover {
+  text-decoration-color: #fff;
+}
+
+.sv-form {
+  display: grid;
+  gap: 16px;
+}
+
+.sv-field {
+  display: grid;
+  gap: 6px;
+}
+
+.sv-field span {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.sv-field input,
+.sv-field textarea {
+  width: 100%;
+  padding: 10px 12px;
+  min-height: 46px;
+  background: #fff;
+  color: #000;
+  font: inherit;
+  font-size: 15px;
+  border: 2px solid;
+  border-color: var(--lo) var(--hi) var(--hi) var(--lo);
+  box-shadow: inset 1px 1px var(--dk);
+  border-radius: 0;
+}
+
+.sv-field textarea {
+  resize: vertical;
+  min-height: 130px;
+}
+
+.sv-field input:focus,
+.sv-field textarea:focus {
+  outline: 2px dotted #000;
+  outline-offset: 1px;
+}
+
+.sv-hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.sv-error {
+  padding: 10px 12px;
+  background: #fff4f4;
+  border: 2px solid #a00000;
+  font-size: 14px;
+  color: #800000;
+}
+
+.sv-error a {
+  color: inherit;
+  font-weight: 700;
+}
+
+.sv-form .sv-btn {
+  justify-self: start;
+}
+
+.sv-sent {
+  display: grid;
+  gap: 14px;
+  justify-items: start;
+}
+
+.sv-sent h3 {
+  font: 400 30px/1 var(--pixel);
+  letter-spacing: 0.03em;
+  color: var(--navy);
+}
+
+/* ---------- footer: the bottom of the taskbar ---------- */
+
+.sv-footer {
+  background: var(--face);
+  color: #000;
+  border-top: 2px solid var(--hi);
+  box-shadow: 0 -1px 0 var(--lo);
+  font-size: 14px;
+}
+
+.sv-footer-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 32px;
+  padding-block: 18px;
+}
+
+/* ---------- narrower screens ---------- */
+
+@media (max-width: 980px) {
+  .sv-hero {
+    min-height: 0;
+    padding-block: 40px 28px;
+  }
+
+  .sv-hero-grid,
+  .sv-contact {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .sv-grid,
+  .sv-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .sv-columns > :first-child {
+    grid-row: auto;
+  }
+
+  .sv-messages {
+    grid-template-columns: 1fr;
+  }
+
+  .sv-messages li:nth-child(odd) {
+    border-right: 0;
+  }
+
+  .sv-messages li:nth-last-child(-n + 2) {
+    border-bottom: 1px solid var(--face);
+  }
+
+  .sv-messages li:last-child {
+    border-bottom: 0;
+  }
+
+  .sv-section {
+    padding-block: 64px;
+  }
+}
+
+@media (max-width: 760px) {
+  .sv-nav {
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .sv-wrap {
+    padding-inline: 16px;
+  }
+
+  .sv-cta .sv-btn {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+
+  .sv-about-top {
+    grid-template-columns: 1fr;
+  }
+
+  .sv-icons {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .sv-icon {
+    width: auto;
+  }
+
+  .sv-skill-groups {
+    grid-template-columns: 1fr;
+  }
+
+  .sv-skill-groups li {
+    grid-template-columns: minmax(0, 1fr) 90px 40px;
+  }
+
+  .sv-win-body {
+    padding: 16px;
+  }
+
+  .sv-project-body,
+  .sv-messages li {
+    padding: 18px;
+  }
+
+  .sv-files li {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .sv-file-links {
+    grid-column: 2;
+  }
+
+  .sv-desktop {
+    display: none;
+  }
+}
