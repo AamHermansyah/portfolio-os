@@ -9,11 +9,11 @@
         const typed = root.querySelector('.hack-typed');
         const prompt = 'root@portfolio:~$ ';
         const sessions = [
-          { cmd: 'whoami', out: [['aam_hermansyah', 'ok'], ['role: fullstack_developer', 'dim'], ['access: GRANTED', 'ok']] },
-          { cmd: 'git status --short', out: [['M  runtime/portfolio-os', 'warn'], ['?? ideas/next-big-thing.md', 'dim'], ['branch main is ready to ship', 'ok']] },
-          { cmd: 'npm run deploy', out: [['> portfolio-os@98 deploy', 'dim'], ['building pixel-perfect interface...', 'dim'], ['compiled successfully in 1.98s', 'ok'], ['deployment: ONLINE', 'ok']] },
-          { cmd: 'ssh jupiter@orbit', out: [['handshake accepted', 'dim'], ['orbit telemetry: stable', 'ok'], ['6 satellites responding', 'ok']] },
-          { cmd: 'cat contact.txt', out: [[LINKS.email, 'ok'], ['channel open — messages welcome', 'dim']] }
+          { cmd: 'whoami', out: [['aam_hermansyah', 'ok'], ['role: fullstack_developer', 'dim'], [tr('access: GRANTED'), 'ok']] },
+          { cmd: 'git status --short', out: [['M  runtime/portfolio-os', 'warn'], ['?? ideas/next-big-thing.md', 'dim'], [tr('branch main is ready to ship'), 'ok']] },
+          { cmd: 'npm run deploy', out: [['> portfolio-os@98 deploy', 'dim'], [tr('building pixel-perfect interface...'), 'dim'], [tr('compiled successfully in 1.98s'), 'ok'], ['deployment: ONLINE', 'ok']] },
+          { cmd: 'ssh jupiter@orbit', out: [[tr('handshake accepted'), 'dim'], [tr('orbit telemetry: stable'), 'ok'], [tr('6 satellites responding'), 'ok']] },
+          { cmd: 'cat contact.txt', out: [[LINKS.email, 'ok'], [tr('channel open — messages welcome'), 'dim']] }
         ];
         let scene = 0, char = 0, line = 0, phase = 'typing', ticks = 8;
         function addRow(text, kind) {
@@ -70,8 +70,8 @@
         const sky = document.createElement('div');
         sky.className = 'sky';
         sky.innerHTML = '<div class="slyr" id="sky-l1"></div><div class="slyr" id="sky-l2"></div><div class="slyr" id="sky-l3"></div>' +
-          '<div class="moonwrap" role="button" tabindex="0" aria-label="Inspect or move the Moon"><div class="halo h3"></div><div class="halo h2"></div><div class="halo h1"></div>' +
-          '<div class="moonpix"><i></i></div><div class="jtip">Moon — click to inspect · drag to move</div></div>' +
+          '<div class="moonwrap" role="button" tabindex="0" aria-label="' + tr('Inspect or move the Moon') + '"><div class="halo h3"></div><div class="halo h2"></div><div class="halo h1"></div>' +
+          '<div class="moonpix"><i></i></div><div class="jtip">' + tr('Moon — click to inspect · drag to move') + '</div></div>' +
           '<div class="shoot s1"></div><div class="shoot s2"></div>';
         function tile(n, size, color, w) {
           let r = '';
@@ -88,7 +88,7 @@
         pw.className = 'planetwrap';
         pw.innerHTML = '<div class="halo jh3"></div><div class="halo jh2"></div><div class="halo jh1"></div>' +
           '<div class="jup"></div>' +
-          '<div class="jtip">Jupiter — click to inspect \u00b7 drag to move</div>';
+          '<div class="jtip">' + tr('Jupiter — click to inspect \u00b7 drag to move') + '</div>';
         pw.style.width = pw.style.height = jupSize + 'px';
         const jh1 = pw.querySelector('.jh1'), jh2 = pw.querySelector('.jh2'), jh3 = pw.querySelector('.jh3');
         jh1.style.width = jh1.style.height = Math.round(jupSize * 0.82) + 'px';

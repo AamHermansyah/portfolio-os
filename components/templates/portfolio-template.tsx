@@ -7,6 +7,7 @@ import { StartMenu } from "@/components/organisms/start-menu";
 import { SystemOverlay } from "@/components/organisms/system-overlay";
 import { Taskbar } from "@/components/organisms/taskbar";
 import type { PortfolioContent } from "@/lib/portfolio/contract";
+import { profile } from "@/lib/portfolio/profile";
 
 export function PortfolioTemplate({ content }: { content: PortfolioContent }) {
   return (
@@ -18,7 +19,7 @@ export function PortfolioTemplate({ content }: { content: PortfolioContent }) {
       <SystemOverlay />
       <CrtFilter />
       <AdminBridge />
-      <PortfolioRuntime content={content} />
+      <PortfolioRuntime content={content} profile={profile} />
     </>
   );
 }

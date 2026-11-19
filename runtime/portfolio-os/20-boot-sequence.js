@@ -3,32 +3,33 @@
       ================================================================= */
       let bootTime = Date.now();
       const BIOS_DEVICES = [
-        ['Primary Master  ', 'REACT.JS 19', 'FOUND', 'ok'],
-        ['Primary Slave   ', 'TYPESCRIPT 5.7', 'FOUND', 'ok'],
-        ['Secondary Master', 'NODE.JS 22 LTS', 'FOUND', 'ok'],
-        ['Secondary Slave ', 'POSTGRESQL 16', 'FOUND', 'ok'],
-        ['IDE 3           ', 'NEXT.JS / GRAPHQL', 'FOUND', 'ok'],
-        ['IDE 4           ', 'REDIS / DOCKER', 'FOUND', 'ok'],
-        ['Video           ', 'CSS VGA (crisp edges)', 'FOUND', 'ok'],
-        ['Network         ', 'REST ADAPTER 1000BASE-T', 'FOUND', 'ok'],
-        ['Keyboard        ', 'MECHANICAL, LOUD', 'FOUND', 'ok'],
-        ['Caffeine ctrl.  ', 'THERMOS 1.2L', 'OVERCLOCKED', 'amb'],
-        ['Social life     ', 'social_calendar.dll', 'NOT FOUND', 'bad']
+        ['Primary Master  ', 'REACT.JS 19', tr('FOUND'), 'ok'],
+        ['Primary Slave   ', 'TYPESCRIPT 5.7', tr('FOUND'), 'ok'],
+        ['Secondary Master', 'NODE.JS 22 LTS', tr('FOUND'), 'ok'],
+        ['Secondary Slave ', 'POSTGRESQL 16', tr('FOUND'), 'ok'],
+        ['IDE 3           ', 'NEXT.JS / GRAPHQL', tr('FOUND'), 'ok'],
+        ['IDE 4           ', 'REDIS / DOCKER', tr('FOUND'), 'ok'],
+        ['Video           ', tr('CSS VGA (crisp edges)'), tr('FOUND'), 'ok'],
+        ['Network         ', 'REST ADAPTER 1000BASE-T', tr('FOUND'), 'ok'],
+        ['Keyboard        ', tr('MECHANICAL, LOUD'), tr('FOUND'), 'ok'],
+        [tr('Caffeine ctrl.  '), 'THERMOS 1.2L', 'OVERCLOCKED', 'amb'],
+        [tr('Social life     '), 'social_calendar.dll', tr('NOT FOUND'), 'bad']
       ];
+      const MEM_LABEL = tr('Memory Test : ');
       const POST_LINES = [
         ['<span class="h">AamBIOS (C)1997-2026 AamMicro Systems, Inc.</span>', 160],
         ['BIOS Date 04/10/25&ensp;Ver: 08.00.15', 110],
         ['', 80],
-        ['Main Processor : Fullstack Developer, 7 Yrs Experience', 140],
+        [tr('Main Processor : Fullstack Developer, 7 Yrs Experience'), 140],
         ['MEM', 0],
         ['', 100],
-        ['Detecting IDE devices \u2026', 380]
+        [tr('Detecting IDE devices \u2026'), 380]
       ].concat(BIOS_DEVICES.map(d => [
         esc(d[0]) + ': ' + esc(d[1].padEnd(22, '\u00b7')) + ' <span class="' + d[3] + '">' + d[2] + '</span>', 110
       ])).concat([
         ['', 90],
-        ['Verifying DMI Pool Data ..............', 480],
-        ['Booting PortfolioOS 98 ...............', 280]
+        [tr('Verifying DMI Pool Data ..............'), 480],
+        [tr('Booting PortfolioOS 98 ...............'), 280]
       ]);
 
       async function boot() {
@@ -41,21 +42,21 @@
         }
         log.textContent = ''; splash.style.display = 'none';
         boot.style.display = 'block';
-        hint.textContent = 'any key fast-forwards \u00b7 ENTER continues';
+        hint.textContent = tr('any key fast-forwards \u00b7 ENTER continues');
         const token = { cancel: false, phase: 'type' };
         let proceed = null, promptEl = null, setupTried = false;
         const go = () => { if (proceed) { const p = proceed; proceed = null; p(); } };
         const showPrompt = () => {
           promptEl = document.createElement('span');
           promptEl.className = 'boot-prompt';
-          promptEl.innerHTML = '\nPress <b>ENTER</b> to continue, DEL to enter SETUP <span class="bs-cur">_</span>';
+          promptEl.innerHTML = '\n' + tr('Press <b>ENTER</b> to continue, DEL to enter SETUP') + ' <span class="bs-cur">_</span>';
           log.appendChild(promptEl);
-          hint.textContent = 'press ENTER (or click) to continue';
+          hint.textContent = tr('press ENTER (or click) to continue');
         };
         const fullPost = () => {
           log.textContent = '';
           for (const [html] of POST_LINES)
-            put((html === 'MEM' ? 'Memory Test : 262,144K OK' : html) + '\n');
+            put((html === 'MEM' ? MEM_LABEL + '262,144K OK' : html) + '\n');
         };
         const put = html => { const s = document.createElement('span'); s.innerHTML = html; log.appendChild(s); };
 
@@ -69,7 +70,7 @@
             if (e.key === 'Enter' || e.key === 'NumpadEnter') { e.preventDefault(); go(); }
             else if (e.key === 'Delete' && !setupTried) {
               setupTried = true;
-              if (promptEl) promptEl.innerHTML = 'SETUP not implemented in this BIOS. Press <b>ENTER</b> to continue <span class="bs-cur">_</span>';
+              if (promptEl) promptEl.innerHTML = tr('SETUP not implemented in this BIOS. Press <b>ENTER</b> to continue') + ' <span class="bs-cur">_</span>';
             }
           }
         };
@@ -90,11 +91,11 @@
             const s = document.createElement('span');
             for (let k = 0; k <= 262144; k += 32768) {
               if (token.cancel) break;
-              s.textContent = 'Memory Test : ' + k.toLocaleString('en-US') + 'K';
+              s.textContent = MEM_LABEL + k.toLocaleString('en-US') + 'K';
               if (!s.parentNode) log.appendChild(s);
               await wait(70);
             }
-            s.textContent = 'Memory Test : 262,144K OK';
+            s.textContent = MEM_LABEL + '262,144K OK';
             continue;
           }
           put(html + '\n');
@@ -116,15 +117,10 @@
         bootTimeFix();
         startTestimonials();
         setTimeout(() => dialogBox({
-          title: 'Welcome to PortfolioOS', icon: svg('monitor', 32), w: 430,
-          msg: `<b>Welcome, visitor.</b>
-         This portfolio is a working desktop from 1998: double-click icons to open things,
-         drag windows by the title bar, resize them from the bottom-right corner,
-         minimize them to the taskbar.<br><br>
-         The <b class="inline">Terminal</b> has a <i>help</i> command, the <b class="inline">Recycle Bin</b> has baggage,
-         and there are at least two easter eggs.<br><br>
-         <span class="dim">New: <b class="inline">Hire_Me.exe</b> and <b class="inline">Contact.exe</b> send a real message,
-         <b class="inline">Network Neighborhood</b> browses the GitHub account, <b class="inline">Find</b> searches every project by
-         technology, and <b class="inline">Accessibility</b> (right-click the desktop) can reduce motion, raise contrast or skip
-         this boot entirely. In Orbit mode, Jupiter and the Moon are still draggable.</span>`}), 350);
+          title: tr('Welcome to PortfolioOS'), icon: svg('monitor', 32), w: 430,
+          msg: '<b>' + tr('Welcome, visitor.') + '</b> ' +
+            tr('This portfolio is a working desktop from 1998: double-click icons to open things, drag windows by the title bar, resize them from the bottom-right corner, minimize them to the taskbar.') + '<br><br>' +
+            tr('The <b class="inline">Terminal</b> has a <i>help</i> command, the <b class="inline">Recycle Bin</b> has baggage, and there are at least two easter eggs.') + '<br><br>' +
+            tr('Prefer a plain page? <b class="inline">Simple view</b> is in the Start menu and on the taskbar.') + '<br><br>' +
+            tr('<span class="dim">New: <b class="inline">Hire_Me.exe</b> and <b class="inline">Contact.exe</b> send a real message, <b class="inline">Network Neighborhood</b> browses the GitHub account, <b class="inline">Find</b> searches every project by technology, and <b class="inline">Accessibility</b> (right-click the desktop) can reduce motion, raise contrast or skip this boot entirely. In Orbit mode, Jupiter and the Moon are still draggable.</span>')}), 350);
       }

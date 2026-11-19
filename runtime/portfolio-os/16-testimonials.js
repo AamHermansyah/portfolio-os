@@ -40,7 +40,7 @@
         const unread = TESTIMONIALS.filter(t => !t._read).length;
         const btn = $('#testbtn');
         btn.innerHTML = svg(unread ? 'mail' : 'openmail', 14) + (unread ? `<span class="badge">${unread > 9 ? '9+' : unread}</span>` : '');
-        btn.title = unread ? unread + ' unread testimonial' + (unread > 1 ? 's' : '') : 'Testimonials — Testimonial Express';
+        btn.title = unread ? (unread > 1 ? tr('{n} unread testimonials', { n: unread }) : tr('{n} unread testimonial', { n: unread })) : tr('Testimonials — Testimonial Express');
       }
       $('#testbtn').addEventListener('click', () => openInbox());
 
@@ -48,7 +48,7 @@
         if (activeToasts.length >= 2) { toastQueue.push(cfg); return; }
         const el = document.createElement('div'); el.className = 'toast';
         el.innerHTML = `<div class="titlebar"><span class="tb-ic">${cfg.icon}</span><span class="tb-text"></span>` +
-          `<span class="tb-btns"><button class="tb-btn" title="Close">${GLY.close}</button></span></div>` +
+          `<span class="tb-btns"><button class="tb-btn" title="${tr('Close')}">${GLY.close}</button></span></div>` +
           `<div class="toast-body">${cfg.html}</div>` +
           (cfg.foot ? `<div class="toast-foot">${cfg.foot}</div>` : '');
         el.querySelector('.tb-text').textContent = cfg.title;
@@ -86,11 +86,11 @@
         showToast({
           title: 'Testimonial Express', icon: svg('mail', 14),
           html: `<div class="t-av">${testimonialAvatar(t, 30)}</div><div class="t-msg">
-      <div class="t-from">New testimonial from <b>${esc(t.from)}</b></div>
+      <div class="t-from">${tr('New testimonial from <b>{from}</b>', { from: esc(t.from) })}</div>
       <div class="t-role">${esc(t.role)}</div>
       <div class="t-prev">&ldquo;${esc(short)}&rdquo;</div>
       <div class="t-stars">${starsHTML(t.stars, 10)}</div></div>`,
-          foot: 'click to open \u2014 auto-closes in 10s',
+          foot: tr('click to open \u2014 auto-closes in 10s'),
           onClick: () => openInbox(t)
         });
       }
@@ -99,8 +99,8 @@
         testiState.doneToast = true;
         showToast({
           title: 'Testimonial Express', icon: svg('mail', 14),
-          html: '<b>Inbox up to date.</b><div class="t-prev">You have reached the end of the praise. Thank you for reading every one.</div>',
-          foot: 'this notification will now stop'
+          html: tr('<b>Inbox up to date.</b><div class="t-prev">You have reached the end of the praise. Thank you for reading every one.</div>'),
+          foot: tr('this notification will now stop')
         });
       }
 
@@ -217,18 +217,18 @@
           return;
         }
         WM.create({
-          id: 'testimonials', title: 'Inbox — Testimonial Express', icon: svg('mail', 14), w: 580, h: 440,
+          id: 'testimonials', title: tr('Inbox — Testimonial Express'), icon: svg('mail', 14), w: 580, h: 440,
           menubar: [
-            { label: 'File', items: [{ label: 'Close', act: a => a.close() }] },
-            { label: 'Help', items: [{ label: 'About PortfolioOS', act: aboutOS }] }
+            { label: tr('File'), items: [{ label: tr('Close'), act: a => a.close() }] },
+            { label: tr('Help'), items: [{ label: tr('About PortfolioOS'), act: aboutOS }] }
           ],
-          status: ['0 message(s), 0 unread', 'Testimonial Express'],
+          status: [tr('{n} message(s), {unread} unread', { n: 0, unread: 0 }), 'Testimonial Express'],
           onClose() { inboxRefs = null; },
           build(body, api) {
             body.className = 'win-body app-inbox';
             body.innerHTML = `<div class="ib-tools">
-        <button class="btn sm" data-a="sr">Send/Receive</button>
-        <button class="btn sm" data-a="reply">Reply</button>
+        <button class="btn sm" data-a="sr">${tr('Send/Receive')}</button>
+        <button class="btn sm" data-a="reply">${tr('Reply')}</button>
         <span class="grow"></span>
       </div>
       <div class="ib-list"></div>
@@ -239,8 +239,8 @@
             function render() {
               const shown = TESTIMONIALS;
               const unread = shown.filter(t => !t._read).length;
-              api.status[0].textContent = shown.length + ' message' + (shown.length === 1 ? '' : 's') + ', ' + unread + ' unread';
-              ibList.innerHTML = shown.length ? '' : '<div class="ib-empty">No testimonials yet. They will arrive. Praise is async.</div>';
+              api.status[0].textContent = shown.length === 1 ? tr('{n} message, {unread} unread', { n: shown.length, unread }) : tr('{n} messages, {unread} unread', { n: shown.length, unread });
+              ibList.innerHTML = shown.length ? '' : tr('<div class="ib-empty">No testimonials yet. They will arrive. Praise is async.</div>');
               shown.forEach(t => {
                 const row = document.createElement('div');
                 row.className = 'msg-row' + (t._read ? '' : ' unread') + (t.id === selId ? ' sel' : '');
@@ -277,11 +277,11 @@
               await resyncTestimonials(false);
               const result = await deliverTestimonial();
               if (result === 'failed') {
-                errorDialog('Testimonial Express', 'Send/Receive failed: the server could not be reached.<br>Try again in a moment.');
+                errorDialog('Testimonial Express', tr('Send/Receive failed: the server could not be reached.<br>Try again in a moment.'));
               } else if (result === 'done' && TESTIMONIALS.length) upToDateToast();
             });
             body.querySelector('[data-a="reply"]').addEventListener('click', () => {
-              errorDialog('Testimonial Express', 'Reply failed: SMTP server not configured.<br>This is a one-way mailbox &mdash; like most references.');
+              errorDialog('Testimonial Express', tr('Reply failed: SMTP server not configured.<br>This is a one-way mailbox &mdash; like most references.'));
             });
             inboxRefs = { api, render, select: selectItem };
             render();

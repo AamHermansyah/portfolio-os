@@ -13,15 +13,15 @@
       /* Certificates, work history and education are three tables and three
          desktop apps. They share the file-and-properties presentation. */
       const CREDENTIAL_FOLDERS = {
-        certs: { title: 'Certificates', icon: 'cert', kinds: ['certificate', 'award'], empty: 'No certificates on file yet.' },
-        experience: { title: 'Experience', icon: 'experience', kinds: ['experience'], empty: 'No work experience on file yet.' },
-        education: { title: 'Education', icon: 'education', kinds: ['education'], empty: 'No education on file yet.' }
+        certs: { title: 'Certificates', label: tr('Certificates'), icon: 'cert', kinds: ['certificate', 'award'], empty: tr('No certificates on file yet.') },
+        experience: { title: 'Experience', label: tr('Experience'), icon: 'experience', kinds: ['experience'], empty: tr('No work experience on file yet.') },
+        education: { title: 'Education', label: tr('Education'), icon: 'education', kinds: ['education'], empty: tr('No education on file yet.') }
       };
       const credentialsIn = id => CREDENTIALS.filter(c => CREDENTIAL_FOLDERS[id].kinds.includes(c.kind));
 
       function openCredential(opened) {
         WM.create({
-          id: 'cred-' + credentialFile(opened), title: credentialFile(opened) + ' Properties',
+          id: 'cred-' + credentialFile(opened), title: tr('{file} Properties', { file: credentialFile(opened) }),
           icon: svg(credentialIcon(opened), 14), w: 440, h: 'auto', dialog: true, refreshable: true,
           build(body, api) {
             /* cred-detail: no right-side icon column, so the notes and values
@@ -30,21 +30,21 @@
             /* Built from the current copy, so a Refresh shows the edited entry. */
             const c = CREDENTIALS.find(x => x.kind === opened.kind && x.id === opened.id);
             if (!c) {
-              body.innerHTML = `<div class="sys-page"><div class="sys-fields"><b>This entry is no longer published.</b></div></div>
-                <div class="sys-sep"></div><div class="sys-actions"><button class="btn" type="button" data-a="ok">OK</button></div>`;
+              body.innerHTML = `<div class="sys-page"><div class="sys-fields"><b>${tr('This entry is no longer published.')}</b></div></div>
+                <div class="sys-sep"></div><div class="sys-actions"><button class="btn" type="button" data-a="ok">${tr('OK')}</button></div>`;
               body.querySelector('[data-a="ok"]').addEventListener('click', () => api.close());
               return;
             }
             const kind = CREDENTIAL_KINDS[c.kind] || { label: 'Document', by: 'Issued by' };
-            const rows = [['Type', kind.label], ['Title', c.title]];
-            if (c.issuer) rows.push([kind.by, c.issuer]);
-            if (c.date) rows.push(['Date', c.date]);
+            const rows = [[tr('Type'), tr(kind.label)], [tr('Title'), c.title]];
+            if (c.issuer) rows.push([tr(kind.by), c.issuer]);
+            if (c.date) rows.push([tr('Date'), c.date]);
             (c.details || []).forEach(row => rows.push(row));
             const notes = (c.notes || []).length
               ? `<ul class="cred-notes">${c.notes.map(n => `<li>${esc(n)}</li>`).join('')}</ul>` : '';
             body.innerHTML = `<div class="sys-page">
                 <div class="sys-fields">
-                  <div class="sys-group"><b>General:</b>
+                  <div class="sys-group"><b>${tr('General:')}</b>
                     <dl class="sys-spec">${rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
                     ${notes}
                   </div>
@@ -52,8 +52,8 @@
               </div>
               <div class="sys-sep"></div>
               <div class="sys-actions">
-                ${c.url ? `<a class="btn" href="${esc(c.url)}" target="_blank" rel="noopener">Verify</a>` : ''}
-                <button class="btn" type="button" data-a="ok">OK</button>
+                ${c.url ? `<a class="btn" href="${esc(c.url)}" target="_blank" rel="noopener">${tr('Verify')}</a>` : ''}
+                <button class="btn" type="button" data-a="ok">${tr('OK')}</button>
               </div>`;
             body.querySelector('[data-a="ok"]').addEventListener('click', () => api.close());
             setTimeout(() => body.querySelector('[data-a="ok"]').focus(), 60);
@@ -65,15 +65,15 @@
         const folder = CREDENTIAL_FOLDERS[id];
         const items = () => credentialsIn(id).map(c => ({
           f: credentialFile(c),
-          type: (CREDENTIAL_KINDS[c.kind] || { label: 'Document' }).label,
+          type: tr((CREDENTIAL_KINDS[c.kind] || { label: 'Document' }).label),
           size: c.date || '\u2014',
           desc: c.issuer || c.title,
           icon: s => svg(folder.icon, s),
           open: () => openCredential(c)
         }));
         openExplorerWin({
-          id, title: folder.title, icon: s => svg(folder.icon, s), path: 'C:\\' + folder.title,
-          items, stat2: 'My Portfolio (C:)', empty: folder.empty
+          id, title: folder.label, icon: s => svg(folder.icon, s), path: 'C:\\' + folder.title,
+          items, stat2: tr('My Portfolio (C:)'), empty: folder.empty
         });
       }
       function openCertificates() { openCredentialFolder('certs'); }
@@ -99,7 +99,7 @@
         const lines = [
           '='.repeat(52),
           '  CHANGELOG.LOG',
-          '  ' + PROFILE.name + ' \u2014 what shipped, and when',
+          '  ' + tr('{name} \u2014 what shipped, and when', { name: PROFILE.name }),
           '='.repeat(52),
           ''
         ];
@@ -111,7 +111,7 @@
             y.portfolio.forEach(t => lines.push('    * ' + t));
           }
           if (y.repos.length) {
-            lines.push('  Repositories pushed (' + y.repos.length + ')');
+            lines.push('  ' + tr('Repositories pushed ({n})', { n: y.repos.length }));
             let row = '   ';
             y.repos.forEach(name => {
               if ((row + ' ' + name).length > 50) { lines.push(row); row = '   '; }
@@ -123,8 +123,8 @@
         });
         lines.push('-'.repeat(52));
         lines.push(data && data.syncedAt
-          ? 'Repository history read from the GitHub snapshot.'
-          : 'Repository history unavailable \u2014 showing portfolio entries only.');
+          ? tr('Repository history read from the GitHub snapshot.')
+          : tr('Repository history unavailable \u2014 showing portfolio entries only.'));
         return lines.join('\n');
       }
 
@@ -132,15 +132,15 @@
         WM.create({
           id: 'changelog', title: 'Changelog.log \u2014 Notepad', icon: svg('txt', 14), w: 520, h: 470, refreshable: true,
           menubar: [
-            { label: 'File', items: [{ label: 'Close', act: a => a.close() }] },
+            { label: tr('File'), items: [{ label: tr('Close'), act: a => a.close() }] },
             REFRESH_MENU,
-            { label: 'Help', items: [{ label: 'About PortfolioOS', act: aboutOS }] }
+            { label: tr('Help'), items: [{ label: tr('About PortfolioOS'), act: aboutOS }] }
           ],
           build(body) {
             body.className = 'win-body app-notepad';
             const npad = document.createElement('div');
             npad.className = 'npad';
-            npad.textContent = 'Reading log\u2026';
+            npad.textContent = tr('Reading log\u2026');
             body.appendChild(npad);
             loadGithub()
               .then(data => { npad.textContent = changelogText(data); })
@@ -159,7 +159,7 @@
         const lines = [
           '='.repeat(52),
           '  CAREER.LOG',
-          '  ' + PROFILE.name + ' \u2014 professional timeline',
+          '  ' + tr('{name} \u2014 professional timeline', { name: PROFILE.name }),
           '='.repeat(52),
           ''
         ];
@@ -168,7 +168,7 @@
           years.get(year).forEach(text => lines.push('  * ' + text));
           lines.push('');
         });
-        if (!CAREER_LOG.length) lines.push('No career milestones on file yet.', '');
+        if (!CAREER_LOG.length) lines.push(tr('No career milestones on file yet.'), '');
         lines.push('-'.repeat(52));
         return lines.join('\n');
       }
@@ -177,9 +177,9 @@
         WM.create({
           id: 'career-log', title: 'Career.log \u2014 Notepad', icon: svg('briefcase', 14), w: 520, h: 470, refreshable: true,
           menubar: [
-            { label: 'File', items: [{ label: 'Close', act: api => api.close() }] },
+            { label: tr('File'), items: [{ label: tr('Close'), act: api => api.close() }] },
             REFRESH_MENU,
-            { label: 'Help', items: [{ label: 'About PortfolioOS', act: aboutOS }] }
+            { label: tr('Help'), items: [{ label: tr('About PortfolioOS'), act: aboutOS }] }
           ],
           build(body) {
             body.className = 'win-body app-notepad';
@@ -195,10 +195,10 @@
          Searches what the OS already knows: case studies, the skill list, and the
          repository snapshot. No separate index to keep in step. */
       const FIND_SCOPES = [
-        { id: 'all', label: 'Everything' },
-        { id: 'Case study', label: 'Projects' },
-        { id: 'Skill', label: 'Skills' },
-        { id: 'Repository', label: 'Repositories' }
+        { id: 'all', label: tr('Everything') },
+        { id: 'Case study', label: tr('Projects') },
+        { id: 'Skill', label: tr('Skills') },
+        { id: 'Repository', label: tr('Repositories') }
       ];
 
       function findEntries(data) {
@@ -226,32 +226,32 @@
 
       function openFind() {
         WM.create({
-          id: 'find', title: 'Find: Projects & Skills', icon: svg('find', 14), w: 570, h: 440,
+          id: 'find', title: tr('Find: Projects & Skills'), icon: svg('find', 14), w: 570, h: 440,
           menubar: [
-            { label: 'File', items: [{ label: 'Close', act: a => a.close() }] },
-            { label: 'Help', items: [{ label: 'About PortfolioOS', act: aboutOS }] }
+            { label: tr('File'), items: [{ label: tr('Close'), act: a => a.close() }] },
+            { label: tr('Help'), items: [{ label: tr('About PortfolioOS'), act: aboutOS }] }
           ],
-          status: ['Ready to search', ''],
+          status: [tr('Ready to search'), ''],
           build(body, api) {
             body.className = 'win-body app-find';
             body.innerHTML = `<div class="find-form">
                 <div class="find-row">
-                  <label for="find-q">Named:</label>
-                  <input id="find-q" class="field" placeholder="e.g. Next.js, logistics, TypeScript" spellcheck="false">
+                  <label for="find-q">${tr('Named:')}</label>
+                  <input id="find-q" class="field" placeholder="${tr('e.g. Next.js, logistics, TypeScript')}" spellcheck="false">
                 </div>
                 <div class="find-row">
-                  <label for="find-in">Look in:</label>
+                  <label for="find-in">${tr('Look in:')}</label>
                   <select id="find-in" class="find-select">
                     ${FIND_SCOPES.map(s => `<option value="${esc(s.id)}">${esc(s.label)}</option>`).join('')}
                   </select>
                   <span class="find-btns">
-                    <button class="btn" type="button" data-a="go">Find Now</button>
-                    <button class="btn" type="button" data-a="clear">New Search</button>
+                    <button class="btn" type="button" data-a="go">${tr('Find Now')}</button>
+                    <button class="btn" type="button" data-a="clear">${tr('New Search')}</button>
                   </span>
                 </div>
               </div>
               <div class="find-sep"></div>
-              <div class="find-results"><div class="find-empty">Type a technology, a project name, or anything you remember.</div></div>`;
+              <div class="find-results"><div class="find-empty">${tr('Type a technology, a project name, or anything you remember.')}</div></div>`;
 
             const query = body.querySelector('#find-q');
             const scope = body.querySelector('#find-in');
@@ -280,8 +280,8 @@
               const terms = raw.toLowerCase().split(/\s+/).filter(Boolean);
               const want = scope.value;
               if (!terms.length) {
-                results.innerHTML = '<div class="find-empty">Type a technology, a project name, or anything you remember.</div>';
-                api.status[0].textContent = 'Ready to search';
+                results.innerHTML = '<div class="find-empty">' + tr('Type a technology, a project name, or anything you remember.') + '</div>';
+                api.status[0].textContent = tr('Ready to search');
                 api.status[1].textContent = '';
                 return;
               }
@@ -289,15 +289,15 @@
                 (want === 'all' || e.kind === want) && terms.every(t => e.terms.includes(t)));
               if (!hits.length) {
                 results.innerHTML = `<div class="find-empty">${svg('find', 32)}<br><br>
-                  No results for <b>${esc(raw)}</b>.<br>Try a technology name, or widen <b>Look in</b>.</div>`;
-                api.status[0].textContent = '0 object(s) found';
+                  ${tr('No results for <b>{query}</b>.<br>Try a technology name, or widen <b>Look in</b>.', { query: esc(raw) })}</div>`;
+                api.status[0].textContent = tr('{n} object(s) found', { n: 0 });
                 api.status[1].textContent = '';
                 return;
               }
-              results.innerHTML = `<div class="find-head"><span>Name</span><span>In Folder</span><span>Type</span></div>` +
+              results.innerHTML = `<div class="find-head"><span>${tr('Name')}</span><span>${tr('In Folder')}</span><span>${tr('Type')}</span></div>` +
                 hits.map((h, i) => `<button class="find-item" type="button" data-i="${i}">
                   <span>${h.icon()}${highlight(h.label, terms)}</span>
-                  <span>${esc(h.where)}</span><span>${esc(h.kind)}</span>
+                  <span>${esc(h.where)}</span><span>${esc(tr(h.kind))}</span>
                 </button>`).join('');
               results.querySelectorAll('.find-item').forEach(el => {
                 const hit = hits[Number(el.dataset.i)];
@@ -308,7 +308,7 @@
                 el.addEventListener('dblclick', () => hit.open());
                 el.addEventListener('keydown', e => { if (e.key === 'Enter') hit.open(); });
               });
-              api.status[0].textContent = hits.length + ' object(s) found';
+              api.status[0].textContent = tr('{n} object(s) found', { n: hits.length });
               api.status[1].textContent = '';
             }
 

@@ -33,8 +33,8 @@
           /* titlebar */
           const tb = document.createElement('div'); tb.className = 'titlebar';
           tb.innerHTML = `<span class="tb-ic">${o.icon}</span><span class="tb-text"></span><span class="tb-btns">` +
-            (o.dialog ? '' : `<button class="tb-btn" data-a="min" title="Minimize">${GLY.min}</button><button class="tb-btn" data-a="max" title="Maximize / Restore">${GLY.max}</button>`) +
-            `<button class="tb-btn" data-a="close" title="Close">${GLY.close}</button></span>`;
+            (o.dialog ? '' : `<button class="tb-btn" data-a="min" title="${esc(tr('Minimize'))}">${GLY.min}</button><button class="tb-btn" data-a="max" title="${esc(tr('Maximize / Restore'))}">${GLY.max}</button>`) +
+            `<button class="tb-btn" data-a="close" title="${esc(tr('Close'))}">${GLY.close}</button></span>`;
           tb.querySelector('.tb-text').textContent = o.title;
           el.appendChild(tb);
 

@@ -9,13 +9,13 @@
       const DESK = $('#desktop'), TABS = $('#tabs');
       const WALLPAPER_KEY = 'portfolioos.wallpaper';
       const WALLPAPERS = [
-        { id: 'classic', name: 'Classic Teal', desc: 'Simple, quiet, unmistakably Windows 98.' },
-        { id: 'cloud', name: 'Cloud 98', desc: 'Bright blue sky with soft retro clouds.' },
-        { id: 'blueprint', name: 'Blueprint', desc: 'A precise cobalt engineering grid.' },
-        { id: 'aurora', name: 'Aurora', desc: 'Deep midnight gradients with neon light.' },
-        { id: 'synth', name: 'Synthwave', desc: 'Neon sunset, mountains and a moving grid.' },
-        { id: 'star', name: 'Orbit', desc: 'The original interactive Moon and Jupiter.' },
-        { id: 'hacker', name: 'Hacker Terminal', desc: 'Live commands typed with real terminal output.' }
+        { id: 'classic', name: 'Classic Teal', desc: tr('Simple, quiet, unmistakably Windows 98.') },
+        { id: 'cloud', name: 'Cloud 98', desc: tr('Bright blue sky with soft retro clouds.') },
+        { id: 'blueprint', name: 'Blueprint', desc: tr('A precise cobalt engineering grid.') },
+        { id: 'aurora', name: 'Aurora', desc: tr('Deep midnight gradients with neon light.') },
+        { id: 'synth', name: 'Synthwave', desc: tr('Neon sunset, mountains and a moving grid.') },
+        { id: 'star', name: 'Orbit', desc: tr('The original interactive Moon and Jupiter.') },
+        { id: 'hacker', name: 'Hacker Terminal', desc: tr('Live commands typed with real terminal output.') }
       ];
       const WALLPAPER_CLASSES = WALLPAPERS.map(w => 'wall-' + w.id);
       function wallpaperById(id) { return WALLPAPERS.find(w => w.id === id); }

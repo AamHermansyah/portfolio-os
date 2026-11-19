@@ -6,34 +6,34 @@
          terminal can change that. */
       const desktopIcons = () => [
         { id: 'about', label: 'About_Me.txt', ic: () => svg('txt', 32), open: openAbout },
-        { id: 'projects', label: 'Projects', ic: () => svg('folder', 32), open: openProjects },
+        { id: 'projects', label: tr('Projects'), ic: () => svg('folder', 32), open: openProjects },
         { id: 'skills', label: 'Skills.exe', ic: () => svg('gear', 32), open: openSkills },
         { id: 'terminal', label: 'Terminal', ic: () => svg('monitor', 32), open: openTerminal },
         { id: 'resume', label: 'Resume.pdf', ic: () => svg('pdf', 32), open: openResume },
         { id: 'contact', label: 'Contact.exe', ic: () => svg('mail', 32), open: openContact },
         { id: 'hire', label: 'Hire_Me.exe', ic: () => svg('briefcase', 32), open: openHire },
-        { id: 'sysprops', label: 'My Computer', ic: () => svg('computer', 32), open: openSysProps },
-        { id: 'network', label: 'Network Neighborhood', ic: () => svg('network', 32), open: openNetwork },
+        { id: 'sysprops', label: tr('My Computer'), ic: () => svg('computer', 32), open: openSysProps },
+        { id: 'network', label: tr('Network Neighborhood'), ic: () => svg('network', 32), open: openNetwork },
         { id: 'career-log', label: 'Career.log', ic: () => svg('briefcase', 32), open: openCareerLog },
         { id: 'changelog', label: 'Changelog.log', ic: () => svg('txt', 32), open: openChangelog },
         ...(credentialsIn('certs').length
-          ? [{ id: 'certs', label: 'Certificates', ic: () => svg('cert', 32), open: openCertificates }]
+          ? [{ id: 'certs', label: tr('Certificates'), ic: () => svg('cert', 32), open: openCertificates }]
           : []),
         ...(credentialsIn('experience').length
-          ? [{ id: 'experience', label: 'Experience', ic: () => svg('experience', 32), open: openExperience }]
+          ? [{ id: 'experience', label: tr('Experience'), ic: () => svg('experience', 32), open: openExperience }]
           : []),
         ...(credentialsIn('education').length
-          ? [{ id: 'education', label: 'Education', ic: () => svg('education', 32), open: openEducation }]
+          ? [{ id: 'education', label: tr('Education'), ic: () => svg('education', 32), open: openEducation }]
           : []),
         ...(PUBLICATIONS.length
-          ? [{ id: 'publications', label: 'Publications', ic: () => svg('journal', 32), open: openPublications }]
+          ? [{ id: 'publications', label: tr('Publications'), ic: () => svg('journal', 32), open: openPublications }]
           : []),
         { id: 'fiverr', label: 'Fiverr.url', ic: () => svg('globe', 32), open: openFiverr },
         /* Only while the Mailbox cookie is good; a visitor never sees it. */
         ...(MAILBOX.signedIn
           ? [{ id: 'mailbox', label: 'Mailbox', ic: () => svg('mail', 32), open: openMailbox }]
           : []),
-        { id: 'bin', label: 'Recycle Bin', ic: () => svg(binContents.length ? 'binF' : 'binE', 32), open: openBin }
+        { id: 'bin', label: tr('Recycle Bin'), ic: () => svg(binContents.length ? 'binF' : 'binE', 32), open: openBin }
       ];
       const ICON_DOUBLE_TAP_MS = 500;
       let lastIconTap = null;
@@ -120,16 +120,18 @@
         const m = document.createElement('div'); m.className = 'dropdown ctx';
         const isOrbit = currentWallpaper()?.id === 'star';
         const items = [
-          { t: 'Arrange Icons', act: () => layoutIcons(true) },
-          { t: 'Refresh', act: () => hourglass(350) },
+          { t: tr('Arrange Icons'), act: () => layoutIcons(true) },
+          { t: tr('Refresh'), act: () => hourglass(350) },
           { sep: true },
-          { t: 'Change Wallpaper...', act: openWallpaperPicker },
-          { t: 'Accessibility...', act: openAccessibility },
-          { t: 'CRT scanline filter', check: () => document.body.classList.contains('crt'), act: () => setCRT(!document.body.classList.contains('crt')) },
+          { t: tr('Change Wallpaper...'), act: openWallpaperPicker },
+          { t: tr('Accessibility...'), act: openAccessibility },
+          { t: tr('Simple view'), act: openSimpleView },
+          { t: tr('Language') + ': ' + otherLanguage().label, act: switchLanguage },
+          { t: tr('CRT scanline filter'), check: () => document.body.classList.contains('crt'), act: () => setCRT(!document.body.classList.contains('crt')) },
           { sep: true },
-          { t: 'New Terminal', act: openTerminal },
-          ...(isOrbit ? [{ t: 'Jupiter Observatory', act: openJupiter }] : []),
-          { t: 'About PortfolioOS', act: aboutOS }
+          { t: tr('New Terminal'), act: openTerminal },
+          ...(isOrbit ? [{ t: tr('Jupiter Observatory'), act: openJupiter }] : []),
+          { t: tr('About PortfolioOS'), act: aboutOS }
         ];
         items.forEach(it => {
           if (it.sep) { m.appendChild(mkSep()); return; }

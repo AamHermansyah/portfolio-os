@@ -12,7 +12,7 @@
             html += `<div class="dlg-btns"></div>`;
             body.innerHTML = html;
             const btns = body.querySelector('.dlg-btns');
-            (o.buttons || [{ t: 'OK' }]).forEach(b => {
+            (o.buttons || [{ t: tr('OK') }]).forEach(b => {
               let el;
               if (b.href) { el = document.createElement('a'); el.href = b.href; el.target = b.target || '_blank'; el.rel = 'noopener'; }
               else { el = document.createElement('button'); el.type = 'button'; }
@@ -34,11 +34,11 @@
       }
       function aboutOS() {
         dialogBox({
-          title: 'About PortfolioOS', icon: svg('monitor', 32), w: 400, msg:
+          title: tr('About PortfolioOS'), icon: svg('monitor', 32), w: 400, msg:
             `<b>PortfolioOS 98</b>
-     Version 4.10.1998 (Build 1998.03)<br>
-     Copyright &copy; 1998&ndash;2026 Aam Hermansyah<br><br>
-     This product is licensed to: <b>You, the visitor</b>.<br>
-     Physical memory available: 65,536 KB &mdash; plenty.<br><br>
-     <span class="dim">Warning: this operating system is presentation only. Do not deploy to production.</span>`});
+     ${tr('Version 4.10.1998 (Build 1998.03)')}<br>
+     ${tr('Copyright &copy; 1998&ndash;2026 Aam Hermansyah')}<br><br>
+     ${tr('This product is licensed to: <b>You, the visitor</b>.')}<br>
+     ${tr('Physical memory available: 65,536 KB &mdash; plenty.')}<br><br>
+     ${tr('<span class="dim">Warning: this operating system is presentation only. Do not deploy to production.</span>')}`});
       }

@@ -12,10 +12,9 @@
           if (!bsodRecovered) {
             bsodRecovered = true;
             setTimeout(() => dialogBox({
-              title: 'System Error', icon: svg('warn', 32), w: 420,
-              msg: `<b>PortfolioOS has recovered from a serious error.</b><br><br>
-             The error was, in fact, on purpose — you found an easter egg.
-             Nothing was harmed. The crash was cosmetic, like most crashes.`}), 250);
+              title: tr('System Error'), icon: svg('warn', 32), w: 420,
+              msg: `${tr('<b>PortfolioOS has recovered from a serious error.</b>')}<br><br>
+             ${tr('The error was, in fact, on purpose — you found an easter egg. Nothing was harmed. The crash was cosmetic, like most crashes.')}`}), 250);
           }
         };
         setTimeout(() => {
@@ -32,7 +31,9 @@
         let h = d.getHours(); const m = String(d.getMinutes()).padStart(2, '0');
         const ap = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12;
         $('#clock').textContent = h + ':' + m + ' ' + ap;
-        $('#clock').title = d.toDateString();
+        $('#clock').title = LANG === 'id'
+          ? d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+          : d.toDateString();
       }
       setInterval(tick, 1000); tick();
       function setCRT(on) {

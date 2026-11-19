@@ -15,45 +15,45 @@
       function openPublication(opened) {
         WM.create({
           id: 'publication-' + publicationSlug(opened),
-          title: opened.title + ' — Publication',
+          title: opened.title + ' — ' + tr('Publication'),
           icon: svg('journal', 14), w: 560, h: 440, refreshable: true,
-          status: [opened.venue, opened.date || 'Date not listed'],
+          status: [opened.venue, opened.date || tr('Date not listed')],
           menubar: [
-            { label: 'File', items: [{ label: 'Close', act: api => api.close() }] },
+            { label: tr('File'), items: [{ label: tr('Close'), act: api => api.close() }] },
             REFRESH_MENU,
-            { label: 'Help', items: [{ label: 'About PortfolioOS', act: aboutOS }] }
+            { label: tr('Help'), items: [{ label: tr('About PortfolioOS'), act: aboutOS }] }
           ],
           build(body, api) {
             body.className = 'win-body app-pub-detail';
             /* Built from the current copy, so a Refresh shows the edited record. */
             const publication = PUBLICATIONS.find(x => x.id === opened.id);
             if (!publication) {
-              body.innerHTML = '<div class="pub-empty">This publication is no longer published.</div>';
+              body.innerHTML = '<div class="pub-empty">' + tr('This publication is no longer published.') + '</div>';
               return;
             }
             const url = publicationUrl(publication);
-            api.setTitle(publication.title + ' — Publication');
+            api.setTitle(publication.title + ' — ' + tr('Publication'));
             api.status[0].textContent = publication.venue;
-            api.status[1].textContent = publication.date || 'Date not listed';
+            api.status[1].textContent = publication.date || tr('Date not listed');
             const notes = (publication.notes || []).length
-              ? '<section class="pub-detail-section"><h3>Notes</h3><ul>' +
+              ? '<section class="pub-detail-section"><h3>' + tr('Notes') + '</h3><ul>' +
                 publication.notes.map(note => '<li>' + esc(note) + '</li>').join('') + '</ul></section>'
               : '';
             body.innerHTML =
               '<div class="pub-detail-scroll">' +
               '<div class="pub-detail-cover">' + svg('journal', 52) +
-              '<div><span>PUBLICATION RECORD</span><h2>' + esc(publication.title) + '</h2></div></div>' +
+              '<div><span>' + tr('PUBLICATION RECORD') + '</span><h2>' + esc(publication.title) + '</h2></div></div>' +
               '<dl class="pub-detail-meta">' +
-              '<dt>Authors</dt><dd>' + esc(publicationAuthors(publication) || 'Not listed') + '</dd>' +
-              '<dt>Venue</dt><dd>' + esc(publication.venue || 'Not listed') + '</dd>' +
-              '<dt>Date</dt><dd>' + esc(publication.date || 'Not listed') + '</dd>' +
+              '<dt>' + tr('Authors') + '</dt><dd>' + esc(publicationAuthors(publication) || tr('Not listed')) + '</dd>' +
+              '<dt>' + tr('Venue') + '</dt><dd>' + esc(publication.venue || tr('Not listed')) + '</dd>' +
+              '<dt>' + tr('Date') + '</dt><dd>' + esc(publication.date || tr('Not listed')) + '</dd>' +
               (publication.doi ? '<dt>DOI</dt><dd>' + esc(publication.doi) + '</dd>' : '') +
               '</dl>' +
-              '<section class="pub-detail-section"><h3>Abstract</h3><p>' +
-              esc(publication.abstract || 'No abstract is available.') + '</p></section>' + notes +
+              '<section class="pub-detail-section"><h3>' + tr('Abstract') + '</h3><p>' +
+              esc(publication.abstract || tr('No abstract is available.')) + '</p></section>' + notes +
               '</div><div class="pub-detail-actions">' +
-              (url ? '<a class="btn" href="' + esc(url) + '" target="_blank" rel="noopener">Visit publication</a>' : '') +
-              '<span class="grow"></span><button class="btn" type="button" data-a="close">Close</button></div>';
+              (url ? '<a class="btn" href="' + esc(url) + '" target="_blank" rel="noopener">' + tr('Visit publication') + '</a>' : '') +
+              '<span class="grow"></span><button class="btn" type="button" data-a="close">' + tr('Close') + '</button></div>';
             body.querySelector('[data-a="close"]').addEventListener('click', () => api.close());
           }
         });
@@ -62,24 +62,24 @@
       function openPublications() {
         let selected = null;
         WM.create({
-          id: 'publications', title: 'Publications — Research Library',
+          id: 'publications', title: tr('Publications — Research Library'),
           icon: svg('journal', 14), w: 760, h: 500, refreshable: true,
-          status: [PUBLICATIONS.length + ' publication(s)', 'Research Library'],
+          status: [tr('{n} publication(s)', { n: PUBLICATIONS.length }), tr('Research Library')],
           menubar: [
-            { label: 'File', items: [{ label: 'Close', act: api => api.close() }] },
+            { label: tr('File'), items: [{ label: tr('Close'), act: api => api.close() }] },
             REFRESH_MENU,
-            { label: 'Help', items: [{ label: 'About PortfolioOS', act: aboutOS }] }
+            { label: tr('Help'), items: [{ label: tr('About PortfolioOS'), act: aboutOS }] }
           ],
           build(body, api) {
             body.className = 'win-body app-pubs';
             body.innerHTML =
               '<div class="pub-banner">' + svg('journal', 34) +
-              '<div><b>Research Library</b><span>Papers, conference work and technical writing.</span></div></div>' +
-              '<div class="pub-tools"><label for="pub-search">Find</label>' +
-              '<input id="pub-search" class="field" type="search" placeholder="title, author or venue" autocomplete="off">' +
-              '<button class="btn sm" type="button" data-a="clear">Clear</button></div>' +
-              '<div class="pub-workspace"><div class="pub-index" role="listbox" aria-label="Publications"></div>' +
-              '<div class="pub-preview"><div class="pub-empty">Select a publication to read its summary.</div></div></div>';
+              '<div><b>' + tr('Research Library') + '</b><span>' + tr('Papers, conference work and technical writing.') + '</span></div></div>' +
+              '<div class="pub-tools"><label for="pub-search">' + tr('Find') + '</label>' +
+              '<input id="pub-search" class="field" type="search" placeholder="' + tr('title, author or venue') + '" autocomplete="off">' +
+              '<button class="btn sm" type="button" data-a="clear">' + tr('Clear') + '</button></div>' +
+              '<div class="pub-workspace"><div class="pub-index" role="listbox" aria-label="' + tr('Publications') + '"></div>' +
+              '<div class="pub-preview"><div class="pub-empty">' + tr('Select a publication to read its summary.') + '</div></div></div>';
 
             const search = body.querySelector('#pub-search');
             const index = body.querySelector('.pub-index');
@@ -97,17 +97,17 @@
               const url = publicationUrl(publication);
               preview.innerHTML =
                 '<article class="pub-paper"><div class="pub-paper-type">' + svg('journal', 22) +
-                '<span>PUBLICATION · ' + esc(publication.date || 'UNDATED') + '</span></div>' +
+                '<span>' + tr('PUBLICATION · {date}', { date: esc(publication.date || tr('UNDATED')) }) + '</span></div>' +
                 '<h2>' + esc(publication.title) + '</h2>' +
-                '<div class="pub-byline">' + esc(publicationAuthors(publication) || 'Authors not listed') + '</div>' +
-                '<div class="pub-venue">' + esc(publication.venue || 'Venue not listed') + '</div>' +
-                '<p class="pub-abstract">' + esc(publication.abstract || 'No abstract is available.') + '</p>' +
+                '<div class="pub-byline">' + esc(publicationAuthors(publication) || tr('Authors not listed')) + '</div>' +
+                '<div class="pub-venue">' + esc(publication.venue || tr('Venue not listed')) + '</div>' +
+                '<p class="pub-abstract">' + esc(publication.abstract || tr('No abstract is available.')) + '</p>' +
                 (publication.doi ? '<div class="pub-doi"><b>DOI:</b> ' + esc(publication.doi) + '</div>' : '') +
-                '<div class="pub-preview-actions"><button class="btn" type="button" data-a="details">View details</button>' +
-                (url ? '<a class="btn" href="' + esc(url) + '" target="_blank" rel="noopener">Visit publication</a>' : '') +
+                '<div class="pub-preview-actions"><button class="btn" type="button" data-a="details">' + tr('View details') + '</button>' +
+                (url ? '<a class="btn" href="' + esc(url) + '" target="_blank" rel="noopener">' + tr('Visit publication') + '</a>' : '') +
                 '</div></article>';
               preview.querySelector('[data-a="details"]').addEventListener('click', () => openPublication(publication));
-              api.status[1].textContent = publication.venue || 'Venue not listed';
+              api.status[1].textContent = publication.venue || tr('Venue not listed');
               if (focus) item.focus();
             }
 
@@ -117,13 +117,13 @@
                 [publication.title, publication.venue, publicationAuthors(publication), publication.date]
                   .join(' ').toLowerCase().includes(query));
               index.textContent = '';
-              api.status[0].textContent = matches.length + ' publication(s)';
+              api.status[0].textContent = tr('{n} publication(s)', { n: matches.length });
 
               if (!matches.length) {
                 selected = null;
-                index.innerHTML = '<div class="pub-no-results">No matching publications.</div>';
-                preview.innerHTML = '<div class="pub-empty">Try another title, author, venue or year.</div>';
-                api.status[1].textContent = 'No selection';
+                index.innerHTML = '<div class="pub-no-results">' + tr('No matching publications.') + '</div>';
+                preview.innerHTML = '<div class="pub-empty">' + tr('Try another title, author, venue or year.') + '</div>';
+                api.status[1].textContent = tr('No selection');
                 return;
               }
 

@@ -29,12 +29,21 @@
       }
 
       function inquiryProblem(error) {
-        if (error === 'rate_limit') return 'Several messages have already come from this connection. Give it a few minutes, or use the e-mail fallback.';
-        if (error === 'too_fast') return 'That arrived faster than a person can type, so it was held back as spam. Try once more.';
-        if (error === 'validation') return 'The server rejected the details — check the name and e-mail address.';
-        if (error === 'network') return 'The request never reached the server. Check your connection, or use the e-mail fallback.';
-        if (error === 'not_configured') return 'This copy of PortfolioOS has no delivery route configured, so nothing was sent.';
-        return 'The server could not pass the message on.';
+        if (error === 'rate_limit') return tr('Several messages have already come from this connection. Give it a few minutes, or use the e-mail fallback.');
+        if (error === 'too_fast') return tr('That arrived faster than a person can type, so it was held back as spam. Try once more.');
+        if (error === 'validation') return tr('The server rejected the details — check the name and e-mail address.');
+        if (error === 'network') return tr('The request never reached the server. Check your connection, or use the e-mail fallback.');
+        if (error === 'not_configured') return tr('This copy of PortfolioOS has no delivery route configured, so nothing was sent.');
+        return tr('The server could not pass the message on.');
+      }
+
+      /* A chat link with the message already written. The text is capped so the
+         link stays well inside what WhatsApp accepts. */
+      function waLink(text) {
+        return LINKS.whatsapp + '?text=' + encodeURIComponent(text.slice(0, 900));
+      }
+      function waClip(text, max) {
+        return text.length > max ? text.slice(0, max - 1) + '…' : text;
       }
 
       /* The original mailto: path. Still here, but only as the fallback for when the
@@ -128,18 +137,18 @@
         let paintAll = () => { };
 
         WM.create({
-          id: 'hire', title: 'Hire Me — PortfolioOS Setup Wizard', icon: svg('briefcase', 14), w: 540, h: 440,
+          id: 'hire', title: tr('Hire Me — PortfolioOS Setup Wizard'), icon: svg('briefcase', 14), w: 540, h: 440,
           menubar: [
             {
               label: 'File', items: [
-                { label: 'Start over', act: () => { Object.keys(state).forEach(k => state[k] = ''); step = 0; outcome = null; paintAll(); } },
+                { label: tr('Start over'), act: () => { Object.keys(state).forEach(k => state[k] = ''); step = 0; outcome = null; paintAll(); } },
                 { sep: true },
-                { label: 'Close', act: a => a.close() }
+                { label: tr('Close'), act: a => a.close() }
               ]
             },
             {
               label: 'Help', items: [
-                { label: 'Prefer plain e-mail…', act: openContact },
+                { label: tr('Prefer plain e-mail…'), act: openContact },
                 { label: 'About PortfolioOS', act: aboutOS }
               ]
             }
@@ -154,10 +163,10 @@
         <input tabindex="-1" autocomplete="off" data-f="website"></label>
       <div class="wiz-sep"></div>
       <div class="wiz-nav">
-        <button class="btn" type="button" data-a="back">&lt; Back</button>
-        <button class="btn" type="button" data-a="next">Next &gt;</button>
+        <button class="btn" type="button" data-a="back"></button>
+        <button class="btn" type="button" data-a="next"></button>
         <span class="gap"></span>
-        <button class="btn" type="button" data-a="cancel">Cancel</button>
+        <button class="btn" type="button" data-a="cancel"></button>
       </div>`;
 
             const pane = body.querySelector('.wiz-body');
@@ -168,6 +177,7 @@
               next: body.querySelector('[data-a="next"]'),
               cancel: body.querySelector('[data-a="cancel"]')
             };
+            nav.back.textContent = tr('< Back');
             dots.innerHTML = HIRE_FLOW.map(() => '<i class="wiz-dot"></i>').join('');
             const show = (el, on) => { el.style.display = on ? '' : 'none'; };
 
@@ -178,6 +188,8 @@
               return !!state[d.key];
             }
 
+            /* The mail fallback goes to the owner as plain English, whichever
+               language the wizard was shown in. */
             function summaryText() {
               const rows = [['Engagement', state.engagement], ['Focus', state.projectType],
               ['Budget', state.budget], ['Timeline', state.timeline],
@@ -186,6 +198,20 @@
               let out = 'New inquiry from PortfolioOS — Hire_Me.exe\n\n' +
                 rows.map(([k, v]) => k.padEnd(11) + ': ' + v).join('\n');
               if (state.message.trim()) out += '\n\nNotes:\n' + state.message.trim();
+              return out;
+            }
+
+            /* The chat opener, written in the wizard's language so it reads
+               naturally in the chat. Choices are shown translated; what was
+               stored is untouched. */
+            function whatsappText() {
+              const company = state.company.trim();
+              let out = tr("Hi Aam, I'm {name}{company}. I just sent you an inquiry through your portfolio ({engagement}, {focus}, budget: {budget}, timeline: {timeline}).", {
+                name: state.name.trim(), company: company ? tr(' from {company}', { company }) : '',
+                engagement: tr(state.engagement), focus: tr(state.projectType),
+                budget: tr(state.budget), timeline: tr(state.timeline)
+              });
+              if (state.message.trim()) out += '\n\n' + waClip(state.message.trim(), 300);
               return out;
             }
 
@@ -199,16 +225,16 @@
                 show(nav.back, !outcome.ok);
                 show(nav.next, !outcome.ok);
                 nav.back.disabled = false;
-                nav.next.textContent = 'Open e-mail app';
+                nav.next.textContent = tr('Open e-mail app');
                 nav.next.disabled = false;
-                nav.cancel.textContent = 'Close';
+                nav.cancel.textContent = tr('Close');
                 return;
               }
               show(nav.back, true); show(nav.next, true);
               nav.back.disabled = step === 0 || busy;
-              nav.next.textContent = busy ? 'Sending…' : (d.review ? 'Finish' : 'Next >');
+              nav.next.textContent = busy ? tr('Sending…') : (d.review ? tr('Finish') : tr('Next >'));
               nav.next.disabled = busy || !ready();
-              nav.cancel.textContent = 'Cancel';
+              nav.cancel.textContent = tr('Cancel');
             }
 
             function paintOutcome() {
@@ -216,50 +242,57 @@
               const icon = svg(ok ? 'openmail' : 'warn', 32);
               const text = ok
                 ? (outcome.fallback
-                  ? '<b>Handed to your e-mail application</b>, with the summary already written out. Press Send there and it is on its way.'
-                  : '<b>Your inquiry is on its way.</b> It landed in my inbox with everything you picked, so the reply can be about the work rather than about scheduling a call to ask what the work is.<br><br><span class="dim">Expect an answer within a couple of working days.</span>')
+                  ? tr('<b>Handed to your e-mail application</b>, with the summary already written out. Press Send there and it is on its way.')
+                  : tr('<b>Your inquiry is on its way.</b> It landed in my inbox with everything you picked, so the reply can be about the work rather than about scheduling a call to ask what the work is.<br><br><span class="dim">Expect an answer within a couple of working days.</span>'))
                 : esc(inquiryProblem(outcome.error)) +
-                '<br><br><span class="dim">Nothing was lost — <b>Open e-mail app</b> below hands the same summary to your mail client, or step <b>Back</b> to try again.</span>';
-              pane.innerHTML = `<div class="wiz-h">${ok ? 'All done' : 'Not sent'}</div>
-        <div class="wiz-msg">${icon}<div>${text}</div></div>`;
+                '<br><br><span class="dim">' + tr('Nothing was lost — <b>Open e-mail app</b> below hands the same summary to your mail client, or step <b>Back</b> to try again.') + '</span>';
+              /* Chat is usually faster than waiting on an e-mail, so a sent inquiry
+                 offers to carry on there with the details already written. */
+              const chat = ok
+                ? `<div class="wiz-wa"><a class="btn" href="${esc(waLink(whatsappText()))}" target="_blank" rel="noopener">${svg('whatsapp', 14)}<span>${esc(tr('Continue on WhatsApp'))}</span></a>
+          <span class="dim">${esc(tr('Optional — opens a chat with the details already written.'))}</span></div>`
+                : '';
+              pane.innerHTML = `<div class="wiz-h">${esc(ok ? tr('All done') : tr('Not sent'))}</div>
+        <div class="wiz-msg">${icon}<div>${text}</div></div>${chat}`;
               pane.scrollTop = 0;
               paintNav();
             }
 
             paintAll = function () {
-          if (outcome) { paintOutcome(); paintDots(); return; }
+              if (outcome) { paintOutcome(); paintDots(); return; }
               const d = HIRE_FLOW[step];
-              const heading = typeof d.h === 'function' ? d.h(state) : d.h;
-              const sub = typeof d.sub === 'function' ? d.sub(state) : (d.sub || '');
+              const heading = tr(typeof d.h === 'function' ? d.h(state) : d.h);
+              const sub = tr(typeof d.sub === 'function' ? d.sub(state) : (d.sub || ''));
               let html = `<div class="wiz-h">${esc(heading)}</div>`;
               if (sub) html += `<div class="wiz-sub">${esc(sub)}</div>`;
 
               if (d.opts) {
                 const opts = d.opts(state);
+                /* The value that is stored stays English; only the label is translated. */
                 html += `<div class="wiz-opts" role="radiogroup" aria-label="${esc(heading)}">` +
                   opts.map(o => `<label class="wiz-opt${state[d.key] === o.v ? ' on' : ''}">
             <input class="rad" type="radio" name="wiz-${d.key}" value="${esc(o.v)}"${state[d.key] === o.v ? ' checked' : ''}>
-            <span><span class="wiz-opt-t">${esc(o.v)}</span>${o.d ? `<span class="wiz-opt-d">${esc(o.d)}</span>` : ''}</span>
+            <span><span class="wiz-opt-t">${esc(tr(o.v))}</span>${o.d ? `<span class="wiz-opt-d">${esc(tr(o.d))}</span>` : ''}</span>
           </label>`).join('') + `</div>`;
               } else if (d.form) {
                 html += '<div class="wiz-rows">' + HIRE_FIELDS.map(([f, label, ph, multi]) => {
                   const id = 'wiz-f-' + f;
                   const control = multi
-                    ? `<textarea id="${id}" class="field wiz-text" data-f="${f}" placeholder="${esc(ph)}">${esc(state[f])}</textarea>`
-                    : `<input id="${id}" class="field" data-f="${f}" placeholder="${esc(ph)}" value="${esc(state[f])}"${f === 'email' ? ' spellcheck="false"' : ''}>`;
-                  return `<div class="wiz-row"><label for="${id}">${esc(label)}:</label>${control}</div>`;
+                    ? `<textarea id="${id}" class="field wiz-text" data-f="${f}" placeholder="${esc(tr(ph))}">${esc(state[f])}</textarea>`
+                    : `<input id="${id}" class="field" data-f="${f}" placeholder="${esc(tr(ph))}" value="${esc(state[f])}"${f === 'email' ? ' spellcheck="false"' : ''}>`;
+                  return `<div class="wiz-row"><label for="${id}">${esc(tr(label))}:</label>${control}</div>`;
                 }).join('') + '</div>';
               } else if (d.review) {
-                const rows = [['Engagement', state.engagement], ['Focus', state.projectType],
-                ['Budget', state.budget], ['Timeline', state.timeline],
-                ['Name', state.name.trim()], ['E-mail', state.email.trim()]];
-                if (state.company.trim()) rows.push(['Company', state.company.trim()]);
-                if (state.message.trim()) rows.push(['Notes', state.message.trim()]);
+                const rows = [[tr('Engagement'), tr(state.engagement)], [tr('Focus'), tr(state.projectType)],
+                [tr('Budget'), tr(state.budget)], [tr('Timeline'), tr(state.timeline)],
+                [tr('Name'), state.name.trim()], [tr('E-mail'), state.email.trim()]];
+                if (state.company.trim()) rows.push([tr('Company'), state.company.trim()]);
+                if (state.message.trim()) rows.push([tr('Notes'), state.message.trim()]);
                 html += '<dl class="wiz-sum">' + rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('') + '</dl>';
                 html += '<div class="wiz-note">' + (
-                  configured === null ? 'Checking the delivery route…'
-                    : configured ? 'Press <b>Finish</b> and this goes straight to my inbox.'
-                      : 'This deployment has no delivery route configured, so <b>Finish</b> will hand the summary to your e-mail application instead.') + '</div>';
+                  configured === null ? tr('Checking the delivery route…')
+                    : configured ? tr('Press <b>Finish</b> and this goes straight to my inbox.')
+                      : tr('This deployment has no delivery route configured, so <b>Finish</b> will hand the summary to your e-mail application instead.')) + '</div>';
               }
 
               pane.innerHTML = html;

@@ -1,3 +1,5 @@
+import { profile } from "@/lib/portfolio/profile";
+
 const DEFAULT_SITE_URL = "https://aamhermansyah.vercel.app";
 
 function resolveSiteUrl() {
@@ -12,15 +14,15 @@ function resolveSiteUrl() {
 
 export const siteConfig = {
   name: "PortfolioOS 98",
-  personName: "Aam Hermansyah",
-  title: "Aam Hermansyah — Fullstack Developer | PortfolioOS",
+  personName: profile.name,
+  title: `${profile.name} — ${profile.role} | PortfolioOS`,
   description:
     "Portfolio of Aam Hermansyah, an Indonesian fullstack developer building web applications with Next.js, React, TypeScript, Node.js, and PostgreSQL.",
   url: resolveSiteUrl(),
   links: {
-    github: "https://github.com/AamHermansyah",
-    linkedin: "https://www.linkedin.com/in/aam-hermansyah/",
-    fiverr: "https://www.fiverr.com/aam_hermansyah",
+    github: profile.links.github,
+    linkedin: profile.links.linkedin,
+    fiverr: profile.links.fiverr,
   },
 } as const;
 

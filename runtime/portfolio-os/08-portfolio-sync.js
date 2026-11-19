@@ -32,12 +32,12 @@
          dialog when the server cannot be reached rather than a silent no-op. */
       async function refreshFromWindow() {
         if (await refreshPortfolioContent() === 'failed') {
-          errorDialog('Refresh', 'The latest content could not be loaded.<br>Check your connection and try again.');
+          errorDialog(tr('Refresh'), tr('The latest content could not be loaded.<br>Check your connection and try again.'));
         }
       }
 
       /* The View menu every content window with a menu bar carries. */
-      const REFRESH_MENU = { label: 'View', items: [{ label: 'Refresh', act: () => refreshFromWindow() }] };
+      const REFRESH_MENU = { label: tr('View'), items: [{ label: tr('Refresh'), act: () => refreshFromWindow() }] };
 
       function applyPortfolioContent(content) {
         fillPortfolioContent(content);

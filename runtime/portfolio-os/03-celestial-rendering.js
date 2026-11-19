@@ -123,12 +123,12 @@
       /* bulan Galilean — orbit + drag + animasi pulang */
       const MOON_HIT = 28;   /* kotak sentuh 28px supaya gampang ditangkap saat mengorbit */
       const MOON_DATA = [
-        { n: 'Amalthea', c: '#c05a48', s: 7, sd: 1.4, sp: .60, lt: false, inner: true, per: '0.50', dia: '250 × 146 km', dist: '181,400 km', disc: 'E. E. Barnard, 1892', fact: 'A lumpy red potato 250 km long, orbiting just outside the rings — dust knocked off it keeps the gossamer ring stocked.' },
-        { n: 'Thebe', c: '#9a8778', s: 7, sd: 3.3, sp: .58, lt: true, inner: true, per: '0.67', dia: '116 km', dist: '221,900 km', disc: 'Voyager 1, 1979', fact: 'Small, dark and thoroughly battered. Its orbit marks the outer edge of Jupiter\u2019s faintest ring.' },
-        { n: 'Io', c: '#e0c060', s: 9, sd: 0.7, sp: .62, lt: false, hot: true, per: '1.8', dia: '3,643 km', dist: '421,700 km', disc: 'Galileo, January 1610', fact: 'The most volcanically active world known — 400+ volcanoes, squeezed by Jupiter\u2019s tides like a stress ball.' },
-        { n: 'Europa', c: '#d8d4c8', s: 9, sd: 2.1, sp: .58, lt: false, per: '3.6', dia: '3,122 km', dist: '671,000 km', disc: 'Galileo, January 1610', fact: 'An ice shell over a global ocean holding twice the water of all Earth\u2019s oceans. Prime real estate for a future submarine.' },
-        { n: 'Ganymede', c: '#a89880', s: 13, sd: 4.0, sp: .55, lt: true, per: '7.2', dia: '5,268 km', dist: '1,070,400 km', disc: 'Galileo, January 1610', fact: 'The largest moon in the Solar System — bigger than Mercury, with its own magnetic field. An overachiever.' },
-        { n: 'Callisto', c: '#7a6a58', s: 11, sd: 5.2, sp: .52, lt: true, per: '16.7', dia: '4,821 km', dist: '1,882,700 km', disc: 'Galileo, January 1610', fact: 'The most cratered object we know. A 4-billion-year-old log of every rock that ever swung by.' }
+        { n: 'Amalthea', c: '#c05a48', s: 7, sd: 1.4, sp: .60, lt: false, inner: true, per: '0.50', dia: '250 × 146 km', dist: '181,400 km', disc: 'E. E. Barnard, 1892', fact: tr('A lumpy red potato 250 km long, orbiting just outside the rings — dust knocked off it keeps the gossamer ring stocked.') },
+        { n: 'Thebe', c: '#9a8778', s: 7, sd: 3.3, sp: .58, lt: true, inner: true, per: '0.67', dia: '116 km', dist: '221,900 km', disc: 'Voyager 1, 1979', fact: tr('Small, dark and thoroughly battered. Its orbit marks the outer edge of Jupiter\u2019s faintest ring.') },
+        { n: 'Io', c: '#e0c060', s: 9, sd: 0.7, sp: .62, lt: false, hot: true, per: '1.8', dia: '3,643 km', dist: '421,700 km', disc: tr('Galileo, January 1610'), fact: tr('The most volcanically active world known — 400+ volcanoes, squeezed by Jupiter\u2019s tides like a stress ball.') },
+        { n: 'Europa', c: '#d8d4c8', s: 9, sd: 2.1, sp: .58, lt: false, per: '3.6', dia: '3,122 km', dist: '671,000 km', disc: tr('Galileo, January 1610'), fact: tr('An ice shell over a global ocean holding twice the water of all Earth\u2019s oceans. Prime real estate for a future submarine.') },
+        { n: 'Ganymede', c: '#a89880', s: 13, sd: 4.0, sp: .55, lt: true, per: '7.2', dia: '5,268 km', dist: '1,070,400 km', disc: tr('Galileo, January 1610'), fact: tr('The largest moon in the Solar System — bigger than Mercury, with its own magnetic field. An overachiever.') },
+        { n: 'Callisto', c: '#7a6a58', s: 11, sd: 5.2, sp: .52, lt: true, per: '16.7', dia: '4,821 km', dist: '1,882,700 km', disc: tr('Galileo, January 1610'), fact: tr('The most cratered object we know. A 4-billion-year-old log of every rock that ever swung by.') }
       ];
       const MOON_SPD = [0.168, 0.133, 0.095, 0.057, 0.035, 0.020]; /* radian per 100 ms — makin dalam makin cepat, fisika benar */
       /* ---- sprite bulan: bola piksel kecil dengan beberapa frame rotasi.
@@ -229,7 +229,7 @@
           e.className = 'jmoon';
           const d = Math.round((MOON_HIT - m.s) / 2);
           e.innerHTML = `<b class="${m.cls}" style="background-image:url(${m.face});width:${m.s}px;height:${m.s}px;left:${d}px;top:${d}px"></b>` +
-            `<span class="mtip">${m.n} — drag to move · click for facts</span>`;
+            `<span class="mtip">${tr('{name} — drag to move · click for facts', { name: m.n })}</span>`;
           container.appendChild(e); m.el = e;
           place(m);
           e.addEventListener('pointerdown', ev => {

@@ -122,6 +122,51 @@ export type TestimonialPage = {
   pages: number;
 };
 
+export type ProfileLinks = {
+  github: string;
+  githubUser: string;
+  linkedin: string;
+  linkedinUser: string;
+  fiverr: string;
+  fiverrUser: string;
+  email: string;
+  phone: string;
+  whatsapp: string;
+  whatsappLabel: string;
+  site: string;
+  siteLabel: string;
+};
+
+/** The text of the profile that exists in more than one language. */
+export type ProfileText = {
+  role: string;
+  experience: string;
+  location: string;
+  status: string;
+  languages: string;
+  summary: string;
+  additional: string;
+};
+
+/**
+ * Who this portfolio is about — the one copy the Simple view, the metadata and
+ * the PortfolioOS runtime all read, so a change lands everywhere at once.
+ *
+ * English is the base. `i18n` carries the other languages as overrides of the
+ * text fields only: an older script that has never heard of `i18n` still gets a
+ * complete English profile and ignores the rest.
+ */
+export type PublicProfile = ProfileText & {
+  name: string;
+  timezone: string;
+  available: boolean;
+  photo: string;
+  /** Point the square photo frame zooms in on, in percent of the photo. */
+  photoFocus: { x: number; y: number; zoom: number };
+  links: ProfileLinks;
+  i18n: { id: ProfileText };
+};
+
 export type PortfolioContent = {
   projects: PublicProject[];
   skills: PublicSkill[];

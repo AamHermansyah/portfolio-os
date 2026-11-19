@@ -6,36 +6,36 @@
       function openWallpaperPicker() {
         const initial = currentWallpaper();
         WM.create({
-          id: 'wallpaper', title: 'Display Properties — Wallpaper', icon: svg('monitor', 14), w: 600, h: 455,
-          status: ['Wallpaper: ' + initial.name, 'Changes are previewed live'],
+          id: 'wallpaper', title: tr('Display Properties — Wallpaper'), icon: svg('monitor', 14), w: 600, h: 455,
+          status: [tr('Wallpaper: {name}', { name: initial.name }), tr('Changes are previewed live')],
           onClose(api) { if (api.applied) setWallpaper(api.applied, false); },
           build(body, api) {
             api.applied = initial.id;
             api.pending = initial.id;
             body.className = 'win-body app-wallpaper';
             body.innerHTML = `<div class="wp-wrap">
-        <div class="wp-intro">${svg('monitor', 32)}<div><b>Desktop wallpaper</b><span>Choose a background. Click a tile to preview it instantly.</span></div></div>
+        <div class="wp-intro">${svg('monitor', 32)}<div><b>${tr('Desktop wallpaper')}</b><span>${tr('Choose a background. Click a tile to preview it instantly.')}</span></div></div>
         <div class="wp-grid">${WALLPAPERS.map(w => `<button class="wp-card${w.id === initial.id ? ' active' : ''}" type="button" data-wall="${w.id}" aria-pressed="${w.id === initial.id}">
-          <span class="wp-thumb wp-${w.id}"></span><span class="wp-name">${esc(w.name)}</span><span class="wp-desc">${esc(w.desc)}</span>
+          <span class="wp-thumb wp-${w.id}"></span><span class="wp-name">${esc(w.name)}</span><span class="wp-desc">${esc(tr(w.desc))}</span>
         </button>`).join('')}</div>
-        <div class="wp-actions"><span class="wp-current">Current: <b>${esc(initial.name)}</b></span>
-          <button class="btn" type="button" data-a="ok">OK</button>
-          <button class="btn" type="button" data-a="cancel">Cancel</button>
-          <button class="btn" type="button" data-a="apply">Apply</button>
+        <div class="wp-actions"><span class="wp-current">${tr('Current: <b>{name}</b>', { name: esc(initial.name) })}</span>
+          <button class="btn" type="button" data-a="ok">${tr('OK')}</button>
+          <button class="btn" type="button" data-a="cancel">${tr('Cancel')}</button>
+          <button class="btn" type="button" data-a="apply">${tr('Apply')}</button>
         </div>
       </div>`;
             const current = body.querySelector('.wp-current');
             function preview(id) {
               const wall = setWallpaper(id, false);
               api.pending = wall.id;
-              current.innerHTML = 'Preview: <b>' + esc(wall.name) + '</b>';
-              api.status[0].textContent = 'Previewing: ' + wall.name;
+              current.innerHTML = tr('Preview: <b>{name}</b>', { name: esc(wall.name) });
+              api.status[0].textContent = tr('Previewing: {name}', { name: wall.name });
             }
             function apply() {
               const wall = setWallpaper(api.pending, true);
               api.applied = wall.id;
-              current.innerHTML = 'Current: <b>' + esc(wall.name) + '</b>';
-              api.status[0].textContent = 'Wallpaper applied: ' + wall.name;
+              current.innerHTML = tr('Current: <b>{name}</b>', { name: esc(wall.name) });
+              api.status[0].textContent = tr('Wallpaper applied: {name}', { name: wall.name });
             }
             body.querySelectorAll('.wp-card').forEach(card => card.addEventListener('click', () => preview(card.dataset.wall)));
             body.querySelector('[data-a="apply"]').addEventListener('click', apply);
@@ -55,9 +55,9 @@
         WM.create({
           id: 'about', title: 'About_Me.txt — Notepad', icon: svg('txt', 14), w: 470, h: 420,
           menubar: [
-            { label: 'File', items: [{ label: 'Close', act: a => a.close() }] },
-            { label: 'Format', items: [{ label: 'Word Wrap', check: () => !npadWrap, act: () => toggleWrap() }] },
-            { label: 'Help', items: [{ label: 'About PortfolioOS', act: aboutOS }] }
+            { label: tr('File'), items: [{ label: tr('Close'), act: a => a.close() }] },
+            { label: tr('Format'), items: [{ label: tr('Word Wrap'), check: () => !npadWrap, act: () => toggleWrap() }] },
+            { label: tr('Help'), items: [{ label: tr('About PortfolioOS'), act: aboutOS }] }
           ],
           build(body) {
             body.className = 'win-body app-notepad';
@@ -76,39 +76,22 @@
             npad.innerHTML = esc(
               '================================================\n' +
               '  ABOUT_ME.TXT\n' +
-              '  Portfolio of Aam Hermansyah — Fullstack Developer\n' +
-              '  Last modified: 09/09/2026, 11:52 PM\n' +
+              tr('  Portfolio of Aam Hermansyah — Fullstack Developer\n') +
+              tr('  Last modified: 09/09/2026, 11:52 PM\n') +
               '================================================\n\n\n' +
-              'Hi. I’m Aam.\n\n' +
-              'I build for the web in TypeScript, mostly with Next.js\n' +
-              'and React, from Garut in West Java, Indonesia.\n\n' +
-              'WHAT I ACTUALLY BUILD\n' +
-              '---------------------\n' +
-              'Real products with real users on the other side of them:\n' +
-              'a parcel tracking and logistics platform, a marketplace\n' +
-              'that connects travellers with local tour guides, exam\n' +
-              'and health applications. Monorepos when a project has\n' +
-              'more than one audience, a boring database layer, and a\n' +
-              'front end that still works on a bad connection.\n\n' +
-              'Strong opinions, loosely held:\n' +
-              ' - Boring technology, exciting products.\n' +
-              ' - Ship it where people can actually open it.\n' +
-              ' - If it can’t run offline, it’s a brochure.\n\n' +
-              'THE OBVIOUS QUESTION\n' +
-              '--------------------\n' +
-              'Yes, I built an entire fake operating system as a\n' +
-              'portfolio. Windows behave like windows because they\n' +
-              'should. Double-click things. Drag them. Open the\n' +
-              'Terminal and type "help" — the whole résumé is in\n' +
-              'there too. There are at least two easter eggs.\n\n' +
-              'P.S. My previous portfolio is [[GEO]], and every\n' +
-              'project in here links to its own source on GitHub.\n' +
-              'Whatever you do, do not click [[EGG]].\n\n' +
+              tr('Hi. I’m Aam.\n\n') +
+              tr('I build for the web in TypeScript, mostly with Next.js\nand React, from Garut in West Java, Indonesia.\n\n') +
+              tr('WHAT I ACTUALLY BUILD\n---------------------\n') +
+              tr('Real products with real users on the other side of them:\na parcel tracking and logistics platform, a marketplace\nthat connects travellers with local tour guides, exam\nand health applications. Monorepos when a project has\nmore than one audience, a boring database layer, and a\nfront end that still works on a bad connection.\n\n') +
+              tr('Strong opinions, loosely held:\n - Boring technology, exciting products.\n - Ship it where people can actually open it.\n - If it can’t run offline, it’s a brochure.\n\n') +
+              tr('THE OBVIOUS QUESTION\n--------------------\n') +
+              tr('Yes, I built an entire fake operating system as a\nportfolio. Windows behave like windows because they\nshould. Double-click things. Drag them. Open the\nTerminal and type "help" — the whole résumé is in\nthere too. There are at least two easter eggs.\n\n') +
+              tr('P.S. My previous portfolio is [[GEO]], and every\nproject in here links to its own source on GitHub.\nWhatever you do, do not click [[EGG]].\n\n') +
               '------------------------------------\n' +
               'aamhermansyah283@gmail.com · github.com/AamHermansyah'
             )
-              .replace('[[GEO]]', '<a href="https://aamhermansyah.vercel.app" target="_blank" rel="noopener">still up</a>')
-              .replace('[[EGG]]', '<a href="#" class="geolink">this</a>');
+              .replace('[[GEO]]', '<a href="https://aamhermansyah.vercel.app" target="_blank" rel="noopener">' + tr('still up') + '</a>')
+              .replace('[[EGG]]', '<a href="#" class="geolink">' + tr('this') + '</a>');
             body.appendChild(npad); body.appendChild(npad);
             toggleWrap = function () { npadWrap = !npadWrap; npad.classList.toggle('nowrap', !npadWrap); };
             npad.querySelector('.geolink')?.addEventListener('click', e => {
@@ -127,29 +110,29 @@
         WM.create({
           id: o.id, title: o.title, icon: o.icon(14), w: o.w || 560, h: o.h || 400,
           menubar: [
-            { label: 'File', items: [{ label: 'Close', act: a => a.close() }] },
+            { label: tr('File'), items: [{ label: tr('Close'), act: a => a.close() }] },
             {
-              label: 'View', items: [
-                { label: 'Icons', check: () => view === 'icons', act: () => setView('icons') },
-                { label: 'Details', check: () => view === 'details', act: () => setView('details') },
+              label: tr('View'), items: [
+                { label: tr('Icons'), check: () => view === 'icons', act: () => setView('icons') },
+                { label: tr('Details'), check: () => view === 'details', act: () => setView('details') },
                 { sep: true },
-                { label: 'Refresh', act: () => refreshFromWindow() }
+                { label: tr('Refresh'), act: () => refreshFromWindow() }
               ]
             },
-            { label: 'Help', items: [{ label: 'About PortfolioOS', act: aboutOS }] }
+            { label: tr('Help'), items: [{ label: tr('About PortfolioOS'), act: aboutOS }] }
           ],
-          status: [`${o.items().length} object(s)`, o.stat2 || ''],
+          status: [tr('{n} object(s)', { n: o.items().length }), o.stat2 || ''],
           build(body, api) {
             body.className = 'win-body app-expl';
             let selEl = null;
             body.innerHTML = `<div class="ex-tools">
-        <button class="btn sm" data-a="ref">Refresh</button>
+        <button class="btn sm" data-a="ref">${tr('Refresh')}</button>
         <span class="vsep"></span>
-        <button class="btn sm" data-v="icons">Icons</button>
-        <button class="btn sm" data-v="details">Details</button>
+        <button class="btn sm" data-v="icons">${tr('Icons')}</button>
+        <button class="btn sm" data-v="details">${tr('Details')}</button>
         <span class="grow"></span>
       </div>
-      <div class="ex-addr"><span>Address</span><div class="ex-path">${o.icon(14)}<span>${esc(o.path)}</span></div></div>
+      <div class="ex-addr"><span>${tr('Address')}</span><div class="ex-path">${o.icon(14)}<span>${esc(o.path)}</span></div></div>
       <div class="ex-view"></div>`;
             const tools = body.querySelector('.ex-tools'), viewEl = body.querySelector('.ex-view');
             if (o.tool) {
@@ -158,12 +141,12 @@
               tools.insertBefore(document.createElement('span'), tools.querySelector('.grow')).className = 'vsep';
               tools.insertBefore(b, tools.querySelector('.grow'));
             }
-            function status(n, sel) { api.status[0].textContent = n + (sel ? ' object(s) selected' : ' object(s)'); }
+            function status(n, sel) { api.status[0].textContent = sel ? tr('{n} object(s) selected', { n }) : tr('{n} object(s)', { n }); }
             function render() {
               selEl = null; status(o.items().length, false);
               viewEl.innerHTML = '';
               if (!o.items().length) {
-                viewEl.innerHTML = `<div class="ex-empty">${o.empty || 'This folder is empty.'}</div>`; return;
+                viewEl.innerHTML = `<div class="ex-empty">${o.empty || tr('This folder is empty.')}</div>`; return;
               }
               if (view === 'icons') {
                 const g = document.createElement('div'); g.className = 'ex-grid';
@@ -177,7 +160,7 @@
                 viewEl.appendChild(g);
               } else {
                 const t = document.createElement('table'); t.className = 'ex-table';
-                t.innerHTML = '<tr><th>Name</th><th>Type</th><th>Size</th><th>Description</th></tr>' +
+                t.innerHTML = '<tr><th>' + tr('Name') + '</th><th>' + tr('Type') + '</th><th>' + tr('Size') + '</th><th>' + tr('Description') + '</th></tr>' +
                   o.items().map(it => `<tr data-f="${esc(it.f)}"><td>${esc(it.f)}</td><td>${esc(it.type || '')}</td><td>${esc(it.size || '')}</td><td>${esc(it.desc || '')}</td></tr>`).join('');
                 t.querySelectorAll('tr[data-f]').forEach(tr => {
                   const it = o.items().find(x => x.f === tr.dataset.f);
@@ -212,8 +195,8 @@
           open: () => openProject(p)
         }));
         openExplorerWin({
-          id: 'projects', title: 'Projects', icon: s => svg('folder', s), path: 'C:\\Projects',
-          items, stat2: 'My Portfolio (C:)', empty: 'No projects found. That would be worse.'
+          id: 'projects', title: tr('Projects'), icon: s => svg('folder', s), path: 'C:\\Projects',
+          items, stat2: tr('My Portfolio (C:)'), empty: tr('No projects found. That would be worse.')
         });
       }
       function caseStudyShot(p, c, index) {
@@ -221,7 +204,7 @@
            the tabs themselves list every entry. */
         const metricCards = (c.metrics || []).slice(0, 3).map((metric, i) => {
           const x = 166 + i * 143;
-          return `<g><rect x="${x}" y="83" width="129" height="68" fill="#fff" stroke="#808080"/><rect x="${x + 1}" y="84" width="127" height="16" fill="${p.color}"/><text x="${x + 7}" y="96" fill="#fff" font-size="9">METRIC 0${i + 1}</text><text x="${x + 8}" y="124" fill="#111" font-size="18" font-weight="700">${esc(metric.value)}</text><text x="${x + 8}" y="141" fill="#555" font-size="9">${esc(metric.label)}</text></g>`;
+          return `<g><rect x="${x}" y="83" width="129" height="68" fill="#fff" stroke="#808080"/><rect x="${x + 1}" y="84" width="127" height="16" fill="${p.color}"/><text x="${x + 7}" y="96" fill="#fff" font-size="9">${tr('METRIC 0{n}', { n: i + 1 })}</text><text x="${x + 8}" y="124" fill="#111" font-size="18" font-weight="700">${esc(metric.value)}</text><text x="${x + 8}" y="141" fill="#555" font-size="9">${esc(metric.label)}</text></g>`;
         }).join('');
         const architecture = (c.architecture || []).slice(0, 3).map((node, i) => {
           const x = 40 + i * 205;
@@ -234,13 +217,13 @@
         }).join('');
         let scene = '';
         if (index === 0) {
-          scene = `<rect x="20" y="48" width="126" height="264" fill="#dedede" stroke="#808080"/><rect x="29" y="63" width="108" height="24" fill="${p.color}"/><text x="40" y="79" fill="#fff" font-size="10">Dashboard</text><text x="39" y="111" fill="#222" font-size="10">Workspace</text><text x="39" y="140" fill="#222" font-size="10">Activity</text><text x="39" y="169" fill="#222" font-size="10">Exports</text><text x="39" y="198" fill="#222" font-size="10">Settings</text><text x="166" y="66" fill="#111" font-size="16" font-weight="700">${esc(p.tagline)}</text>${metricCards}<rect x="166" y="168" width="415" height="144" fill="#fff" stroke="#808080"/><rect x="167" y="169" width="413" height="22" fill="#c0c0c0"/><text x="177" y="184" fill="#111" font-size="10" font-weight="700">Recent activity</text>${[0, 1, 2, 3].map(i => `<g><circle cx="182" cy="${211 + i * 23}" r="4" fill="${i === 3 ? '#e0a000' : '#00a000'}"/><rect x="195" y="${207 + i * 23}" width="${205 - i * 19}" height="7" fill="${i % 2 ? '#dfdfdf' : '#c8c8c8'}"/><text x="535" y="${214 + i * 23}" fill="#666" font-size="8">OK</text></g>`).join('')}`;
+          scene = `<rect x="20" y="48" width="126" height="264" fill="#dedede" stroke="#808080"/><rect x="29" y="63" width="108" height="24" fill="${p.color}"/><text x="40" y="79" fill="#fff" font-size="10">${tr('Dashboard')}</text><text x="39" y="111" fill="#222" font-size="10">${tr('Workspace')}</text><text x="39" y="140" fill="#222" font-size="10">${tr('Activity')}</text><text x="39" y="169" fill="#222" font-size="10">${tr('Exports')}</text><text x="39" y="198" fill="#222" font-size="10">${tr('Settings')}</text><text x="166" y="66" fill="#111" font-size="16" font-weight="700">${esc(p.tagline)}</text>${metricCards}<rect x="166" y="168" width="415" height="144" fill="#fff" stroke="#808080"/><rect x="167" y="169" width="413" height="22" fill="#c0c0c0"/><text x="177" y="184" fill="#111" font-size="10" font-weight="700">${tr('Recent activity')}</text>${[0, 1, 2, 3].map(i => `<g><circle cx="182" cy="${211 + i * 23}" r="4" fill="${i === 3 ? '#e0a000' : '#00a000'}"/><rect x="195" y="${207 + i * 23}" width="${205 - i * 19}" height="7" fill="${i % 2 ? '#dfdfdf' : '#c8c8c8'}"/><text x="535" y="${214 + i * 23}" fill="#666" font-size="8">OK</text></g>`).join('')}`;
         } else if (index === 1) {
-          scene = `<text x="40" y="78" fill="#111" font-size="16" font-weight="700">Architecture workspace</text><rect x="24" y="92" width="592" height="144" fill="#e9eef2" stroke="#808080"/>${architecture}<rect x="24" y="250" width="592" height="62" fill="#050505" stroke="#808080"/><text x="36" y="270" fill="#54ef78" font-size="10">$ ${esc(p.file)} --inspect pipeline</text><text x="36" y="288" fill="#b3ffc5" font-size="9">All services healthy. Data flow verified.</text><text x="36" y="303" fill="#6fa67d" font-size="9">Listening for the next event _</text>`;
+          scene = `<text x="40" y="78" fill="#111" font-size="16" font-weight="700">${tr('Architecture workspace')}</text><rect x="24" y="92" width="592" height="144" fill="#e9eef2" stroke="#808080"/>${architecture}<rect x="24" y="250" width="592" height="62" fill="#050505" stroke="#808080"/><text x="36" y="270" fill="#54ef78" font-size="10">$ ${esc(p.file)} --inspect pipeline</text><text x="36" y="288" fill="#b3ffc5" font-size="9">${tr('All services healthy. Data flow verified.')}</text><text x="36" y="303" fill="#6fa67d" font-size="9">${tr('Listening for the next event _')}</text>`;
         } else {
-          scene = `<rect x="20" y="48" width="126" height="264" fill="#dedede" stroke="#808080"/><text x="35" y="75" fill="#111" font-size="13" font-weight="700">Release report</text><text x="35" y="105" fill="#444" font-size="9">Build</text><text x="35" y="121" fill="#111" font-size="11">${esc(p.ver)}</text><text x="35" y="151" fill="#444" font-size="9">Released</text><text x="35" y="167" fill="#111" font-size="11">${esc(p.date)}</text><rect x="31" y="207" width="104" height="36" fill="#000080"/><text x="51" y="229" fill="#fff" font-size="11" font-weight="700">PASSED</text><text x="172" y="76" fill="#111" font-size="16" font-weight="700">Technology health</text><rect x="166" y="96" width="422" height="180" fill="#fff" stroke="#808080"/>${stackRows}<rect x="166" y="288" width="422" height="24" fill="#ffffe1" stroke="#808080"/><text x="177" y="304" fill="#111" font-size="9">Production checks completed successfully.</text>`;
+          scene = `<rect x="20" y="48" width="126" height="264" fill="#dedede" stroke="#808080"/><text x="35" y="75" fill="#111" font-size="13" font-weight="700">${tr('Release report')}</text><text x="35" y="105" fill="#444" font-size="9">${tr('Build')}</text><text x="35" y="121" fill="#111" font-size="11">${esc(p.ver)}</text><text x="35" y="151" fill="#444" font-size="9">${tr('Released')}</text><text x="35" y="167" fill="#111" font-size="11">${esc(p.date)}</text><rect x="31" y="207" width="104" height="36" fill="#000080"/><text x="51" y="229" fill="#fff" font-size="11" font-weight="700">${tr('PASSED')}</text><text x="172" y="76" fill="#111" font-size="16" font-weight="700">${tr('Technology health')}</text><rect x="166" y="96" width="422" height="180" fill="#fff" stroke="#808080"/>${stackRows}<rect x="166" y="288" width="422" height="24" fill="#ffffe1" stroke="#808080"/><text x="177" y="304" fill="#111" font-size="9">${tr('Production checks completed successfully.')}</text>`;
         }
-        const markup = `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360"><rect width="640" height="360" fill="#008080"/><rect x="6" y="6" width="628" height="348" fill="#c0c0c0" stroke="#fff" stroke-width="2"/><rect x="9" y="9" width="622" height="25" fill="${p.color}"/><text x="18" y="26" fill="#fff" font-family="Tahoma,Arial,sans-serif" font-size="12" font-weight="700">${esc(p.name)} — ${index === 0 ? 'Overview' : index === 1 ? 'System View' : 'Release Report'}</text><g font-family="Tahoma,Arial,sans-serif">${scene}</g><rect x="10" y="324" width="620" height="26" fill="#c0c0c0" stroke="#808080"/><text x="19" y="341" fill="#333" font-family="Tahoma,Arial,sans-serif" font-size="9">${esc(((c.captions || [])[index] || p.tagline).slice(0, 88))}</text></svg>`;
+        const markup = `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360"><rect width="640" height="360" fill="#008080"/><rect x="6" y="6" width="628" height="348" fill="#c0c0c0" stroke="#fff" stroke-width="2"/><rect x="9" y="9" width="622" height="25" fill="${p.color}"/><text x="18" y="26" fill="#fff" font-family="Tahoma,Arial,sans-serif" font-size="12" font-weight="700">${esc(p.name)} — ${index === 0 ? tr('Overview') : index === 1 ? tr('System View') : tr('Release Report')}</text><g font-family="Tahoma,Arial,sans-serif">${scene}</g><rect x="10" y="324" width="620" height="26" fill="#c0c0c0" stroke="#808080"/><text x="19" y="341" fill="#333" font-family="Tahoma,Arial,sans-serif" font-size="9">${esc(((c.captions || [])[index] || p.tagline).slice(0, 88))}</text></svg>`;
         return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(markup);
       }
       /* A preview slide is a real screenshot when the project has one at that
@@ -248,10 +231,10 @@
          slides is whichever of images and captions is longer. */
       const shotCount = c => Math.max((c.images || []).length, (c.captions || []).length);
       const shotSrc = (p, c, index) => (c.images || [])[index] || caseStudyShot(p, c, index);
-      const shotCaption = (p, c, index) => (c.captions || [])[index] || p.name + ' — screenshot ' + (index + 1);
+      const shotCaption = (p, c, index) => (c.captions || [])[index] || tr('{name} — screenshot {n}', { name: p.name, n: index + 1 });
       function openProject(opened) {
         WM.create({
-          id: 'proj-' + opened.id, title: opened.file + ' \u2014 Case Study', icon: appIcon(opened.color, 14), w: 680, h: 570,
+          id: 'proj-' + opened.id, title: opened.file + ' \u2014 ' + tr('Case Study'), icon: appIcon(opened.color, 14), w: 680, h: 570,
           status: [opened.req || opened.type, 'C:\\Projects'], refreshable: true,
           build(body, api) {
             body.className = 'win-body app-proj';
@@ -259,12 +242,12 @@
                admin save) rebuilds it with the new data. */
             const p = PROJECTS.find(x => x.id === opened.id);
             if (!p) {
-              body.innerHTML = `<div class="case-empty">${svg('warn', 32)}<b>This project is no longer published.</b>
-                <span>It was removed or unpublished after this window was opened.</span></div>`;
-              api.status[0].textContent = 'Not published';
+              body.innerHTML = `<div class="case-empty">${svg('warn', 32)}<b>${tr('This project is no longer published.')}</b>
+                <span>${tr('It was removed or unpublished after this window was opened.')}</span></div>`;
+              api.status[0].textContent = tr('Not published');
               return;
             }
-            api.setTitle(p.file + ' \u2014 Case Study');
+            api.setTitle(p.file + ' \u2014 ' + tr('Case Study'));
             projectCaseStudy(p, body, api);
           }
         });
@@ -285,71 +268,71 @@
           return true;
         };
         const sections = [
-          { id: 'overview', label: 'Overview' },
-          { id: 'challenge', label: 'Challenge', empty: 'The challenge behind this project has not been written up yet.' },
-          { id: 'solution', label: 'Solution', empty: 'How the solution was built has not been written up yet.' },
-          { id: 'architecture', label: 'Architecture', empty: 'The system architecture has not been documented yet.' },
-          { id: 'results', label: 'Results', empty: 'No measured results have been published yet.' },
-          { id: 'screenshots', label: 'Preview', empty: 'No interface preview is available yet.' }
+          { id: 'overview', label: tr('Overview') },
+          { id: 'challenge', label: tr('Challenge'), empty: tr('The challenge behind this project has not been written up yet.') },
+          { id: 'solution', label: tr('Solution'), empty: tr('How the solution was built has not been written up yet.') },
+          { id: 'architecture', label: tr('Architecture'), empty: tr('The system architecture has not been documented yet.') },
+          { id: 'results', label: tr('Results'), empty: tr('No measured results have been published yet.') },
+          { id: 'screenshots', label: tr('Preview'), empty: tr('No interface preview is available yet.') }
         ];
         const emptyPanel = section => `<div class="case-empty">${svg('txt', 32)}
           <b>${esc(section.empty)}</b>
-          <span>The Overview tab has the summary, the stack and the links for ${esc(p.name)}.</span></div>`;
+          <span>${tr('The Overview tab has the summary, the stack and the links for {name}.', { name: esc(p.name) })}</span></div>`;
             const panel = (id, content) => {
               const section = sections.find(s => s.id === id);
               return `<section class="case-panel" id="case-${p.id}-panel-${id}" data-panel="${id}" role="tabpanel" aria-labelledby="case-${p.id}-tab-${id}"${id === 'overview' ? '' : ' hidden'}>${caseHas(id) ? content() : emptyPanel(section)}</section>`;
             };
             body.innerHTML = `<div class="case-shell">
-      <div class="case-tabs" role="tablist" aria-label="${esc(p.name)} case study sections">
+      <div class="case-tabs" role="tablist" aria-label="${tr('{name} case study sections', { name: esc(p.name) })}">
         ${sections.map((s, i) => `<button class="case-tab${i === 0 ? ' on' : ''}" id="case-${p.id}-tab-${s.id}" type="button" role="tab" data-tab="${s.id}" aria-controls="case-${p.id}-panel-${s.id}" aria-selected="${i === 0 ? 'true' : 'false'}" tabindex="${i === 0 ? '0' : '-1'}">${s.label}</button>`).join('')}
       </div>
       <div class="case-content">
         ${panel('overview', () => `<div class="proj">
           <div class="proj-top">
-            <div class="shot"><img src="${caseStudyShot(p, c, 0)}" alt="${esc(p.name)} product overview" width="480" height="320"></div>
+            <div class="shot"><img src="${caseStudyShot(p, c, 0)}" alt="${tr('{name} product overview', { name: esc(p.name) })}" width="480" height="320"></div>
             <div class="pj-side">
               <div class="pj-name">${esc(p.name)} <span class="pj-ver">${esc(p.ver)}</span></div>
               <div class="pj-file">${esc(p.file)} \u2014 ${esc(p.type)}</div>
               <table class="pj-meta">
-                <tr><td>File size</td><td>${esc(p.size)}</td></tr>
-                <tr><td>Released</td><td>${esc(p.date)}</td></tr>
-                ${c.role ? `<tr><td>My role</td><td>${esc(c.role)}</td></tr>` : ''}
+                <tr><td>${tr('File size')}</td><td>${esc(p.size)}</td></tr>
+                <tr><td>${tr('Released')}</td><td>${esc(p.date)}</td></tr>
+                ${c.role ? `<tr><td>${tr('My role')}</td><td>${esc(c.role)}</td></tr>` : ''}
               </table>
               <div class="pj-stack">${p.stack.map(t => `<span class="chip">${esc(t)}</span>`).join('')}</div>
             </div>
           </div>
           <p class="pj-desc">${esc(p.desc)}</p>
-          ${p.notes.length ? `<div class="case-label">Project highlights</div>
+          ${p.notes.length ? `<div class="case-label">${tr('Project highlights')}</div>
           <ul class="pj-notes">${p.notes.map(n => `<li>${esc(n)}</li>`).join('')}</ul>` : ''}
         </div>`)}
-        ${panel('challenge', () => `<h2 class="case-heading">The challenge</h2>
+        ${panel('challenge', () => `<h2 class="case-heading">${tr('The challenge')}</h2>
           ${c.problem ? `<p class="case-copy">${esc(c.problem)}</p>` : ''}
           <div class="case-facts">
-            <div class="case-fact"><span>My role</span><b>${esc(c.role || '—')}</b></div>
-            <div class="case-fact"><span>Duration</span><b>${esc(c.duration || '—')}</b></div>
-            <div class="case-fact"><span>Team</span><b>${esc(c.team || '—')}</b></div>
+            <div class="case-fact"><span>${tr('My role')}</span><b>${esc(c.role || '—')}</b></div>
+            <div class="case-fact"><span>${tr('Duration')}</span><b>${esc(c.duration || '—')}</b></div>
+            <div class="case-fact"><span>${tr('Team')}</span><b>${esc(c.team || '—')}</b></div>
           </div>
-          ${c.responsibilities.length ? `<div class="case-label">My responsibilities</div>
+          ${c.responsibilities.length ? `<div class="case-label">${tr('My responsibilities')}</div>
           <ul class="pj-notes">${c.responsibilities.map(n => `<li>${esc(n)}</li>`).join('')}</ul>` : ''}`)}
-        ${panel('solution', () => `<h2 class="case-heading">How the solution was built</h2>
+        ${panel('solution', () => `<h2 class="case-heading">${tr('How the solution was built')}</h2>
           <div class="solution-list">${c.solution.map(s => `<article class="solution-card"><b>${esc(s.title)}</b>${s.text ? `<p>${esc(s.text)}</p>` : ''}</article>`).join('')}</div>`)}
-        ${panel('architecture', () => `<h2 class="case-heading">System architecture</h2>
+        ${panel('architecture', () => `<h2 class="case-heading">${tr('System architecture')}</h2>
           ${c.architecture.length ? `<div class="arch-flow">${c.architecture.map(a => `<article class="arch-node"><b>${esc(a.title)}</b>${a.text ? `<p>${esc(a.text)}</p>` : ''}</article>`).join('')}</div>` : ''}
-          ${c.architectureNote ? `<div class="arch-note"><b>Engineering note:</b> ${esc(c.architectureNote)}</div>` : ''}`)}
-        ${panel('results', () => `<h2 class="case-heading">Measured results</h2>
+          ${c.architectureNote ? `<div class="arch-note"><b>${tr('Engineering note:')}</b> ${esc(c.architectureNote)}</div>` : ''}`)}
+        ${panel('results', () => `<h2 class="case-heading">${tr('Measured results')}</h2>
           ${c.result ? `<p class="case-copy">${esc(c.result)}</p>` : ''}
           ${c.metrics.length ? `<div class="metric-grid">${c.metrics.map(m => `<div class="metric"><b>${esc(m.value)}</b><span>${esc(m.label)}</span></div>`).join('')}</div>` : ''}
-          ${p.notes.length ? `<div class="case-label">What shipped</div>
+          ${p.notes.length ? `<div class="case-label">${tr('What shipped')}</div>
           <ul class="pj-notes">${p.notes.map(n => `<li>${esc(n)}</li>`).join('')}</ul>` : ''}`)}
-        ${panel('screenshots', () => `<h2 class="case-heading">Interface preview</h2>
+        ${panel('screenshots', () => `<h2 class="case-heading">${tr('Interface preview')}</h2>
           <div class="gallery-main"><img src="${esc(shotSrc(p, c, 0))}" data-shot="0" alt="${esc(shotCaption(p, c, 0))}" width="640" height="360" referrerpolicy="no-referrer"></div>
           <div class="gallery-caption" aria-live="polite">${esc(shotCaption(p, c, 0))}</div>
-          <div class="gallery-thumbs">${Array.from({ length: shotCount(c) }, (_, i) => `<button class="gallery-thumb${i === 0 ? ' on' : ''}" type="button" data-shot="${i}" aria-label="View screenshot ${i + 1}: ${esc(shotCaption(p, c, i))}" aria-pressed="${i === 0 ? 'true' : 'false'}"><img src="${esc(shotSrc(p, c, i))}" alt="" width="240" height="135" referrerpolicy="no-referrer"></button>`).join('')}</div>`)}
+          <div class="gallery-thumbs">${Array.from({ length: shotCount(c) }, (_, i) => `<button class="gallery-thumb${i === 0 ? ' on' : ''}" type="button" data-shot="${i}" aria-label="${tr('View screenshot {n}: {caption}', { n: i + 1, caption: esc(shotCaption(p, c, i)) })}" aria-pressed="${i === 0 ? 'true' : 'false'}"><img src="${esc(shotSrc(p, c, i))}" alt="" width="240" height="135" referrerpolicy="no-referrer"></button>`).join('')}</div>`)}
       </div>
       <div class="pj-actions">
-        ${p.demo ? `<a class="btn" href="${esc(p.demo)}" target="_blank" rel="noopener">Live demo</a>` : ''}
-        ${p.repo ? `<a class="btn" href="${esc(p.repo)}" target="_blank" rel="noopener">View source</a>` : ''}
-        <button class="btn" type="button" data-a="refresh">Refresh</button>
+        ${p.demo ? `<a class="btn" href="${esc(p.demo)}" target="_blank" rel="noopener">${tr('Live demo')}</a>` : ''}
+        ${p.repo ? `<a class="btn" href="${esc(p.repo)}" target="_blank" rel="noopener">${tr('View source')}</a>` : ''}
+        <button class="btn" type="button" data-a="refresh">${tr('Refresh')}</button>
         <span class="case-location">C:\\Projects\\${esc(p.file)}</span>
       </div>
     </div>`;
@@ -367,7 +350,7 @@
               panels.forEach(section => { section.hidden = section.dataset.panel !== id; });
               api.caseTab = id;
               const current = sections.find(section => section.id === id);
-              api.status[0].textContent = (current ? current.label : 'Case Study') + ' \u2014 ' + p.tagline;
+              api.status[0].textContent = (current ? current.label : tr('Case Study')) + ' \u2014 ' + p.tagline;
               content.scrollTop = 0;
             }
             tabs.forEach((tab, index) => {
